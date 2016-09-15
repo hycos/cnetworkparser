@@ -1,0 +1,13 @@
+(declare-variable s1 String)
+(declare-variable s2 String)
+(declare-variable s3 String)
+(declare-variable any String)
+
+(assert (StartsWith s1 s2))
+(assert (In s2 (Union "name" "id")))
+(assert (= any (Union "v" (Union "u" (Union "t" (Union "s" (Union "r" (Union "q" (Union "p" (Union "o"))))))))))
+(assert (In s1 (Concat (Concat (Star any) "<") (Star any) )))
+
+
+(check-sat)
+(get-model)
