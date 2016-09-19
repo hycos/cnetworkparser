@@ -119,6 +119,8 @@ public class SmtCnetworkBuilder extends AstProcessor<ConstraintNetwork, Node> {
 
     @Override
     protected void initialize() {
+
+        logger.info(ast.toDot());
         for(AstNode n : this.ast.getNodes()) {
             this.smap.put(n, null);
         }
@@ -132,12 +134,13 @@ public class SmtCnetworkBuilder extends AstProcessor<ConstraintNetwork, Node> {
 
             case "booloperation":
             case "stroperation":
-                logger.info("BOOLOP " + n.getId());
+            case "numoperation":
+                logger.info("OP " + n.getId());
                 assert(n.hasChildren());
                 StringBuilder out = new StringBuilder();
 
                 AstNode fchild = n.getFirstChild();
-                assert(fchild.getRule().matches("(boolop|strop)"));
+                assert(fchild.getRule().matches("(boolop|strop|numop)"));
 
                 List<Node> params = new Vector<Node>();
 
@@ -145,19 +148,32 @@ public class SmtCnetworkBuilder extends AstProcessor<ConstraintNetwork, Node> {
 
                 assert((kind instanceof OperationKind));
 
-                //logger.info("FHILD " + fchild.getLabel());
+                logger.info("FHILD " + fchild.getLabel());
 
                 n.getChildren().stream().filter(c -> !c.equals(fchild)).forEach(
                         e ->  {
                             assert(this.smap.containsKey(e));
-                            logger.info(e.getLabel());
+                            logger.info("get " + e.getLabel());
                             assert(this.smap.get(e) != null);
                             params.add(this.smap.get(e));
                         }
                 );
-                Operation op = this.cn.addOperation((OperationKind)kind, params);
+                Node op = null;
 
-                //logger.info("add Operation " + op.getLabel());
+
+                if(n.getRule().equals("numoperation") && params.size() == 1) {
+                    // unary operation
+                    assert(fchild.getLabel().matches("(\\-|\\+)"));
+                    String no = fchild.getLabel();
+                    for(Node p : params) {
+                        no += p.getLabel();
+                    }
+                    op = this.cn.addNode(new Operand(no,OperandKind.NUMLIT));
+                    logger.info("add transformed node " + op.getLabel());
+                } else {
+                    op = this.cn.addOperation((OperationKind)kind, params);
+                    logger.info("add Operation " + op.getLabel());
+                }
 
                 this.smap.put(n,op);
                 break;
@@ -167,6 +183,7 @@ public class SmtCnetworkBuilder extends AstProcessor<ConstraintNetwork, Node> {
                 break;
             case "varname":
                 Node v = this.cn.getOperandByLabel(n.getLabel());
+                assert(v != null);
                 this.smap.put(n, v);
                 break;
             case "rlit":
@@ -178,6 +195,11 @@ public class SmtCnetworkBuilder extends AstProcessor<ConstraintNetwork, Node> {
                 assert(n.getLabel().length() > 2);
                 String lbl = n.getLabel().substring(1,n.getLabel().length()-1);
                 this.smap.put(n, cn.addNode(new Operand(EscapeUtils.escapeSpecialCharacters(lbl),OperandKind.STRLIT)));
+                break;
+            case "number":
+                logger.info("nunber "+ n.getLabel());
+                Node nlit = this.cn.addNode(new Operand(n.getLabel(),OperandKind.NUMLIT));
+                this.smap.put(n, nlit);
                 break;
             case "operation":
             case "param":

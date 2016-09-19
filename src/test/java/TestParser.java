@@ -72,4 +72,18 @@ public class TestParser {
         Assert.assertTrue(cn != null);
 
     }
+
+    @Test
+    public void testZ3Num(){
+        ConstraintNetwork cn  = new CnetworkParser(InputFormat.Z3STR2).
+                getCNfromFile(getPath("z3num.z3"));
+        logger.info(cn.toDot());
+    }
+
+    @Test
+    public void testKaluza() {
+        ConstraintNetwork cn  = new CnetworkParser(InputFormat.Z3STR2).
+                getCNfromFile(getPath("kaluza1.z3"));
+        logger.info(cn.toDot());
+    }
 }
