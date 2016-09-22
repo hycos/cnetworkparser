@@ -49,6 +49,8 @@ public class Z3Str2Listener extends DefaultTreeListener implements CnetworkProvi
         put(LanguageElements.AND, "and", OperationKind.AND.toString(), OperationKind.AND);
         put(LanguageElements.OR, "or", OperationKind.OR.toString(), OperationKind.OR);
         put(LanguageElements.NOT, "not", OperationKind.NOT.toString(), OperationKind.NOT);
+        // if-then-else
+        put(LanguageElements.ITE, "ite", OperationKind.ITE.toString(), OperationKind.ITE);
     }};
 
     final static Logger logger = LoggerFactory.getLogger(Z3Str2Listener.class);

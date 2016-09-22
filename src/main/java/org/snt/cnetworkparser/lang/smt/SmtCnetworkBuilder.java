@@ -135,17 +135,22 @@ public class SmtCnetworkBuilder extends AstProcessor<ConstraintNetwork, Node> {
             case "booloperation":
             case "stroperation":
             case "numoperation":
+            case "binoperation":
+
                 logger.info("OP " + n.getId());
                 assert(n.hasChildren());
                 StringBuilder out = new StringBuilder();
 
                 AstNode fchild = n.getFirstChild();
-                assert(fchild.getRule().matches("(boolop|strop|numop)"));
+                assert(fchild.getRule().matches("(boolop|strop|numop|binop)"));
 
                 List<Node> params = new Vector<Node>();
 
+                logger.info("LBL " + fchild.getLabel());
+
                 NetworkEntity.NetworkEntityKind kind = TRANSMAP.getOperationKindByLabel(fchild.getLabel());
 
+                assert(kind != null);
                 assert((kind instanceof OperationKind));
 
                 logger.info("FHILD " + fchild.getLabel());

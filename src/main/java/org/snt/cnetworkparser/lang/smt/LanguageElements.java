@@ -1,6 +1,7 @@
 package org.snt.cnetworkparser.lang.smt;
 
 public enum LanguageElements {
+    ITE("ITE"),
     // Regular expressions
     KSTAR("KSTAR"),
     KPLUS("KPLUS"),

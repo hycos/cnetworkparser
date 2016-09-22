@@ -40,7 +40,7 @@ public class S3Listener extends DefaultTreeListener implements CnetworkProvider 
         put(LanguageElements.GREATER, ">", OperationKind.GREATER.toString(), OperationKind.GREATER);
         put(LanguageElements.PLUS, "+", OperationKind.ADD.toString(), OperationKind.ADD);
         put(LanguageElements.MINUS, "-", OperationKind.SUB.toString(), OperationKind.SUB);
-        //variables
+        // variables
         put(LanguageElements.DTSTRING, "String", OperandKind.STRVAR.toString(), OperandKind.STRVAR);
         put(LanguageElements.DTINT, "Int", OperandKind.NUMVAR.toString(), OperandKind.NUMVAR);
         put(LanguageElements.DTBOOLEAN, "Bool", OperandKind.BOOLVAR.toString(), OperandKind.BOOLVAR);
