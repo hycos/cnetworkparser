@@ -44,7 +44,7 @@ binoperation: binop param+;
 
 boolop: '=' | '<' | '<=' | '>=' | '!=' | 'not' | 'and' | 'or' | 'ite' | 'RegexIn' | 'EndsWith' | 'StartsWith' | 'Contains';
 
-numop: '-' | '+';
+numop: '-' | '+' | 'div';
 
 strop: 'SubString' | 'Concat' | 'IndexOf';
 
@@ -56,7 +56,7 @@ varname: Varname;
 
 vartype: 'String' | 'Int' | 'Bool';
 
-end: ParenthesisOpen 'check-sat' ParenthesisClose ParenthesisOpen 'get-model' ParenthesisClose;
+end: ParenthesisOpen 'check-sat' ParenthesisClose ( ParenthesisOpen 'get-model' ParenthesisClose)?;
 
 WS  :  [ \t\r\n]+ -> skip
     ;

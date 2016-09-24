@@ -34,7 +34,8 @@ public enum LanguageElements {
     NOT("NOT"),
     // boolop
     AND("AND"),
-    OR("OR");
+    OR("OR"),
+    DIV("DIV");
 
     private String name;
 
