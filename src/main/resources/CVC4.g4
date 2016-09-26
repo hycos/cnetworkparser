@@ -35,7 +35,7 @@ vardecl: ParenthesisOpen 'declare-variable' varname vartype ParenthesisClose;
 
 funcdecl: ParenthesisOpen 'declare-fun' varname ParenthesisOpen ParenthesisClose vartype ParenthesisClose;
 
-operation: ParenthesisOpen (booloperation | stroperation | regexoperation) ParenthesisClose;
+operation: ParenthesisOpen (booloperation | stroperation | regexoperation | numop) ParenthesisClose;
 
 booloperation: boolop param+;
 
@@ -43,7 +43,11 @@ stroperation: strop param+;
 
 regexoperation: regexop param+;
 
+numoperation: numop param+;
+
 param: (boollit | strlit | varname | allchar | operation);
+
+numop: '+' | '-' | 'div';
 
 boolop: '=' | '<' | '<=' | '>=' | '!=' | 'not' | 'and' | 'or' | 'str.in.re' | 'str.suffixof' | 'str.prefixof' | 'str.contains';
 

@@ -83,7 +83,8 @@ boolop: '>' |
         'not' |
         'or' |
         'and' |
-        'xor';
+        'xor'|
+        'div';
 
 ass: '=';
 lnk: '&';
