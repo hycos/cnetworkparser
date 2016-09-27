@@ -35,7 +35,7 @@ public class Z3Str2Listener extends DefaultTreeListener implements CnetworkProvi
         // others
         put(LanguageElements.NEQ, "!=", OperationKind.NEQUALS.toString(), OperationKind.NEQUALS);
         put(LanguageElements.EQ, "=", OperationKind.EQUALS.toString(), OperationKind.EQUALS);
-        put(LanguageElements.SMALLEREQ, "<", OperationKind.SMALLEREQ.toString(), OperationKind.SMALLEREQ);
+        put(LanguageElements.SMALLEREQ, "<=", OperationKind.SMALLEREQ.toString(), OperationKind.SMALLEREQ);
         put(LanguageElements.GREATEREQ, ">=", OperationKind.GREATEREQ.toString(), OperationKind.GREATEREQ);
         put(LanguageElements.SMALLER, "<", OperationKind.SMALLER.toString(), OperationKind.SMALLER);
         put(LanguageElements.GREATER, ">", OperationKind.GREATER.toString(), OperationKind.GREATER);
