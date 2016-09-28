@@ -83,7 +83,7 @@ public class TestParser {
     @Test
     public void testKaluza() {
         ConstraintNetwork cn  = new CnetworkParser(InputFormat.Z3STR2).
-                getCNfromFile(getPath("kaluza3.z3"));
+                getCNfromFile(getPath("kaluza4.z3"));
         logger.info(cn.toDot());
     }
 }

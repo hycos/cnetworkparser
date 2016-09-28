@@ -5,10 +5,10 @@ import org.slf4j.LoggerFactory;
 import org.snt.cnetwork.core.*;
 import org.snt.cnetwork.core.range.BooleanRange;
 import org.snt.cnetworkparser.utils.QuadrupleMap;
+import org.snt.cnetworkparser.utils.StringUtils;
 import org.snt.inmemantlr.tree.Ast;
 import org.snt.inmemantlr.tree.AstNode;
 import org.snt.inmemantlr.tree.AstProcessor;
-import org.snt.inmemantlr.utils.EscapeUtils;
 
 import java.util.List;
 import java.util.Set;
@@ -197,9 +197,10 @@ public class SmtCnetworkBuilder extends AstProcessor<ConstraintNetwork, Node> {
                 this.smap.put(n, r);
                 break;
             case "strlit":
-                assert(n.getLabel().length() > 2);
+                assert(n.getLabel().length() >= 2);
                 String lbl = n.getLabel().substring(1,n.getLabel().length()-1);
-                this.smap.put(n, cn.addNode(new Operand(EscapeUtils.escapeSpecialCharacters(lbl),OperandKind.STRLIT)));
+                lbl = StringUtils.unescapeSpecialCharacters(lbl);
+                this.smap.put(n, cn.addNode(new Operand(StringUtils.escapeSpecialCharacters(lbl),OperandKind.STRLIT)));
                 break;
             case "number":
                 logger.info("nunber "+ n.getLabel());
