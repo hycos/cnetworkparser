@@ -215,6 +215,12 @@ public class SmtCnetworkBuilder extends AstProcessor<ConstraintNetwork, Node> {
             case "assertion":
                 Node c = this.smap.get(n.getFirstChild());
                 c.setRange(BooleanRange.TRUE);
+
+                assert((c instanceof Operation) || (c instanceof Operand));
+                Operand top = new Operand("true", OperandKind.BOOLLIT);
+                Node constraint = cn.addConstraint(OperationKind.BOOL_EQUALS, top, c);
+
+                this.smap.put(n, constraint);
                 break;
         }
     }

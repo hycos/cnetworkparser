@@ -49,7 +49,7 @@ param: (boollit | strlit | varname | allchar | operation);
 
 numop: '+' | '-' | 'div';
 
-boolop: '=' | '<' | '<=' | '>=' | '!=' | 'not' | 'and' | 'or' | 'str.in.re' | 'str.suffixof' | 'str.prefixof' | 'str.contains';
+boolop: '=' | '<' | '>' | '<=' | '>=' | '!=' | 'not' | 'and' | 'or' | 'str.in.re' | 'str.suffixof' | 'str.prefixof' | 'str.contains';
 
 strop: 'str.substr' | 'str++' | 'str.indexof';
 

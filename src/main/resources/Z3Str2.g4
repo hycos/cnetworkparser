@@ -42,7 +42,7 @@ numoperation: numop param+;
 
 binoperation: binop param+;
 
-boolop: '=' | '<' | '<=' | '>=' | '!=' | 'not' | 'and' | 'or' | 'ite' | 'RegexIn' | 'EndsWith' | 'StartsWith' | 'Contains';
+boolop: '=' | '<' | '>' | '<=' | '>=' | '!=' | 'not' | 'and' | 'or' | 'ite' | 'RegexIn' | 'EndsWith' | 'StartsWith' | 'Contains';
 
 numop: '-' | '+' | 'div';
 

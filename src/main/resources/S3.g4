@@ -39,7 +39,7 @@ regexoperation: regexop param+;
 
 param: (boollit | strlit | varname | operation);
 
-boolop: '=' | '<' | '<=' | '>=' | '!=' | 'not' | 'and' | 'or' | 'In' | 'EndsWith' | 'StartsWith' | 'Contains';
+boolop: '=' | '<' | '>' | '<=' | '>=' | '!=' | 'not' | 'and' | 'or' | 'In' | 'EndsWith' | 'StartsWith' | 'Contains';
 
 strop: 'SubString' | 'Concat' | 'IndexOf';
 
