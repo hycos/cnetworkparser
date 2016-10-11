@@ -10,7 +10,7 @@ import java.io.File;
 
 public class TestParser {
 
-    final static Logger logger = LoggerFactory.getLogger(TestParser.class);
+    final static Logger LOGGER = LoggerFactory.getLogger(TestParser.class);
 
     private String getPath(String f){
         ClassLoader classLoader = getClass().getClassLoader();
@@ -26,7 +26,7 @@ public class TestParser {
 
         Assert.assertTrue(cn != null);
 
-        logger.info(cn.toDot());
+        LOGGER.info(cn.toDot());
 
     }
 
@@ -37,7 +37,7 @@ public class TestParser {
                 getCNfromFile(getPath("1.cvc"));
         Assert.assertTrue(cn != null);
 
-        logger.info(cn.toConfig());
+        LOGGER.info(cn.toConfig());
     }
 
     @Test
@@ -67,7 +67,7 @@ public class TestParser {
         ConstraintNetwork cn  = new CnetworkParser(InputFormat.SOL).
                 getCNfromFile(getPath("simple01.sol"));
 
-        logger.info(cn.toDot());
+        LOGGER.info(cn.toDot());
 
         Assert.assertTrue(cn != null);
 
@@ -77,13 +77,13 @@ public class TestParser {
     public void testZ3Num(){
         ConstraintNetwork cn  = new CnetworkParser(InputFormat.Z3STR2).
                 getCNfromFile(getPath("z3num.z3"));
-        logger.info(cn.toDot());
+        LOGGER.info(cn.toDot());
     }
 
     @Test
     public void testKaluza() {
         ConstraintNetwork cn  = new CnetworkParser(InputFormat.Z3STR2).
                 getCNfromFile(getPath("kaluza4.z3"));
-        logger.info(cn.toDot());
+        LOGGER.info(cn.toDot());
     }
 }

@@ -13,7 +13,7 @@ import java.util.Map;
 
 public class Urli extends ThreatModel {
 
-    final static Logger logger = LoggerFactory.getLogger(Urli.class);
+    final static Logger LOGGER = LoggerFactory.getLogger(Urli.class);
 
     private static String urlBlacklist = "[a-zA-Z0-9]+=[a-zA-Z0-9]+(&[a-zA-Z0-9]+=[a-zA-Z0-9])*";
 

@@ -10,7 +10,7 @@ import org.snt.inmemantlr.utils.EscapeUtils;
 
 public class SmtRegexBuilder extends RegexAstProcessor {
 
-    final static Logger logger = LoggerFactory.getLogger(SmtRegexBuilder.class);
+    final static Logger LOGGER = LoggerFactory.getLogger(SmtRegexBuilder.class);
     static SmtCnetworkBuilder.TransMap TRANSMAP;
 
     public SmtRegexBuilder(Ast ast, final SmtCnetworkBuilder.TransMap tm) {
@@ -31,7 +31,7 @@ public class SmtRegexBuilder extends RegexAstProcessor {
     @Override
     protected void process(AstNode n) {
 
-        //logger.info(n.getRule() + " " + n.getLabel());
+        //LOGGER.info(n.getRule() + " " + n.getLabel());
         switch(n.getRule()){
             case "assert":
                 simpleProp(n);

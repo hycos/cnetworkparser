@@ -6,7 +6,7 @@ import org.snt.cnetworkparser.utils.StringUtils;
 
 public class TestEscape {
 
-    final static Logger logger = LoggerFactory.getLogger(TestEscape.class);
+    final static Logger LOGGER = LoggerFactory.getLogger(TestEscape.class);
 
 
 
@@ -14,10 +14,10 @@ public class TestEscape {
     public void testThreatModels() {
 
         String s = "\"SELECT \\* FROM salaries WHERE userid = '\"";
-        logger.info(s);
+        LOGGER.info(s);
         String out = StringUtils.trimQuotesFromString(s);
 
-        logger.info(out.toString());
+        LOGGER.info(out.toString());
 
     }
 

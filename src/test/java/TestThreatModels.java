@@ -9,7 +9,7 @@ import org.snt.cnetwork.core.OperandKind;
 
 public class TestThreatModels {
 
-    final static Logger logger = LoggerFactory.getLogger(TestThreatModels.class);
+    final static Logger LOGGER = LoggerFactory.getLogger(TestThreatModels.class);
 
 
     private static String xmlInjection = ".*(\\<((! *- *-)?|( *- *-)?\\>)|\\< *CDATA\\[\\[.*\\]\\] *\\>).*";
@@ -22,7 +22,7 @@ public class TestThreatModels {
         try {
             cn = tf.getCNforVulnerability(kind);
             assert(cn != null);
-            logger.info(cn.toDot());
+            LOGGER.info(cn.toDot());
 
         } catch (UnknownException e) {
             e.printStackTrace();
@@ -37,7 +37,7 @@ public class TestThreatModels {
 
         ConstraintNetwork cn = getCNFor(OperandKind.SQLISTR);
 
-        logger.info(cn.toDot());
+        LOGGER.info(cn.toDot());
         assert(getCNFor(OperandKind.SQLISTR) != null);
         assert(getCNFor(OperandKind.XPATHNUM) != null);
         assert(getCNFor(OperandKind.XPATHSTR) != null);
@@ -50,7 +50,7 @@ public class TestThreatModels {
     public void test() {
         ConstraintNetwork cn = getCNFor(OperandKind.XMLI);
 
-        logger.info(cn.toDot());
+        LOGGER.info(cn.toDot());
     }
 
 

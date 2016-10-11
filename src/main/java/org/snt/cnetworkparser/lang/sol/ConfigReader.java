@@ -10,7 +10,7 @@ import java.util.Set;
 
 public class ConfigReader {
 
-    final static Logger logger = LoggerFactory.getLogger(ConfigReader.class);
+    final static Logger LOGGER = LoggerFactory.getLogger(ConfigReader.class);
 
     private HashMap<String, Operation> opLookup = new HashMap<String, Operation>();
     private ConfigReader inst;
@@ -24,8 +24,8 @@ public class ConfigReader {
     public void addVariable(String type, String label){
         Operand op = null;
 
-        //logger.info("type " + type);
-        //logger.info("label " + label);
+        //LOGGER.info("type " + type);
+        //LOGGER.info("label " + label);
 
         if(type.equals("string")) {
             op = new Operand(label, OperandKind.STRVAR);

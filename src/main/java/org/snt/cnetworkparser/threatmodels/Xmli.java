@@ -14,7 +14,7 @@ public class Xmli extends ThreatModel {
 
 
 
-    final static Logger logger = LoggerFactory.getLogger(Xmli.class);
+    final static Logger LOGGER = LoggerFactory.getLogger(Xmli.class);
 
     public Xmli() {
         super();

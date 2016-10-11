@@ -9,7 +9,7 @@ import java.util.Set;
 
 public class StringUtils {
 
-    final static Logger logger = LoggerFactory.getLogger(StringUtils.class);
+    final static Logger LOGGER = LoggerFactory.getLogger(StringUtils.class);
 
     private static Character[] arr0 = new Character[]{'\"'};
     private static Set<Character> special0 = new HashSet<Character>(Arrays.asList(arr0));

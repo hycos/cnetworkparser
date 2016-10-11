@@ -19,7 +19,7 @@ public class Xss extends ThreatModel {
     private static String xss = "(" + script + "|" + img + ")";
 
 
-    final static Logger logger = LoggerFactory.getLogger(Xss.class);
+    final static Logger LOGGER = LoggerFactory.getLogger(Xss.class);
 
     public Xss() {
         super();

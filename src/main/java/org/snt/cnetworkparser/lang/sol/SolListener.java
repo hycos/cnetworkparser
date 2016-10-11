@@ -20,7 +20,7 @@ import org.snt.cnetwork.utils.AutomatonUtils;
 
 public class SolListener extends DefaultListener implements CnetworkProvider {
 
-    final static Logger logger = LoggerFactory.getLogger(SolListener.class);
+    final static Logger LOGGER = LoggerFactory.getLogger(SolListener.class);
 
 	private Map<String,Integer> rmap;
 
@@ -58,7 +58,7 @@ public class SolListener extends DefaultListener implements CnetworkProvider {
     @Override
 	public void enterEveryRule(ParserRuleContext ctx) {
 
-        //logger.info(">>> " + this.getRuleByKey(ctx.getRuleIndex()));
+        //LOGGER.info(">>> " + this.getRuleByKey(ctx.getRuleIndex()));
 		switch(this.getRuleByKey(ctx.getRuleIndex())) {
             case "s":
                 this.ctx.push(this.getRuleByKey(ctx.getRuleIndex()), ctx.getText());
@@ -99,9 +99,9 @@ public class SolListener extends DefaultListener implements CnetworkProvider {
 	public void exitEveryRule(ParserRuleContext ctx) {
 
 
-        //logger.info("CONTEX >>> " +  this.getRuleByKey(ctx.getRuleIndex()));
+        //LOGGER.info("CONTEX >>> " +  this.getRuleByKey(ctx.getRuleIndex()));
 
-        //logger.info("+RECENT " + this.ctx.getRecentCtxId());
+        //LOGGER.info("+RECENT " + this.ctx.getRecentCtxId());
 		switch(this.getRuleByKey(ctx.getRuleIndex())) {
             case "vardecl":
                 handleVardecl();
@@ -111,7 +111,7 @@ public class SolListener extends DefaultListener implements CnetworkProvider {
                 handleFuncdecl();
                 break;
             case "videntifier":
-                //logger.info("-- " + this.ctx.getRecentCtxId());
+                //LOGGER.info("-- " + this.ctx.getRecentCtxId());
                 if(!this.ctx.getRecentCtxId().equals("vardecl") &&
                         !this.ctx.getRecentCtxId().equals("funcdecl") &&
                         !this.ctx.getRecentCtxId().equals("link")) {
@@ -119,15 +119,15 @@ public class SolListener extends DefaultListener implements CnetworkProvider {
                 }
                 break;
             case "string":
-                //logger.info( "SSSS " + this.ctx.getRecentCxt().peek());
+                //LOGGER.info( "SSSS " + this.ctx.getRecentCxt().peek());
                 handleString(this.ctx.getRecentCxt().pop().value);
                 break;
             case "number":
-                //logger.info(" NNNN " + this.ctx.getRecentCxt().peek());
+                //LOGGER.info(" NNNN " + this.ctx.getRecentCxt().peek());
                 handleNumber(this.ctx.getRecentCxt().pop().value);
                 break;
             case "boollit":
-                //logger.info(" BBBB " + this.ctx.getRecentCxt().peek());
+                //LOGGER.info(" BBBB " + this.ctx.getRecentCxt().peek());
                 handleBoollit(this.ctx.getRecentCxt().pop().value);
                 break;
             case "funccall":
@@ -140,7 +140,7 @@ public class SolListener extends DefaultListener implements CnetworkProvider {
                 Operation constraint = handleConstraint();
 
 
-                //logger.info("OPNODE " + constraint.getLabel());
+                //LOGGER.info("OPNODE " + constraint.getLabel());
                 this.ctx.leaveOldCtx();
                 break;
             case "assignment":
@@ -153,12 +153,12 @@ public class SolListener extends DefaultListener implements CnetworkProvider {
                 break;
 		}
 
-        //logger.info("CONTEXT  " + this.ctx.size());
+        //LOGGER.info("CONTEXT  " + this.ctx.size());
 
 	}
 
     private void handleVidentifer(String name) {
-        //logger.info("get " + name);
+        //LOGGER.info("get " + name);
         Operand op  = this.configReader.getOperandByLabel(name);
         assert(op != null);
         this.ctx.push(op);
@@ -173,11 +173,11 @@ public class SolListener extends DefaultListener implements CnetworkProvider {
 
         ConstraintNetwork cn = this.configReader.getCnetwork();
 
-        //logger.info("Tmodel " + rpoint);
-        //logger.info("Label " + label);
+        //LOGGER.info("Tmodel " + rpoint);
+        //LOGGER.info("Label " + label);
 
         if((n = cn.getNodeByLabel(label.value)) == null) {
-            logger.error("Parser Error: cannot link " + label.value + " to a threat model");
+            LOGGER.error("Parser Error: cannot link " + label.value + " to a threat model");
             System.exit(-1);
         }
 
@@ -219,7 +219,7 @@ public class SolListener extends DefaultListener implements CnetworkProvider {
         RuleScope cctx = this.ctx.getRecentCxt();
         StringPair id = cctx.pop(); // videntifier
         StringPair type = cctx.pop(); // vatype
-        //logger.info("ADD VAR " + id +  " " + type);
+        //LOGGER.info("ADD VAR " + id +  " " + type);
         this.configReader.addVariable(type.value, id.value);
     }
 
@@ -230,20 +230,20 @@ public class SolListener extends DefaultListener implements CnetworkProvider {
         boolean rexp = false;
 
         String nname = StringUtils.trimQuotesFromString(name);
-        //logger.info("NNAME 1 " + nname);
+        //LOGGER.info("NNAME 1 " + nname);
         nname = nname.replaceAll("\\\\\"","\\\"");
-        //logger.info("NNAME 2 " + nname);
+        //LOGGER.info("NNAME 2 " + nname);
         nname = StringUtils.trimQuotesFromString(nname);
-        //logger.info("NNAME 3 " + nname);
+        //LOGGER.info("NNAME 3 " + nname);
 
-        //logger.info("FCTX " + fctx);
+        //LOGGER.info("FCTX " + fctx);
         if(fctx.equals("tolit")) {
             this.ctx.getRecentCxt().pop();
             nname = AutomatonUtils.escapeSpecialCharacters(nname);
         }
 
-        //logger.info("NAME  " + name);
-        //logger.info("NNAME  " + nname);
+        //LOGGER.info("NAME  " + name);
+        //LOGGER.info("NNAME  " + nname);
         Operand string = this.configReader.getOperandByLabel(name);
 
 
@@ -265,7 +265,7 @@ public class SolListener extends DefaultListener implements CnetworkProvider {
     }
 
     private void handleNumber(String name) {
-        //logger.info("NUMBER " + name);
+        //LOGGER.info("NUMBER " + name);
 
         Operand number = this.configReader.getOperandByLabel(name);
         if (number == null) {
@@ -277,13 +277,13 @@ public class SolListener extends DefaultListener implements CnetworkProvider {
 
     private void handleBoollit(String name) {
 
-        //logger.info("BOOL " + name);
+        //LOGGER.info("BOOL " + name);
 
         Operand boollit = this.configReader.getOperandByLabel(name);
         if (boollit == null) {
             boollit = new Operand(name, OperandKind.BOOLLIT);
 
-            //logger.info("ADD NODE  " + boollit.toString());
+            //LOGGER.info("ADD NODE  " + boollit.toString());
             this.configReader.addNode(boollit);
         }
         this.ctx.push(boollit);
@@ -327,32 +327,32 @@ public class SolListener extends DefaultListener implements CnetworkProvider {
 
         String sctx = this.ctx.getRecentCxt().getBackref().getName();
 
-        //logger.info("CALLING CTX " + sctx);
+        //LOGGER.info("CALLING CTX " + sctx);
 
         StringPair op = this.ctx.pop(); //op
 
-        //logger.info("OP " + op);
+        //LOGGER.info("OP " + op);
 
         String type = op.key; // funccall
         String skind = op.value;
 
 
-        //logger.info("TYPE " + type);
-        //logger.info("Kind " + skind);
+        //LOGGER.info("TYPE " + type);
+        //LOGGER.info("Kind " + skind);
 
         String fcall = this.ctx.pop().value; //
 
         //String fcall = id;
 
-        //logger.info("FCALL " + fcall);
-        //logger.info("OP " + op);
+        //LOGGER.info("FCALL " + fcall);
+        //LOGGER.info("OP " + op);
 
 
-        //logger.info("PARAMS " + params.size());
+        //LOGGER.info("PARAMS " + params.size());
 
         OperationKind okind = OperationKind.KindFromString(skind);
 
-        //logger.info("OKIND " + okind);
+        //LOGGER.info("OKIND " + okind);
         Node newop = null;
 
         // infer the types for overloaded operators (==)
@@ -401,9 +401,9 @@ public class SolListener extends DefaultListener implements CnetworkProvider {
 
 
     private Operation handleConstraint() {
-        //logger.info("HANDLE " + this.ctx.getRecentCxt().getName());
+        //LOGGER.info("HANDLE " + this.ctx.getRecentCxt().getName());
         List<Node> nods = this.ctx.getNodesForCtx();
-        //logger.info("SS " + nods.size());
+        //LOGGER.info("SS " + nods.size());
         //assert(nods.size() == 2);
 
         if(nods.size() == 2) {
@@ -412,9 +412,9 @@ public class SolListener extends DefaultListener implements CnetworkProvider {
 
             boolean negate = (constraint.opKind == OperationKind.NEQUALS);
 
-            //logger.info("+++" + constraint.term0.getKind() + " " + constraint.term1.getKind());
-            //logger.info("KKK " + constraint.toString());
-            //logger.info("OPKIND " + constraint.opKind.getId());
+            //LOGGER.info("+++" + constraint.term0.getKind() + " " + constraint.term1.getKind());
+            //LOGGER.info("KKK " + constraint.toString());
+            //LOGGER.info("OPKIND " + constraint.opKind.getId());
             // type inference
             if(constraint.opKind == OperationKind.EQUALS || negate) {
                 if(constraint.isNumeric()) {

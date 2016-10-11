@@ -13,7 +13,7 @@ import org.snt.inmemantlr.tree.Ast;
 
 public class CVC4Listener extends DefaultTreeListener implements CnetworkProvider {
 
-    final static Logger logger = LoggerFactory.getLogger(CVC4Listener.class);
+    final static Logger LOGGER = LoggerFactory.getLogger(CVC4Listener.class);
 
     public static final SmtCnetworkBuilder.TransMap tm = new SmtCnetworkBuilder.TransMap() {{
         // for regular expressions

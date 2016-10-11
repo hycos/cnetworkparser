@@ -17,7 +17,7 @@ import java.nio.file.Paths;
 
 public class CnetworkParser {
 
-    final static Logger logger = LoggerFactory.getLogger(CnetworkParser.class);
+    final static Logger LOGGER = LoggerFactory.getLogger(CnetworkParser.class);
 
     private GenericParser gp = null;
     private ParserRuleContext ctx = null;

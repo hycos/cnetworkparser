@@ -50,7 +50,7 @@ public class S3Listener extends DefaultTreeListener implements CnetworkProvider 
         put(LanguageElements.NOT, "not", OperationKind.NOT.toString(), OperationKind.NOT);
     }};
 
-    final static Logger logger = LoggerFactory.getLogger(S3Listener.class);
+    final static Logger LOGGER = LoggerFactory.getLogger(S3Listener.class);
 
     public S3Listener() {
         super();

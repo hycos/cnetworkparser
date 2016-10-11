@@ -11,7 +11,7 @@ import java.util.Map;
 
 public class Ldapi extends ThreatModel {
 
-    final static Logger logger = LoggerFactory.getLogger(Ldapi.class);
+    final static Logger LOGGER = LoggerFactory.getLogger(Ldapi.class);
 
     private static String ldapBlacklist = "['\" /\\#\\<\\>,;\\+\\*\\)\\(\0\\|\\&]";
 

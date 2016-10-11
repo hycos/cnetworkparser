@@ -17,7 +17,7 @@ import java.util.Vector;
 public class SmtCnetworkBuilder extends AstProcessor<ConstraintNetwork, Node> {
 
 
-    final static Logger logger = LoggerFactory.getLogger(SmtCnetworkBuilder.class);
+    final static Logger LOGGER = LoggerFactory.getLogger(SmtCnetworkBuilder.class);
 
     // data struture that contains the mapping between language elements of
     // source language to Constraint network constructs
@@ -67,10 +67,10 @@ public class SmtCnetworkBuilder extends AstProcessor<ConstraintNetwork, Node> {
          */
         Set<Ast> regex = ast.getDominatingSubtrees(n -> n.getRule().equals("regexoperation"));
         for(Ast r : regex) {
-            //logger.info(r.toDot());
+            //LOGGER.info(r.toDot());
             SmtRegexBuilder regexbuilder = new SmtRegexBuilder(r,TRANSMAP);
             String sregex = regexbuilder.process();
-            //logger.info("REGEX " + sregex);
+            //LOGGER.info("REGEX " + sregex);
             // print changed tree
             Ast replacement = new Ast("rlit", sregex);
             ast.replaceSubtree(r, replacement);
@@ -87,7 +87,7 @@ public class SmtCnetworkBuilder extends AstProcessor<ConstraintNetwork, Node> {
             AstNode vartype = r.getRoot().getLastChild();
             OperandKind kind = OperandKind.UNKNOWN;
 
-            //logger.info("KIND " + kind.toString());
+            //LOGGER.info("KIND " + kind.toString());
             switch (vartype.getLabel()) {
                 case "String":
                     kind = OperandKind.STRVAR;
@@ -100,15 +100,15 @@ public class SmtCnetworkBuilder extends AstProcessor<ConstraintNetwork, Node> {
                     break;
             }
             Operand op = new Operand(varname.getLabel(), kind);
-            //logger.info("add op " + op + " " + kind);
+            //LOGGER.info("add op " + op + " " + kind);
             this.cn.addVertex(op);
             ast.removeSubtree(r);
         }
 
-        //logger.info(this.ast.toDot());
+        //LOGGER.info(this.ast.toDot());
         // process the remaining tree and build constraint network
         ConstraintNetwork cn = super.process();
-        //logger.info(debug());
+        //LOGGER.info(debug());
         return cn;
     }
 
@@ -120,7 +120,7 @@ public class SmtCnetworkBuilder extends AstProcessor<ConstraintNetwork, Node> {
     @Override
     protected void initialize() {
 
-        logger.info(ast.toDot());
+        LOGGER.info(ast.toDot());
         for(AstNode n : this.ast.getNodes()) {
             this.smap.put(n, null);
         }
@@ -129,7 +129,7 @@ public class SmtCnetworkBuilder extends AstProcessor<ConstraintNetwork, Node> {
     @Override
     protected void process(AstNode n) {
 
-        logger.info("ID " + n.getId() + " " + n.getRule() + " " + n.getLabel());
+        LOGGER.info("ID " + n.getId() + " " + n.getRule() + " " + n.getLabel());
         switch(n.getRule()) {
 
             case "booloperation":
@@ -137,7 +137,7 @@ public class SmtCnetworkBuilder extends AstProcessor<ConstraintNetwork, Node> {
             case "numoperation":
             case "binoperation":
 
-                logger.info("OP " + n.getId());
+                LOGGER.info("OP " + n.getId());
                 assert(n.hasChildren());
                 StringBuilder out = new StringBuilder();
 
@@ -146,19 +146,19 @@ public class SmtCnetworkBuilder extends AstProcessor<ConstraintNetwork, Node> {
 
                 List<Node> params = new Vector<Node>();
 
-                logger.info("LBL " + fchild.getLabel());
+                LOGGER.info("LBL " + fchild.getLabel());
 
                 NetworkEntity.NetworkEntityKind kind = TRANSMAP.getOperationKindByLabel(fchild.getLabel());
 
                 assert(kind != null);
                 assert((kind instanceof OperationKind));
 
-                logger.info("FHILD " + fchild.getLabel());
+                LOGGER.info("FHILD " + fchild.getLabel());
 
                 n.getChildren().stream().filter(c -> !c.equals(fchild)).forEach(
                         e ->  {
                             assert(this.smap.containsKey(e));
-                            logger.info("get " + e.getLabel());
+                            LOGGER.info("get " + e.getLabel());
                             assert(this.smap.get(e) != null);
                             params.add(this.smap.get(e));
                         }
@@ -174,10 +174,10 @@ public class SmtCnetworkBuilder extends AstProcessor<ConstraintNetwork, Node> {
                         no += p.getLabel();
                     }
                     op = this.cn.addNode(new Operand(no,OperandKind.NUMLIT));
-                    logger.info("add transformed node " + op.getLabel());
+                    LOGGER.info("add transformed node " + op.getLabel());
                 } else {
                     op = this.cn.addOperation((OperationKind)kind, params);
-                    logger.info("add Operation " + op.getLabel());
+                    LOGGER.info("add Operation " + op.getLabel());
                 }
 
                 this.smap.put(n,op);
@@ -192,7 +192,7 @@ public class SmtCnetworkBuilder extends AstProcessor<ConstraintNetwork, Node> {
                 this.smap.put(n, v);
                 break;
             case "rlit":
-                //logger.info("rlit " + n.getLabel());
+                //LOGGER.info("rlit " + n.getLabel());
                 Node r = this.cn.addNode(new Operand(n.getLabel(),OperandKind.STRREXP));
                 this.smap.put(n, r);
                 break;
@@ -203,7 +203,7 @@ public class SmtCnetworkBuilder extends AstProcessor<ConstraintNetwork, Node> {
                 this.smap.put(n, cn.addNode(new Operand(StringUtils.escapeSpecialCharacters(lbl),OperandKind.STRLIT)));
                 break;
             case "number":
-                logger.info("nunber "+ n.getLabel());
+                LOGGER.info("nunber "+ n.getLabel());
                 Node nlit = this.cn.addNode(new Operand(n.getLabel(),OperandKind.NUMLIT));
                 this.smap.put(n, nlit);
                 break;

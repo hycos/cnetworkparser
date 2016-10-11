@@ -9,7 +9,7 @@ import java.util.Map;
 public class Sqli extends ThreatModel {
 
 
-    final static Logger logger = LoggerFactory.getLogger(Sqli.class);
+    final static Logger LOGGER = LoggerFactory.getLogger(Sqli.class);
 
     final static String cdomain = "[\\x00-\\x1F\\x80-\\x9F]";
     //final static String cdomain = "[a-z]";

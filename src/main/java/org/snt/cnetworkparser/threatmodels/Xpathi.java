@@ -9,7 +9,7 @@ import java.util.Map;
 public class Xpathi extends ThreatModel {
 
 
-    final static Logger logger = LoggerFactory.getLogger(Xpathi.class);
+    final static Logger LOGGER = LoggerFactory.getLogger(Xpathi.class);
 
     public Xpathi() {
         super();

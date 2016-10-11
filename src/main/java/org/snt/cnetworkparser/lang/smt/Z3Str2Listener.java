@@ -55,7 +55,7 @@ public class Z3Str2Listener extends DefaultTreeListener implements CnetworkProvi
         put(LanguageElements.DIV, "div", OperationKind.DIV.toString(), OperationKind.DIV);
     }};
 
-    final static Logger logger = LoggerFactory.getLogger(Z3Str2Listener.class);
+    final static Logger LOGGER = LoggerFactory.getLogger(Z3Str2Listener.class);
 
     public Z3Str2Listener() {
         super();
