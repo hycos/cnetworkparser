@@ -14,7 +14,10 @@ public class StringUtils {
     private static Character[] arr0 = new Character[]{'\"'};
     private static Set<Character> special0 = new HashSet<Character>(Arrays.asList(arr0));
 
-    private static Character[] arr1 = new Character[]{'+', '{', '}', '(', ')', '[', ']', '&', '^', '-', '?', '*', '\"', '$', '<', '>', '.', '|', '#'};
+    private static Character[] arr1 = new Character[]{'+', '{', '}', '(', ')',
+            '[', ']', '&', '^', '-', '?', '*', '\"',
+            '$', '<', '>', '.', '|', '#' , '~' , '@', '\\'};
+
     private static Set<Character> special1 = new HashSet<Character>(Arrays.asList(arr1));
 
 

@@ -55,11 +55,28 @@ public class TestParser {
     public void testZ3() {
 
         /**ConstraintNetwork cn  = new CnetworkParser(InputFormat.Z3STR2).
-                getCNfromFile(getPath("1.z3"));
+                getCNfromFile(getPath("2.z3"));
 
-        Assert.assertTrue(cn != null);**/
+        LOGGER.debug(cn.toDot());
+
+        String t = "\\";**/
+
+        //ConstraintNetwork cn  = new CnetworkParser(InputFormat.Z3STR2).
+        //        getCNfromFile(getPath("1.z3"));
+
+        //Assert.assertTrue(cn != null);
+        //ConstraintNetwork cn  = new CnetworkParser(InputFormat.Z3STR2).
+        //        getCNfromFile(getPath("beasties10.z3"));
+
+        //Assert.assertNotNull(cn);
+
+        //ConstraintNetwork cn  = new CnetworkParser(InputFormat.Z3STR2).
+        //        getCNfromFile(getPath("htmlCleaner11.z3"));
+
         ConstraintNetwork cn  = new CnetworkParser(InputFormat.Z3STR2).
-                getCNfromFile(getPath("beasties10.z3"));
+                getCNfromFile(getPath("mathParser1.z3"));
+
+        //Assert.assertNotNull(cn);
 
 
     }

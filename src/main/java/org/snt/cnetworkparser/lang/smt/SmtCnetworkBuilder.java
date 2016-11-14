@@ -130,6 +130,7 @@ public class SmtCnetworkBuilder extends AstProcessor<ConstraintNetwork, Node> {
     protected void process(AstNode n) {
 
         LOGGER.info("ID " + n.getId() + " " + n.getRule() + " " + n.getLabel());
+
         switch(n.getRule()) {
 
             case "booloperation":
