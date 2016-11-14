@@ -32,6 +32,7 @@ public class CVC4Listener extends DefaultTreeListener implements CnetworkProvide
         put(LanguageElements.PREFIXOF, "str.prefixof", OperationKind.STARTSWITH.getValue(), OperationKind.STARTSWITH);
         put(LanguageElements.SUFFIXOF, "str.suffixof", OperationKind.ENDSWITH.getValue(), OperationKind.ENDSWITH);
         put(LanguageElements.SCONCAT, "str.++", OperationKind.CONCAT.getValue(), OperationKind.CONCAT);
+        put(LanguageElements.SUBSTRNG, "str.substr", OperationKind.SUBSTR.getValue(), OperationKind.SUBSTR);
         // others
         put(LanguageElements.NEQ, "!=", OperationKind.NEQUALS.toString(), OperationKind.NEQUALS);
         put(LanguageElements.EQ, "=", OperationKind.EQUALS.toString(), OperationKind.EQUALS);

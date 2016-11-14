@@ -54,10 +54,13 @@ public class TestParser {
     @Test
     public void testZ3() {
 
-        ConstraintNetwork cn  = new CnetworkParser(InputFormat.Z3STR2).
+        /**ConstraintNetwork cn  = new CnetworkParser(InputFormat.Z3STR2).
                 getCNfromFile(getPath("1.z3"));
 
-        Assert.assertTrue(cn != null);
+        Assert.assertTrue(cn != null);**/
+        ConstraintNetwork cn  = new CnetworkParser(InputFormat.Z3STR2).
+                getCNfromFile(getPath("beasties10.z3"));
+
 
     }
 

@@ -46,7 +46,7 @@ boolop: '=' | '<' | '>' | '<=' | '>=' | '!=' | 'not' | 'and' | 'or' | 'ite' | 'R
 
 numop: '-' | '+' | 'div';
 
-strop: 'SubString' | 'Concat' | 'IndexOf';
+strop: 'Substring' | 'Concat' | 'IndexOf';
 
 regexop: 'RegexStar' | 'RegexUnion' | 'RegexCharRange' | 'Str2Reg' | 'RegexConcat';
 
