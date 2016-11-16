@@ -2,7 +2,7 @@ grammar Z3Str2;
 
 
 Number: '-'? ([0-9]|[1-9][0-9]+);
-Varname: [a-zA-Z]+[a-zA-Z_A0-9]+;
+Varname: [a-zA-Z][a-zA-Z_A0-9]*;
 ParenthesisOpen: '(';
 ParenthesisClose: ')';
 
@@ -56,7 +56,7 @@ boolop: '=' | '<' | '>' | '<=' | '>=' | '!=' | 'not' | 'and' | 'or' | 'ite' | 'R
 
 numop: '-' | '+' | 'div';
 
-strop: 'Substring' | 'Concat' | 'IndexOf';
+strop: 'Substring' | 'Concat' | 'Indexof';
 
 regexop: 'RegexStar' | 'RegexUnion' | 'RegexCharRange' | 'Str2Reg' | 'RegexConcat';
 

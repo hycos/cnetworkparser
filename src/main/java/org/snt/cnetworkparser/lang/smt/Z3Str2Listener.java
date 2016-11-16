@@ -26,8 +26,10 @@ public class Z3Str2Listener extends DefaultTreeListener implements CnetworkProvi
         // for string operations
         put(LanguageElements.LEN, "Length", OperationKind.LEN.getValue(), OperationKind.LEN);
         put(LanguageElements.CONTAINS, "Contains", OperationKind.CONTAINS.getValue(), OperationKind.CONTAINS);
-        put(LanguageElements.INDEXOF, "IndexOf", OperationKind.INDEXOF.getValue(), OperationKind.INDEXOF);
-        put(LanguageElements.INDEXOF, "IndexOf2", OperationKind.INDEXOF.getValue(), OperationKind.INDEXOF);
+        put(LanguageElements.INDEXOF, "Indexof", OperationKind.INDEXOF
+                .getValue(), OperationKind.INDEXOF);
+        put(LanguageElements.INDEXOF, "Indexof2", OperationKind.INDEXOF
+                .getValue(), OperationKind.INDEXOF);
         put(LanguageElements.INDEXOF, "LastIndexOf", OperationKind.INDEXOF.getValue(), OperationKind.INDEXOF);
         put(LanguageElements.PREFIXOF, "StartsWith", OperationKind.STARTSWITH.getValue(), OperationKind.STARTSWITH);
         put(LanguageElements.SUFFIXOF, "EndsWith", OperationKind.ENDSWITH.getValue(), OperationKind.ENDSWITH);

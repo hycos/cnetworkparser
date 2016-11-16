@@ -2,7 +2,7 @@ grammar S3;
 
 
 Number: '-'?([0-9]|[1-9][0-9]+);
-Varname: [a-zA-Z]+[_a-zA-ZA0-9]+;
+Varname: [a-zA-Z][a-zA-Z_A0-9]*;
 String : StringLiteral;
 
 fragment

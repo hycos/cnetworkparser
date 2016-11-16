@@ -3,7 +3,7 @@ grammar CVC4;
 //http://cvc4.cs.nyu.edu/wiki/Strings
 
 Number: '-'?([0-9]|[1-9][0-9]+);
-Varname: [a-zA-Z]+[a-z_A-ZA0-9]+;
+Varname: [a-zA-Z][a-zA-Z_A0-9]*;
 String : StringLiteral;
 
 fragment

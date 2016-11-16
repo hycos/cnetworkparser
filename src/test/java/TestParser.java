@@ -76,10 +76,14 @@ public class TestParser {
         //ConstraintNetwork cn  = new CnetworkParser(InputFormat.Z3STR2).
         //        getCNfromFile(getPath("htmlCleaner11.z3"));
 
-        ConstraintNetwork cn  = new CnetworkParser(InputFormat.Z3STR2).
-                getCNfromFile(getPath("mathParser1.z3"));
+        //ConstraintNetwork cn  = new CnetworkParser(InputFormat.Z3STR2).
+        //       getCNfromFile(getPath("mathParser1.z3"));
 
         //Assert.assertNotNull(cn);
+
+        ConstraintNetwork cn  = new CnetworkParser(InputFormat.Z3STR2).
+                getCNfromFile(getPath("t01.z3"));
+        LOGGER.debug(cn.toDot());
 
 
     }
