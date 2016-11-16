@@ -3,65 +3,56 @@ package org.snt.cnetworkparser.lang.sol;
 import org.snt.cnetwork.core.Node;
 import org.snt.cnetwork.core.OperationKind;
 
+import java.util.LinkedHashSet;
+import java.util.Set;
+
 public class BasicConstraint {
-    protected Node term0;
+    protected Set<Node> nodes = new LinkedHashSet<Node>();
     protected OperationKind opKind;
     protected Node term1;
 
     public BasicConstraint(Node term0, OperationKind kind, Node term1) {
-        this.term0 = term0;
-        this.opKind = kind;
-        this.term1 = term1;
+        opKind = kind;
+        nodes.add(term0);
+        nodes.add(term1);
     }
     public BasicConstraint() {this(null,null,null);}
 
     public void addNode(Node term) {
-        if(this.term1 == null) {
-            this.term1 = term;
-        } else {
-            this.term0 = term;
-        }
+        nodes.add(term);
     }
 
     public void setOpKind(OperationKind kind) {
         this.opKind = kind;
     }
 
+    @Override
     public String toString() {
         StringBuilder sb = new StringBuilder();
-        sb.append(term0.toString() + "\n");
         sb.append("KIND " + opKind.toString() + "\n");
-        sb.append(term1.toString());
+        nodes.forEach(
+                v -> sb.append("n: " + v.getLabel())
+        );
         return sb.toString();
     }
 
-    public void revert() {
-        Node tmp = term0;
-        term0 = term1;
-        term1 = tmp;
-    }
     public void clear() {
-        term0 = null;
-        term1 = null;
         opKind = null;
+        nodes.clear();;
     }
 
     public boolean isBoolean() {
-        if(this.term0 == null || this.term1 == null)
-            return false;
-        return (this.term0.isBoolean() && this.term1.isBoolean());
+        return this.nodes.stream().filter( v -> v.isBoolean()).count() ==
+                nodes.size();
     }
 
     public boolean isString() {
-        if(this.term0 == null || this.term1 == null)
-            return false;
-        return (this.term0.isString() && this.term1.isString());
+        return this.nodes.stream().filter( v -> v.isString()).count() ==
+                nodes.size();
     }
 
     public boolean isNumeric() {
-        if(this.term0 == null || this.term1 == null)
-            return false;
-        return (this.term0.isNumeric() && this.term1.isNumeric());
+        return this.nodes.stream().filter( v -> v.isNumeric()).count() ==
+                nodes.size();
     }
-
 }

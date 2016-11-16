@@ -1,7 +1,5 @@
 package org.snt.cnetworkparser.lang.sol;
 
-import java.util.*;
-
 import dk.brics.automaton.Automaton;
 import org.antlr.v4.runtime.ParserRuleContext;
 import org.antlr.v4.runtime.tree.ErrorNode;
@@ -9,14 +7,19 @@ import org.antlr.v4.runtime.tree.TerminalNode;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.snt.cnetwork.core.*;
-import org.snt.cnetworkparser.core.CnetworkProvider;
-import org.snt.cnetworkparser.threatmodels.ThreatModelFactory;
 import org.snt.cnetwork.core.range.BooleanRange;
 import org.snt.cnetwork.core.range.NumRange;
-import org.snt.inmemantlr.DefaultListener;
-import org.snt.cnetworkparser.exception.UnknownException;
-import org.snt.cnetworkparser.utils.StringUtils;
 import org.snt.cnetwork.utils.AutomatonUtils;
+import org.snt.cnetworkparser.core.CnetworkProvider;
+import org.snt.cnetworkparser.exception.UnknownException;
+import org.snt.cnetworkparser.threatmodels.ThreatModelFactory;
+import org.snt.cnetworkparser.utils.StringUtils;
+import org.snt.inmemantlr.DefaultListener;
+
+import java.util.Collection;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
 
 public class SolListener extends DefaultListener implements CnetworkProvider {
 
@@ -58,7 +61,8 @@ public class SolListener extends DefaultListener implements CnetworkProvider {
     @Override
 	public void enterEveryRule(ParserRuleContext ctx) {
 
-        //LOGGER.info(">>> " + this.getRuleByKey(ctx.getRuleIndex()));
+        LOGGER.info(">>> " + this.getRuleByKey(ctx.getRuleIndex()) + " " +
+                ctx.getText());
 		switch(this.getRuleByKey(ctx.getRuleIndex())) {
             case "s":
                 this.ctx.push(this.getRuleByKey(ctx.getRuleIndex()), ctx.getText());
@@ -119,15 +123,12 @@ public class SolListener extends DefaultListener implements CnetworkProvider {
                 }
                 break;
             case "string":
-                //LOGGER.info( "SSSS " + this.ctx.getRecentCxt().peek());
                 handleString(this.ctx.getRecentCxt().pop().value);
                 break;
             case "number":
-                //LOGGER.info(" NNNN " + this.ctx.getRecentCxt().peek());
                 handleNumber(this.ctx.getRecentCxt().pop().value);
                 break;
             case "boollit":
-                //LOGGER.info(" BBBB " + this.ctx.getRecentCxt().peek());
                 handleBoollit(this.ctx.getRecentCxt().pop().value);
                 break;
             case "funccall":
@@ -137,10 +138,7 @@ public class SolListener extends DefaultListener implements CnetworkProvider {
             case "constraint":
                 OperationKind okind = OperationKind.KindFromString(this.ctx.pop().value);
                 constraint.setOpKind(okind);
-                Operation constraint = handleConstraint();
-
-
-                //LOGGER.info("OPNODE " + constraint.getLabel());
+                handleConstraint();
                 this.ctx.leaveOldCtx();
                 break;
             case "assignment":
@@ -152,9 +150,6 @@ public class SolListener extends DefaultListener implements CnetworkProvider {
                 this.ctx.leaveOldCtx();
                 break;
 		}
-
-        //LOGGER.info("CONTEXT  " + this.ctx.size());
-
 	}
 
     private void handleVidentifer(String name) {
@@ -182,12 +177,6 @@ public class SolListener extends DefaultListener implements CnetworkProvider {
         }
 
         assert(!n.isNumeric());
-
-        //Set<Edge> cons = cn.getAllConnectedEdges(n);
-        // hash value changed
-        //cn.removeNode(n);
-        //n.setKind(OperandKind.KindFromString(rpoint.value));
-        //cn.addNode(n);
 
         OperandKind tmodeltype = OperandKind.KindFromString(rpoint.value);
 
@@ -379,9 +368,6 @@ public class SolListener extends DefaultListener implements CnetworkProvider {
             newop = this.configReader.getCnetwork().addOperation(okind,params);
         }
 
-
-
-
         // safe node (context can be either term or funccall
         this.ctx.getRecentCxt().getBackref().addNode(newop);
     }
@@ -390,8 +376,8 @@ public class SolListener extends DefaultListener implements CnetworkProvider {
     private Operation handleAssignment() {
         List<Node> nods = this.ctx.getNodesForCtx();
         assert(nods.size() == 2);
-        constraint.addNode(nods.get(1));
         constraint.addNode(nods.get(0));
+        constraint.addNode(nods.get(1));
         assert(constraint.term1.isLiteral());
         ConstraintNetwork cn = this.configReader.getCnetwork();
         Operation op = cn.addOperation(OperationKind.ASSIGNMENT, nods.get(0), nods.get(1));
@@ -411,9 +397,9 @@ public class SolListener extends DefaultListener implements CnetworkProvider {
             constraint.addNode(nods.get(1));
 
             boolean negate = (constraint.opKind == OperationKind.NEQUALS);
+            //LOGGER.debug("+++" + constraint.term0.getKind() + " " + constraint
+            //        .term1.getKind());
 
-            //LOGGER.info("+++" + constraint.term0.getKind() + " " + constraint.term1.getKind());
-            //LOGGER.info("KKK " + constraint.toString());
             //LOGGER.info("OPKIND " + constraint.opKind.getId());
             // type inference
             if(constraint.opKind == OperationKind.EQUALS || negate) {
@@ -427,21 +413,28 @@ public class SolListener extends DefaultListener implements CnetworkProvider {
                     assert(false);
                 }
             }
-            assert(constraint.opKind != null);
-            Operation c = this.configReader.addConstraint(constraint);
-            if(negate)
-                c.setRange(new BooleanRange(BooleanRange.BooleanValue.FALSE));
-            return c;
-        } else if (nods.size() == 1) {
+            assert constraint.opKind != null;
 
-            switch (constraint.opKind) {
-                case EMTPY: return this.configReader.getCnetwork().addConstraint(OperationKind.EMTPY, nods.get(0));
+            Operation c = this.configReader.addConstraint(constraint);
+
+            if(negate) {
+                c.setRange(new BooleanRange(BooleanRange.BooleanValue.FALSE));
             }
 
-        }
-        assert(false);
-        return null;
+            return c;
 
+        } else if (nods.size() == 1) {
+            switch (constraint.opKind) {
+                case EMTPY: return this.configReader.getCnetwork().addConstraint(OperationKind.EMTPY, nods.get(0));
+                case NOT: return this.configReader.getCnetwork()
+                        .addConstraint(OperationKind.NOT, nods.get(0));
+            }
+        }
+
+        LOGGER.info("KKK 1" + constraint.toString());
+
+        assert false;
+        return null;
     }
 
 }

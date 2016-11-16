@@ -21,10 +21,13 @@ public class TestParser {
     @Test
     public void testSol() {
 
-        ConstraintNetwork cn  = new CnetworkParser(InputFormat.SOL).
-                getCNfromFile(getPath("1.sol"));
+        //ConstraintNetwork cn  = new CnetworkParser(InputFormat.SOL).
+        //        getCNfromFile(getPath("1.sol"));
 
-        Assert.assertTrue(cn != null);
+        //Assert.assertTrue(cn != null);
+
+        ConstraintNetwork cn  = new CnetworkParser(InputFormat.SOL).
+                getCNfromFile(getPath("2.sol"));
 
         LOGGER.info(cn.toDot());
 

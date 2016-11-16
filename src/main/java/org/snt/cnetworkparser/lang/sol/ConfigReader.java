@@ -98,7 +98,8 @@ public class ConfigReader {
     }
 
     public Operation addConstraint(BasicConstraint con) {
-        return this.cnetwork.addConstraint(con.opKind, con.term0, con.term1);
+        return this.cnetwork.addConstraint(con.opKind, con.nodes.toArray(new
+                Node [con.nodes.size()]));
     }
 
 

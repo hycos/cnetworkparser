@@ -4,7 +4,19 @@ grammar CVC4;
 
 Number: '-'?([0-9]|[1-9][0-9]+);
 Varname: [a-zA-Z]+[a-z_A-ZA0-9]+;
-String : '"' (~('"') | '\\\"')* '"' | '\'' (~('\'') | '\\\'')* '\'' ;
+String : StringLiteral;
+
+fragment
+StringLiteral:	'"' StringCharacters? '"';
+
+fragment
+StringCharacters: StringCharacter+;
+
+fragment
+StringCharacter: ~["\\] | EscapeSequence;
+
+fragment
+EscapeSequence:	'\\' [btnfr"'\\];
 
 
 
