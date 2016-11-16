@@ -50,6 +50,8 @@ public class Z3Str2Listener extends DefaultTreeListener implements CnetworkProvi
         put(LanguageElements.AND, "and", OperationKind.AND.toString(), OperationKind.AND);
         put(LanguageElements.OR, "or", OperationKind.OR.toString(), OperationKind.OR);
         put(LanguageElements.NOT, "not", OperationKind.NOT.toString(), OperationKind.NOT);
+        put(LanguageElements.IMPLIES, "implies", OperationKind.IMPLIES.toString(),
+                OperationKind.IMPLIES);
         // if-then-else
         put(LanguageElements.ITE, "ite", OperationKind.ITE.toString(), OperationKind.ITE);
         // division

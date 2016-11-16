@@ -36,7 +36,8 @@ public enum LanguageElements {
     // boolop
     AND("AND"),
     OR("OR"),
-    DIV("DIV");
+    DIV("DIV"),
+    IMPLIES("IMPLIES");
 
     private String name;
 
