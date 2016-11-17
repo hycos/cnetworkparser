@@ -81,8 +81,16 @@ public class TestParser {
 
         //Assert.assertNotNull(cn);
 
+        //ConstraintNetwork cn  = new CnetworkParser(InputFormat.Z3STR2).
+        //        getCNfromFile(getPath("t01.z3"));
+
+        //ConstraintNetwork cn  = new CnetworkParser(InputFormat.Z3STR2).
+        //        getCNfromFile(getPath("t02.z3"));
+
         ConstraintNetwork cn  = new CnetworkParser(InputFormat.Z3STR2).
-                getCNfromFile(getPath("t01.z3"));
+                getCNfromFile(getPath("pisa-003.z3"));
+
+
         LOGGER.debug(cn.toDot());
 
 

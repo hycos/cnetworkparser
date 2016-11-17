@@ -214,6 +214,7 @@ public class SmtCnetworkBuilder extends AstProcessor<ConstraintNetwork, Node> {
                 simpleProp(n);
                 break;
             case "assertion":
+
                 Node c = this.smap.get(n.getFirstChild());
                 c.setRange(BooleanRange.TRUE);
 
@@ -223,6 +224,56 @@ public class SmtCnetworkBuilder extends AstProcessor<ConstraintNetwork, Node> {
 
                 this.smap.put(n, constraint);
                 break;
+            case "copoperation":
+                NetworkEntity.NetworkEntityKind copkind = TRANSMAP
+                        .getOperationKindByLabel(n.getFirstChild().getLabel());
+
+                if(copkind == OperationKind.ITE) {
+
+                    assert n.getChildren().size() == 4;
+
+                    Node par1 = this.smap.get(n.getChild(1));
+                    Node par2 = this.smap.get(n.getChild(2));
+                    Node par3 = this.smap.get(n.getChild(3));
+
+                    assert (par1.isNumeric() && par2.isNumeric()) ||
+                            (par1.isString() && par2.isString()) ||
+                            (par1.isBoolean() && par2.isBoolean());
+
+                    assert par2.isBoolean();
+
+                    Operation parop = null;
+
+                    if (par1.isOperation())
+                        parop = (Operation) par1;
+                    else if (par2.isOperation())
+                        parop = (Operation) par2;
+
+                    Operation ite = cn.addOperation(OperationKind.ITE,
+                            par1, par2, par3);
+
+                    if (parop != null) {
+                        OperationReturnType ret = ((Operation) par1).getKind
+                                ().getReturnType();
+                        ite.getKind().setReturnType(ret);
+                        ite.init();
+                    } else {
+                        if (par1.isBoolean()) {
+                            ite.getKind().setReturnType(OperationReturnType
+                                    .BOOLEAN);
+                        } else if (par1.isString()) {
+                            ite.getKind().setReturnType(OperationReturnType
+                                    .STRING);
+                        } else if (par1.isNumeric()) {
+                            ite.getKind().setReturnType(OperationReturnType
+                                    .NUMERIC_N);
+                        }
+                    }
+
+                    this.smap.put(n,ite);
+                }
+
+
         }
     }
 
