@@ -177,6 +177,12 @@ public class SmtCnetworkBuilder extends AstProcessor<ConstraintNetwork, Node> {
                     op = this.cn.addNode(new Operand(no,OperandKind.NUMLIT));
                     LOGGER.info("add transformed node " + op.getLabel());
                 } else {
+                    // sometimes the indexof operator assumes a startin index
+                    // of 0 implicitly
+                    if(kind == OperationKind.INDEXOF && params.size() == 2) {
+                        params.add(new Operand("0", OperandKind.NUMLIT));
+                    }
+
                     op = this.cn.addOperation((OperationKind)kind, params);
                     LOGGER.info("add Operation " + op.getLabel());
                 }
