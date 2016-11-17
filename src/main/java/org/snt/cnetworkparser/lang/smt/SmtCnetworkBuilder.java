@@ -253,7 +253,7 @@ public class SmtCnetworkBuilder extends AstProcessor<ConstraintNetwork, Node> {
                             par1, par2, par3);
 
                     if (parop != null) {
-                        OperationReturnType ret = ((Operation) par1).getKind
+                        OperationReturnType ret = ((Operation) parop).getKind
                                 ().getReturnType();
                         ite.getKind().setReturnType(ret);
                         ite.init();
