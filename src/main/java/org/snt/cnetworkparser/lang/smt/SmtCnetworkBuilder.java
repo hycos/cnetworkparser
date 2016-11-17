@@ -220,15 +220,25 @@ public class SmtCnetworkBuilder extends AstProcessor<ConstraintNetwork, Node> {
                 simpleProp(n);
                 break;
             case "assertion":
-
                 Node c = this.smap.get(n.getFirstChild());
-                c.setRange(BooleanRange.TRUE);
+                // ite is a special case ... the return value remains
+                // parametrized
+                if(c.getKind() != OperationKind.ITE) {
+                    c.setRange(BooleanRange.TRUE);
 
-                assert((c instanceof Operation) || (c instanceof Operand));
-                Operand top = new Operand("true", OperandKind.BOOLLIT);
-                Node constraint = cn.addConstraint(OperationKind.BOOL_EQUALS, top, c);
+                    assert((c instanceof Operation) || (c instanceof Operand));
+                    Operand top = new Operand("true", OperandKind.BOOLLIT);
 
-                this.smap.put(n, constraint);
+                    // if then else is an exception the outcome of ITE is
+                    // determined by the predicate
+                    LOGGER.debug("ASSERTION " + c.getLabel());
+                    LOGGER.debug("RAN " + c.getRange().toString());
+
+                    Node constraint = cn.addConstraint(OperationKind.BOOL_EQUALS, top, c);
+                    this.smap.put(n, constraint);
+                } else {
+                    simpleProp(n);
+                }
                 break;
             case "copoperation":
                 NetworkEntity.NetworkEntityKind copkind = TRANSMAP
