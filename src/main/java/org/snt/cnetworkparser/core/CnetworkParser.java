@@ -4,11 +4,10 @@ import org.antlr.v4.runtime.ParserRuleContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.snt.cnetwork.core.ConstraintNetwork;
-import org.snt.inmemantlr.DefaultListener;
 import org.snt.inmemantlr.GenericParser;
 import org.snt.inmemantlr.exceptions.IllegalWorkflowException;
+import org.snt.inmemantlr.listener.DefaultListener;
 import org.snt.inmemantlr.utils.FileUtils;
-
 
 import java.io.IOException;
 import java.io.InputStream;

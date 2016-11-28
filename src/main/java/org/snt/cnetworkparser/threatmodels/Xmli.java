@@ -18,12 +18,12 @@ public class Xmli extends ThreatModel {
 
     public Xmli() {
         super();
-        tmodel.put(OperandKind.XMLI, this);
+        tmodel.put(NodeKind.XMLI, this);
     }
 
 
     @Override
-    public ConstraintNetwork delegate(OperandKind type) {
+    public ConstraintNetwork delegate(NodeKind type) {
         switch(type) {
             case XMLI:
                 return getXMLIThreatModel();
@@ -32,7 +32,7 @@ public class Xmli extends ThreatModel {
     }
 
     @Override
-    public Map<OperandKind, ThreatModel> getThreatModels() {
+    public Map<NodeKind, ThreatModel> getThreatModels() {
         return this.tmodel;
     }
 
@@ -41,42 +41,42 @@ public class Xmli extends ThreatModel {
 
         ConstraintNetwork cn = new ConstraintNetwork();
 
-        Node strvar = new Operand("sv1", OperandKind.STRVAR);
-        //Node op = new Operand(xmlInjection, OperandKind.STRREXP);
+        Node strvar = new Operand("sv1", NodeKind.STRVAR);
+        //Node op = new Operand(xmlInjection, NodeKind.STRREXP);
 
-        //Node matches1 = cn.addOperation(OperationKind.MATCHES, strvar, op);
+        //Node matches1 = cn.addOperation(NodeKind.MATCHES, strvar, op);
 
-        Node content = new Operand("content", OperandKind.STRVAR);
+        Node content = new Operand("content", NodeKind.STRVAR);
 
 
-        Node startag = new Operand("stag", OperandKind.STRVAR);
-        Node open1 = new Operand("\\<", OperandKind.STRLIT);
-        Node close1 = new Operand("\\>", OperandKind.STRLIT);
+        Node startag = new Operand("stag", NodeKind.STRVAR);
+        Node open1 = new Operand("\\<", NodeKind.STRLIT);
+        Node close1 = new Operand("\\>", NodeKind.STRLIT);
 
-        Node s1 = cn.addOperation(OperationKind.CONCAT, open1, startag);
-        Node s2 = cn.addOperation(OperationKind.CONCAT, s1, close1);
+        Node s1 = cn.addOperation(NodeKind.CONCAT, open1, startag);
+        Node s2 = cn.addOperation(NodeKind.CONCAT, s1, close1);
 
-        Node endtag = new Operand("etag", OperandKind.STRVAR);
-        Node open2 = new Operand("\\<\\/", OperandKind.STRLIT);
-        Node close2 = new Operand("\\>", OperandKind.STRLIT);
+        Node endtag = new Operand("etag", NodeKind.STRVAR);
+        Node open2 = new Operand("\\<\\/", NodeKind.STRLIT);
+        Node close2 = new Operand("\\>", NodeKind.STRLIT);
 
-        Node e1 = cn.addOperation(OperationKind.CONCAT, open2, endtag);
-        Node e2 = cn.addOperation(OperationKind.CONCAT, e1, close2);
+        Node e1 = cn.addOperation(NodeKind.CONCAT, open2, endtag);
+        Node e2 = cn.addOperation(NodeKind.CONCAT, e1, close2);
 
-        Node regex = new Operand("[a-zA-Z0-9]+", OperandKind.STRREXP);
+        Node regex = new Operand("[a-zA-Z0-9]+", NodeKind.STRREXP);
 
-        cn.addConstraint(OperationKind.STR_EQUALSIC, startag, endtag);
-        cn.addConstraint(OperationKind.MATCHES, startag, regex);
-        cn.addConstraint(OperationKind.MATCHES, endtag, regex);
+        cn.addConstraint(NodeKind.STR_EQUALSIC, startag, endtag);
+        cn.addConstraint(NodeKind.MATCHES, startag, regex);
+        cn.addConstraint(NodeKind.MATCHES, endtag, regex);
 
-        Node r1 = cn.addOperation(OperationKind.CONCAT, s2, content);
-        Node r2 = cn.addOperation(OperationKind.CONCAT, r1, e2);
+        Node r1 = cn.addOperation(NodeKind.CONCAT, s2, content);
+        Node r2 = cn.addOperation(NodeKind.CONCAT, r1, e2);
 
-        //Node matches2 = cn.addConstraint(OperationKind.MATCHES, strvar, con);
+        //Node matches2 = cn.addConstraint(NodeKind.MATCHES, strvar, con);
 
-        Node matches2 = cn.addConstraint(OperationKind.MATCHES, strvar, r2);
+        Node matches2 = cn.addConstraint(NodeKind.MATCHES, strvar, r2);
 
-        //cn.addConstraint(OperationKind.OR, matches1, matches2);
+        //cn.addConstraint(NodeKind.OR, matches1, matches2);
 
         cn.setStartNode(strvar);
 
@@ -84,7 +84,7 @@ public class Xmli extends ThreatModel {
 
         /**
         ConstraintNetwork cn = new ConstraintNetwork();
-        Node op = new Operand(xmlInjection, OperandKind.STRREXP);
+        Node op = new Operand(xmlInjection, NodeKind.STRREXP);
         cn.addVertex(op);
         cn.setStartNode(op);
         return cn;**/

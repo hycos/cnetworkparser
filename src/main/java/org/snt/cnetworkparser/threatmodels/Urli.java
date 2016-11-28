@@ -1,13 +1,8 @@
 package org.snt.cnetworkparser.threatmodels;
 
-import dk.brics.automaton.RegExp;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.snt.cnetwork.core.ConstraintNetwork;
-import org.snt.cnetwork.core.Node;
-import org.snt.cnetwork.core.Operand;
-import org.snt.cnetwork.core.OperandKind;
-import org.snt.cnetwork.utils.AutomatonUtils;
+import org.snt.cnetwork.core.*;
 
 import java.util.Map;
 
@@ -19,11 +14,11 @@ public class Urli extends ThreatModel {
 
     public Urli() {
         super();
-        tmodel.put(OperandKind.URLI, this);
+        tmodel.put(NodeKind.URLI, this);
     }
 
     @Override
-    public ConstraintNetwork delegate(OperandKind type) {
+    public ConstraintNetwork delegate(NodeKind type) {
         switch(type) {
             case URLI:
                 return getURLiThreatModel();
@@ -32,13 +27,13 @@ public class Urli extends ThreatModel {
     }
 
     @Override
-    public Map<OperandKind, ThreatModel> getThreatModels() {
+    public Map<NodeKind, ThreatModel> getThreatModels() {
         return this.tmodel;
     }
 
     private ConstraintNetwork getURLiThreatModel() {
         ConstraintNetwork cn = new ConstraintNetwork();
-        Node op = new Operand(urlBlacklist, OperandKind.STRREXP);
+        Node op = new Operand(urlBlacklist, NodeKind.STRREXP);
         cn.addVertex(op);
         cn.setStartNode(op);
         return cn;

@@ -4,7 +4,7 @@ import org.slf4j.LoggerFactory;
 import org.snt.cnetworkparser.exception.UnknownException;
 import org.snt.cnetworkparser.threatmodels.ThreatModelFactory;
 import org.snt.cnetwork.core.ConstraintNetwork;
-import org.snt.cnetwork.core.OperandKind;
+import org.snt.cnetwork.core.NodeKind;
 
 
 public class TestThreatModels {
@@ -15,7 +15,7 @@ public class TestThreatModels {
     private static String xmlInjection = ".*(\\<((! *- *-)?|( *- *-)?\\>)|\\< *CDATA\\[\\[.*\\]\\] *\\>).*";
 
 
-    public ConstraintNetwork getCNFor(OperandKind kind) {
+    public ConstraintNetwork getCNFor(NodeKind kind) {
         ThreatModelFactory tf = ThreatModelFactory.getInstance();
         ConstraintNetwork cn = null;
 
@@ -33,22 +33,22 @@ public class TestThreatModels {
 
     @Test
     public void testThreatModels() {
-        assert(getCNFor(OperandKind.SQLINUM) != null);
+        assert(getCNFor(NodeKind.SQLINUM) != null);
 
-        ConstraintNetwork cn = getCNFor(OperandKind.SQLISTR);
+        ConstraintNetwork cn = getCNFor(NodeKind.SQLISTR);
 
         LOGGER.info(cn.toDot());
-        assert(getCNFor(OperandKind.SQLISTR) != null);
-        assert(getCNFor(OperandKind.XPATHNUM) != null);
-        assert(getCNFor(OperandKind.XPATHSTR) != null);
-        assert(getCNFor(OperandKind.LDAPI) != null);
-        assert(getCNFor(OperandKind.XSS) != null);
-        assert(getCNFor(OperandKind.XMLI) != null);
+        assert(getCNFor(NodeKind.SQLISTR) != null);
+        assert(getCNFor(NodeKind.XPATHNUM) != null);
+        assert(getCNFor(NodeKind.XPATHSTR) != null);
+        assert(getCNFor(NodeKind.LDAPI) != null);
+        assert(getCNFor(NodeKind.XSS) != null);
+        assert(getCNFor(NodeKind.XMLI) != null);
     }
 
     @Test
     public void test() {
-        ConstraintNetwork cn = getCNFor(OperandKind.XMLI);
+        ConstraintNetwork cn = getCNFor(NodeKind.XMLI);
 
         LOGGER.info(cn.toDot());
     }

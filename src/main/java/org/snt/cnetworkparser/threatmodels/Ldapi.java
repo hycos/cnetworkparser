@@ -4,8 +4,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.snt.cnetwork.core.ConstraintNetwork;
 import org.snt.cnetwork.core.Node;
+import org.snt.cnetwork.core.NodeKind;
 import org.snt.cnetwork.core.Operand;
-import org.snt.cnetwork.core.OperandKind;
 
 import java.util.Map;
 
@@ -17,11 +17,11 @@ public class Ldapi extends ThreatModel {
 
     public Ldapi() {
         super();
-        tmodel.put(OperandKind.LDAPI, this);
+        tmodel.put(NodeKind.LDAPI, this);
     }
 
     @Override
-    public ConstraintNetwork delegate(OperandKind type) {
+    public ConstraintNetwork delegate(NodeKind type) {
         switch(type) {
             case LDAPI:
                 return getLDAPIThreatModel();
@@ -30,13 +30,13 @@ public class Ldapi extends ThreatModel {
     }
 
     @Override
-    public Map<OperandKind, ThreatModel> getThreatModels() {
+    public Map<NodeKind, ThreatModel> getThreatModels() {
         return this.tmodel;
     }
 
     private ConstraintNetwork getLDAPIThreatModel() {
         ConstraintNetwork cn = new ConstraintNetwork();
-        Node op = new Operand(ldapBlacklist, OperandKind.STRREXP);
+        Node op = new Operand(ldapBlacklist, NodeKind.STRREXP);
         cn.addVertex(op);
         cn.setStartNode(op);
         return cn;

@@ -3,7 +3,10 @@ package org.snt.cnetworkparser.lang.smt;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.snt.cnetwork.core.*;
-import org.snt.cnetwork.core.range.BooleanRange;
+import org.snt.cnetwork.core.domain.DomainKind;
+import org.snt.cnetwork.core.domain.NodeDomain;
+import org.snt.cnetwork.core.domain.NodeDomainFactory;
+import org.snt.cnetwork.exception.IllegalDomainException;
 import org.snt.cnetworkparser.utils.QuadrupleMap;
 import org.snt.cnetworkparser.utils.StringUtils;
 import org.snt.inmemantlr.tree.Ast;
@@ -21,7 +24,8 @@ public class SmtCnetworkBuilder extends AstProcessor<ConstraintNetwork, Node> {
 
     // data struture that contains the mapping between language elements of
     // source language to Constraint network constructs
-    public static class TransMap extends QuadrupleMap<LanguageElements,String,String,NetworkEntity.NetworkEntityKind>{
+    public static class TransMap extends QuadrupleMap<LanguageElements,
+            String,String,NodeKind>{
 
         public String getNameOfElement(LanguageElements e) {
             return this.getSecondByFirst(e);
@@ -31,7 +35,7 @@ public class SmtCnetworkBuilder extends AstProcessor<ConstraintNetwork, Node> {
             return this.getThirdByFirst(e);
         }
 
-        public NetworkEntity.NetworkEntityKind  getOperationKindByLabel(String label) {
+        public NodeKind getNodeKindByLabel(String label) {
             return this.getFourthBySecond(label);
         }
 
@@ -85,18 +89,18 @@ public class SmtCnetworkBuilder extends AstProcessor<ConstraintNetwork, Node> {
 
             AstNode varname = r.getRoot().getFirstChild();
             AstNode vartype = r.getRoot().getLastChild();
-            OperandKind kind = OperandKind.UNKNOWN;
+            NodeKind kind = NodeKind.UNKNOWN;
 
             //LOGGER.info("KIND " + kind.toString());
             switch (vartype.getLabel()) {
                 case "String":
-                    kind = OperandKind.STRVAR;
+                    kind = NodeKind.STRVAR;
                     break;
                 case "Bool":
-                    kind = OperandKind.BOOLVAR;
+                    kind = NodeKind.BOOLVAR;
                     break;
                 case "Int":
-                    kind = OperandKind.NUMVAR;
+                    kind = NodeKind.NUMVAR;
                     break;
             }
             Operand op = new Operand(varname.getLabel(), kind);
@@ -149,10 +153,10 @@ public class SmtCnetworkBuilder extends AstProcessor<ConstraintNetwork, Node> {
 
                 LOGGER.info("LBL " + fchild.getLabel());
 
-                NetworkEntity.NetworkEntityKind kind = TRANSMAP.getOperationKindByLabel(fchild.getLabel());
+                NodeKind kind = TRANSMAP.getNodeKindByLabel(fchild.getLabel());
 
                 assert(kind != null);
-                assert((kind instanceof OperationKind));
+                assert((kind instanceof NodeKind));
 
                 LOGGER.info("FHILD " + fchild.getLabel());
 
@@ -174,23 +178,23 @@ public class SmtCnetworkBuilder extends AstProcessor<ConstraintNetwork, Node> {
                     for(Node p : params) {
                         no += p.getLabel();
                     }
-                    op = this.cn.addNode(new Operand(no,OperandKind.NUMLIT));
+                    op = this.cn.addNode(new Operand(no,NodeKind.NUMLIT));
                     LOGGER.info("add transformed node " + op.getLabel());
                 } else {
                     // sometimes the indexof operator assumes a startin index
                     // of 0 implicitly
-                    if(kind == OperationKind.INDEXOF && params.size() == 2) {
-                        params.add(new Operand("0", OperandKind.NUMLIT));
+                    if(kind == NodeKind.INDEXOF && params.size() == 2) {
+                        params.add(new Operand("0", NodeKind.NUMLIT));
                     }
 
-                    op = this.cn.addOperation((OperationKind)kind, params);
+                    op = this.cn.addOperation((NodeKind)kind, params);
                     LOGGER.info("add Operation " + op.getLabel());
                 }
 
                 this.smap.put(n,op);
                 break;
             case "boollit":
-                Node blit = this.cn.addNode(new Operand(n.getLabel(),OperandKind.BOOLLIT));
+                Node blit = this.cn.addNode(new Operand(n.getLabel(),NodeKind.BOOLLIT));
                 this.smap.put(n, blit);
                 break;
             case "varname":
@@ -200,18 +204,18 @@ public class SmtCnetworkBuilder extends AstProcessor<ConstraintNetwork, Node> {
                 break;
             case "rlit":
                 //LOGGER.info("rlit " + n.getLabel());
-                Node r = this.cn.addNode(new Operand(n.getLabel(),OperandKind.STRREXP));
+                Node r = this.cn.addNode(new Operand(n.getLabel(),NodeKind.STRREXP));
                 this.smap.put(n, r);
                 break;
             case "strlit":
                 assert(n.getLabel().length() >= 2);
                 String lbl = n.getLabel().substring(1,n.getLabel().length()-1);
                 lbl = StringUtils.unescapeSpecialCharacters(lbl);
-                this.smap.put(n, cn.addNode(new Operand(StringUtils.escapeSpecialCharacters(lbl),OperandKind.STRLIT)));
+                this.smap.put(n, cn.addNode(new Operand(StringUtils.escapeSpecialCharacters(lbl),NodeKind.STRLIT)));
                 break;
             case "number":
                 LOGGER.info("nunber "+ n.getLabel());
-                Node nlit = this.cn.addNode(new Operand(n.getLabel(),OperandKind.NUMLIT));
+                Node nlit = this.cn.addNode(new Operand(n.getLabel(),NodeKind.NUMLIT));
                 this.smap.put(n, nlit);
                 break;
             case "operation":
@@ -223,28 +227,28 @@ public class SmtCnetworkBuilder extends AstProcessor<ConstraintNetwork, Node> {
                 Node c = this.smap.get(n.getFirstChild());
                 // ite is a special case ... the return value remains
                 // parametrized
-                if(c.getKind() != OperationKind.ITE) {
-                    c.setRange(BooleanRange.TRUE);
+                //if(c.getKind() != NodeKind.ITE) {
+                    c.setDomain(NodeDomainFactory.getInstance().getDomain
+                            (NodeKind.BOOLLIT, "true"));
 
                     assert((c instanceof Operation) || (c instanceof Operand));
-                    Operand top = new Operand("true", OperandKind.BOOLLIT);
+                    Operand top = new Operand("true", NodeKind.BOOLLIT);
 
                     // if then else is an exception the outcome of ITE is
                     // determined by the predicate
                     LOGGER.debug("ASSERTION " + c.getLabel());
-                    LOGGER.debug("RAN " + c.getRange().toString());
 
-                    Node constraint = cn.addConstraint(OperationKind.BOOL_EQUALS, top, c);
+                    Node constraint = cn.addConstraint(NodeKind.BOOL_EQUALS, top, c);
                     this.smap.put(n, constraint);
-                } else {
-                    simpleProp(n);
-                }
+                //} else {
+                //    simpleProp(n);
+                //}
                 break;
             case "copoperation":
-                NetworkEntity.NetworkEntityKind copkind = TRANSMAP
-                        .getOperationKindByLabel(n.getFirstChild().getLabel());
+                NodeKind copkind = TRANSMAP
+                        .getNodeKindByLabel(n.getFirstChild().getLabel());
 
-                if(copkind == OperationKind.ITE) {
+                if(copkind == NodeKind.ITE) {
 
                     assert n.getChildren().size() == 4;
 
@@ -265,24 +269,20 @@ public class SmtCnetworkBuilder extends AstProcessor<ConstraintNetwork, Node> {
                     else if (par2.isOperation())
                         parop = (Operation) par2;
 
-                    Operation ite = cn.addOperation(OperationKind.ITE,
+                    Operation ite = cn.addOperation(NodeKind.ITE,
                             par1, par2, par3);
 
                     if (parop != null) {
-                        OperationReturnType ret = ((Operation) parop).getKind
-                                ().getReturnType();
-                        ite.getKind().setReturnType(ret);
-                        ite.init();
+                        DomainKind ret = ((Operation) parop).getKind
+                                ().getDomainKind();
+                        alterDomain(ite, ret);
                     } else {
                         if (par1.isBoolean()) {
-                            ite.getKind().setReturnType(OperationReturnType
-                                    .BOOLEAN);
+                            alterDomain(ite, DomainKind.BOOLEAN);
                         } else if (par1.isString()) {
-                            ite.getKind().setReturnType(OperationReturnType
-                                    .STRING);
+                            alterDomain(ite, DomainKind.STRING);
                         } else if (par1.isNumeric()) {
-                            ite.getKind().setReturnType(OperationReturnType
-                                    .NUMERIC_N);
+                            alterDomain(ite, DomainKind.NUMERIC_N);
                         }
                     }
 
@@ -291,6 +291,19 @@ public class SmtCnetworkBuilder extends AstProcessor<ConstraintNetwork, Node> {
 
 
         }
+    }
+
+    private void alterDomain(Node n, DomainKind newKind) {
+        NodeKind kind = n.getKind();
+        try {
+            kind.setDomainKind(newKind);
+        } catch (IllegalDomainException e) {
+            LOGGER.error(e.getMessage());
+            System.exit(-1);
+        }
+        NodeDomain dkind = NodeDomainFactory.getInstance().getDomain
+                (kind);
+        dkind.setDomain(dkind);
     }
 
 

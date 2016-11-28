@@ -1,7 +1,7 @@
 package org.snt.cnetworkparser.threatmodels;
 
 import org.snt.cnetwork.core.ConstraintNetwork;
-import org.snt.cnetwork.core.OperandKind;
+import org.snt.cnetwork.core.NodeKind;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -9,10 +9,10 @@ import java.util.Map;
 
 public abstract class ThreatModel {
 
-    public HashMap<OperandKind, ThreatModel> tmodel = null;
+    public HashMap<NodeKind, ThreatModel> tmodel = null;
     public ThreatModel() {
-        this.tmodel = new HashMap<OperandKind, ThreatModel> ();
+        this.tmodel = new HashMap<NodeKind, ThreatModel> ();
     }
-    public abstract Map<OperandKind,ThreatModel> getThreatModels();
-    public abstract ConstraintNetwork delegate(OperandKind kind);
+    public abstract Map<NodeKind,ThreatModel> getThreatModels();
+    public abstract ConstraintNetwork delegate(NodeKind kind);
 }

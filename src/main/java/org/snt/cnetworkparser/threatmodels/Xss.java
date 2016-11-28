@@ -5,7 +5,7 @@ import org.slf4j.LoggerFactory;
 import org.snt.cnetwork.core.ConstraintNetwork;
 import org.snt.cnetwork.core.Node;
 import org.snt.cnetwork.core.Operand;
-import org.snt.cnetwork.core.OperandKind;
+import org.snt.cnetwork.core.NodeKind;
 import java.util.Map;
 
 public class Xss extends ThreatModel {
@@ -23,12 +23,12 @@ public class Xss extends ThreatModel {
 
     public Xss() {
         super();
-        tmodel.put(OperandKind.XSS, this);
+        tmodel.put(NodeKind.XSS, this);
     }
 
 
     @Override
-    public ConstraintNetwork delegate(OperandKind type) {
+    public ConstraintNetwork delegate(NodeKind type) {
         switch(type) {
             case XSS:
                 return getXMLIThreatModel();
@@ -37,7 +37,7 @@ public class Xss extends ThreatModel {
     }
 
     @Override
-    public Map<OperandKind, ThreatModel> getThreatModels() {
+    public Map<NodeKind, ThreatModel> getThreatModels() {
         return this.tmodel;
     }
 
@@ -45,7 +45,7 @@ public class Xss extends ThreatModel {
     private ConstraintNetwork getXMLIThreatModel() {
 
         ConstraintNetwork cn = new ConstraintNetwork();
-        Node op = new Operand(xss, OperandKind.STRREXP);
+        Node op = new Operand(xss, NodeKind.STRREXP);
         cn.addVertex(op);
         cn.setStartNode(op);
         return cn;

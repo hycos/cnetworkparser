@@ -1,17 +1,17 @@
 package org.snt.cnetworkparser.lang.sol;
 
 import org.snt.cnetwork.core.Node;
-import org.snt.cnetwork.core.OperationKind;
+import org.snt.cnetwork.core.NodeKind;
 
 import java.util.LinkedHashSet;
 import java.util.Set;
 
 public class BasicConstraint {
     protected Set<Node> nodes = new LinkedHashSet<Node>();
-    protected OperationKind opKind;
+    protected NodeKind opKind;
     protected Node term1;
 
-    public BasicConstraint(Node term0, OperationKind kind, Node term1) {
+    public BasicConstraint(Node term0, NodeKind kind, Node term1) {
         opKind = kind;
         nodes.add(term0);
         nodes.add(term1);
@@ -22,7 +22,7 @@ public class BasicConstraint {
         nodes.add(term);
     }
 
-    public void setOpKind(OperationKind kind) {
+    public void setOpKind(NodeKind kind) {
         this.opKind = kind;
     }
 

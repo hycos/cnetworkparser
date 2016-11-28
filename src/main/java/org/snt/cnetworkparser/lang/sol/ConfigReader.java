@@ -28,11 +28,11 @@ public class ConfigReader {
         //LOGGER.info("label " + label);
 
         if(type.equals("string")) {
-            op = new Operand(label, OperandKind.STRVAR);
+            op = new Operand(label, NodeKind.STRVAR);
         } else if(type.equals("int")) {
-            op = new Operand(label, OperandKind.NUMVAR);
+            op = new Operand(label, NodeKind.NUMVAR);
         } else if (type.equals("bool")) {
-            op = new Operand(label, OperandKind.BOOLVAR);
+            op = new Operand(label, NodeKind.BOOLVAR);
         }
 
         assert(op != null);

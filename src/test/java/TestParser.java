@@ -88,7 +88,7 @@ public class TestParser {
         //        getCNfromFile(getPath("t02.z3"));
 
         ConstraintNetwork cn  = new CnetworkParser(InputFormat.Z3STR2).
-                getCNfromFile(getPath("pisa-001.z3"));
+                getCNfromFile(getPath("pisa-002.z3"));
 
 
         LOGGER.debug(cn.toDot());
