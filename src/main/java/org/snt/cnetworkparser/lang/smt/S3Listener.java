@@ -27,6 +27,9 @@ public class S3Listener extends DefaultTreeListener implements CnetworkProvider 
         put(LanguageElements.LEN, "Length", NodeKind.LEN.getValue(), NodeKind.LEN);
         put(LanguageElements.CONTAINS, "Contains", NodeKind.CONTAINS.getValue(), NodeKind.CONTAINS);
         put(LanguageElements.INDEXOF, "IndexOf", NodeKind.INDEXOF.getValue(), NodeKind.INDEXOF);
+        put(LanguageElements.INDEXOF, "LastIndexof", NodeKind.INDEXOF.getValue
+                        (),
+                NodeKind.INDEXOF);
         put(LanguageElements.PREFIXOF, "StartsWith", NodeKind.STARTSWITH.getValue(), NodeKind.STARTSWITH);
         put(LanguageElements.SUFFIXOF, "EndsWith", NodeKind.ENDSWITH.getValue(), NodeKind.ENDSWITH);
         put(LanguageElements.SCONCAT, "Concat", NodeKind.CONCAT.getValue(), NodeKind.CONCAT);

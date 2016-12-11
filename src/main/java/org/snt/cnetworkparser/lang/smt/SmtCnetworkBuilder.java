@@ -228,7 +228,7 @@ public class SmtCnetworkBuilder extends AstProcessor<ConstraintNetwork, Node> {
                 // ite is a special case ... the return value remains
                 // parametrized
                 //if(c.getKind() != NodeKind.ITE) {
-                    c.setDomain(NodeDomainFactory.getInstance().getDomain
+                    c.setDomain(NodeDomainFactory.INSTANCE.getDomain
                             (NodeKind.BOOLLIT, "true"));
 
                     assert((c instanceof Operation) || (c instanceof Operand));
@@ -301,7 +301,7 @@ public class SmtCnetworkBuilder extends AstProcessor<ConstraintNetwork, Node> {
             LOGGER.error(e.getMessage());
             System.exit(-1);
         }
-        NodeDomain dkind = NodeDomainFactory.getInstance().getDomain
+        NodeDomain dkind = NodeDomainFactory.INSTANCE.getDomain
                 (kind);
         dkind.setDomain(dkind);
     }

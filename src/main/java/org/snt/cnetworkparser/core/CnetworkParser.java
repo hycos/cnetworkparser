@@ -33,7 +33,7 @@ public class CnetworkParser {
         InputStream is = classLoader.getResourceAsStream(inputFormat.getGrammar());
         String s = FileUtils.getStringFromStream(is);
 
-        this.gp = new GenericParser(s, inputFormat.getName());
+        this.gp = new GenericParser(s);
         this.provider = inputFormat.getProvider();
         this.ctx = null;
         this.gp.setListener(provider.getListener());
@@ -61,6 +61,10 @@ public class CnetworkParser {
         cn.buildNodeIdx();
         return cn;
     }
+
+
+
+
 
 }
 

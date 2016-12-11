@@ -7,13 +7,12 @@
 
 (assert (= v2 "<") )
 
-(assert (ite (Contains v1 v2)
+(assert (ite (Contains v1 v2) 
              (and (= v3 (Indexof v1 v2)) (= ret (Substring v1 0 v3)) )
              (= ret v1)
         )
 )
 
-(assert (or (Contains ret "<") (Contains ret ">") ) )
 
 
 (check-sat)

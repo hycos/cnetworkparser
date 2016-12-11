@@ -242,7 +242,7 @@ public class SolListener extends DefaultListener implements CnetworkProvider {
                 string = new Operand(nname, NodeKind.STRREXP);
             }
 
-            NodeDomain nd = new NodeDomain(a,new NumRange(DomainUtils
+            NodeDomain nd = new NodeDomain(DomainKind.STRING,a,new NumRange(DomainUtils
                     .getApproxLenRange(a)));
 
             string.setDomain(nd);
@@ -266,7 +266,7 @@ public class SolListener extends DefaultListener implements CnetworkProvider {
 
     private void handleBoollit(String name) {
 
-        //LOGGER.info("BOOL " + name);
+        //LOGGER.info("DBOOL " + name);
 
         Operand boollit = this.configReader.getOperandByLabel(name);
         if (boollit == null) {
@@ -413,7 +413,7 @@ public class SolListener extends DefaultListener implements CnetworkProvider {
             LOGGER.error(e.getMessage());
             System.exit(-1);
         }
-        NodeDomain dkind = NodeDomainFactory.getInstance().getDomain
+        NodeDomain dkind = NodeDomainFactory.INSTANCE.getDomain
                 (kind);
         dkind.setDomain(dkind);
     }
@@ -450,7 +450,7 @@ public class SolListener extends DefaultListener implements CnetworkProvider {
             Operation c = this.configReader.addConstraint(constraint);
 
             if(negate) {
-                c.setDomain(NodeDomainFactory.getInstance().getDomain
+                c.setDomain(NodeDomainFactory.INSTANCE.getDomain
                         (NodeKind.BOOLLIT, "false"));
             }
 
