@@ -256,35 +256,14 @@ public class SmtCnetworkBuilder extends AstProcessor<ConstraintNetwork, Node> {
                     Node par2 = this.smap.get(n.getChild(2));
                     Node par3 = this.smap.get(n.getChild(3));
 
-                    assert (par1.isNumeric() && par2.isNumeric()) ||
-                            (par1.isString() && par2.isString()) ||
-                            (par1.isBoolean() && par2.isBoolean());
+                    assert par2.isBoolean() && par3.isBoolean();
+                    assert par1.isBoolean();
 
-                    assert par2.isBoolean();
 
-                    Operation parop = null;
-
-                    if (par1.isOperation())
-                        parop = (Operation) par1;
-                    else if (par2.isOperation())
-                        parop = (Operation) par2;
+                    par1.setDomain(NodeDomainFactory.DBTRUE);
 
                     Operation ite = cn.addOperation(NodeKind.ITE,
                             par1, par2, par3);
-
-                    if (parop != null) {
-                        DomainKind ret = ((Operation) parop).getKind
-                                ().getDomainKind();
-                        alterDomain(ite, ret);
-                    } else {
-                        if (par1.isBoolean()) {
-                            alterDomain(ite, DomainKind.BOOLEAN);
-                        } else if (par1.isString()) {
-                            alterDomain(ite, DomainKind.STRING);
-                        } else if (par1.isNumeric()) {
-                            alterDomain(ite, DomainKind.NUMERIC_N);
-                        }
-                    }
 
                     this.smap.put(n,ite);
                 }

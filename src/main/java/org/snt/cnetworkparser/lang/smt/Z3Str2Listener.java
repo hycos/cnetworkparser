@@ -36,6 +36,8 @@ public class Z3Str2Listener extends DefaultTreeListener implements CnetworkProvi
         put(LanguageElements.SUFFIXOF, "EndsWith", NodeKind.ENDSWITH.getValue(), NodeKind.ENDSWITH);
         put(LanguageElements.SCONCAT, "Concat", NodeKind.CONCAT.getValue(), NodeKind.CONCAT);
         put(LanguageElements.SUBSTRNG, "Substring", NodeKind.SUBSTR.getValue(), NodeKind.SUBSTR);
+        put(LanguageElements.REPLACE, "Replace", NodeKind.REPLACE.getValue(),
+                NodeKind.REPLACE);
         // others
         put(LanguageElements.NEQ, "!=", NodeKind.NEQUALS.toString(), NodeKind.NEQUALS);
         put(LanguageElements.EQ, "=", NodeKind.EQUALS.toString(), NodeKind.EQUALS);

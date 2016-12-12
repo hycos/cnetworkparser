@@ -72,7 +72,7 @@ boolop: '='
 
 numop: '-' | '+' | 'div';
 
-strop: 'Substring' | 'Concat' | 'Indexof' | 'LastIndexof';
+strop: 'Substring' | 'Concat' | 'Indexof' | 'LastIndexof' | 'Replace';
 
 cop: 'ite';
 

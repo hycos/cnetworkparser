@@ -19,6 +19,7 @@ public enum LanguageElements {
     SUFFIXOF("SUFFIXOF"),
     SCONCAT("SCONCAT"),
     SUBSTRNG("SUBSTRING"),
+    REPLACE("REPLACE"),
     // Numeric
     EQ("EQ"),
     NEQ("NEQ"),
