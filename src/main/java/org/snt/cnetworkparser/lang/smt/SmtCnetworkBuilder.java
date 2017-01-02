@@ -260,7 +260,10 @@ public class SmtCnetworkBuilder extends AstProcessor<ConstraintNetwork, Node> {
                     assert par1.isBoolean();
 
 
-                    par1.setDomain(NodeDomainFactory.DBTRUE);
+                    //par1.setDomain(NodeDomainFactory.DBTRUE);
+                    //par2.setDomain(NodeDomainFactory.DBTRUE);
+                    //par3.setDomain(NodeDomainFactory.DBTRUE);
+
 
                     Operation ite = cn.addOperation(NodeKind.ITE,
                             par1, par2, par3);
