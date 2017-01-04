@@ -92,19 +92,19 @@ public class SmtCnetworkBuilder extends AstProcessor<ConstraintNetwork, Node> {
             NodeKind kind = NodeKind.UNKNOWN;
 
             //LOGGER.info("KIND " + kind.toString());
-            switch (vartype.getLabel()) {
-                case "String":
+            switch (vartype.getLabel().toLowerCase()) {
+                case "string":
                     kind = NodeKind.STRVAR;
                     break;
-                case "Bool":
+                case "bool":
                     kind = NodeKind.BOOLVAR;
                     break;
-                case "Int":
+                case "int":
                     kind = NodeKind.NUMVAR;
                     break;
             }
             Operand op = new Operand(varname.getLabel(), kind);
-            //LOGGER.info("add op " + op + " " + kind);
+            LOGGER.info("add operand " + op + " " + kind);
             this.cn.addVertex(op);
             ast.removeSubtree(r);
         }
@@ -187,7 +187,7 @@ public class SmtCnetworkBuilder extends AstProcessor<ConstraintNetwork, Node> {
                         params.add(new Operand("0", NodeKind.NUMLIT));
                     }
 
-                    op = this.cn.addOperation((NodeKind)kind, params);
+                    op = this.cn.addOperation(kind, params);
                     LOGGER.info("add Operation " + op.getLabel());
                 }
 
@@ -257,7 +257,11 @@ public class SmtCnetworkBuilder extends AstProcessor<ConstraintNetwork, Node> {
                     Node par3 = this.smap.get(n.getChild(3));
 
                     assert par2.isBoolean() && par3.isBoolean();
+                    LOGGER.debug("par " + par1.getLabel());
+                    LOGGER.debug("knd " + par1.getKind());
                     assert par1.isBoolean();
+
+
 
 
                     //par1.setDomain(NodeDomainFactory.DBTRUE);

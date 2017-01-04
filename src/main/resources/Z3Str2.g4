@@ -20,6 +20,12 @@ StringCharacter: ~["\\] | EscapeSequence;
 fragment
 EscapeSequence:	'\\' [btnfr"'\\];
 
+StringType: [Ss] [Tt] [Rr] [Ii] [Nn] [Gg];
+
+IntType: [Ii] [Nn] [Tt];
+
+BoolType: [Bb][Oo][Oo][Ll];
+
 // Parser rules
 s: decl (assertion)* (end)? EOF;
 
@@ -82,7 +88,8 @@ binop: 'Length';
 
 varname: Varname;
 
-vartype: 'String' | 'Int' | 'Bool';
+vartype: StringType | IntType | BoolType;
+
 
 end: ParenthesisOpen 'check-sat' ParenthesisClose ( ParenthesisOpen 'get-model' ParenthesisClose)?;
 

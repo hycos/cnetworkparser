@@ -91,7 +91,7 @@ public class TestParser {
 
 
         ConstraintNetwork cn  = new CnetworkParser(InputFormat.Z3STR2).
-                getCNfromFile(getPath("pisa-002.z3"));
+                getCNfromFile(getPath("pisa/pisa-002.z3"));
 
 
 
