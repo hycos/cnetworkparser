@@ -85,7 +85,7 @@ public class Xmli extends ThreatModel {
         /**
         ConstraintNetwork cn = new ConstraintNetwork();
         Node op = new Operand(xmlInjection, NodeKind.STRREXP);
-        cn.addVertex(op);
+        cn.addEquiClass(op);
         cn.setStartNode(op);
         return cn;**/
     }
