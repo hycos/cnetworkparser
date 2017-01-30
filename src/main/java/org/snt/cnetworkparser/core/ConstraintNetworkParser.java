@@ -68,7 +68,7 @@ public class ConstraintNetworkParser {
         }
 
         ConstraintNetwork cn = this.provider.getConstraintNetwork();
-        cn.buildNodeIdx();
+        //cn.buildNodeIdx();
         return cn;
     }
 

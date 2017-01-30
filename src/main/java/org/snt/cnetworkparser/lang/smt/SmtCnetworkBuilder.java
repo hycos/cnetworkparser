@@ -111,7 +111,11 @@ public class SmtCnetworkBuilder extends
             }
             Operand op = new Operand(varname.getLabel(), kind);
             LOGGER.info("add operand " + op + " " + kind);
-            this.cn.addNode(op);
+            try {
+                this.cn.addNode(op);
+            } catch (EUFInconsistencyException e) {
+                throw new AstProcessorException(e.getMessage());
+            }
             ast.removeSubtree(r);
         }
 
@@ -145,152 +149,152 @@ public class SmtCnetworkBuilder extends
 
         LOGGER.info("ID " + n.getId() + " " + n.getRule() + " " + n.getLabel());
 
-        switch(n.getRule()) {
+        try {
+            switch (n.getRule()) {
 
-            case "booloperation":
-            case "stroperation":
-            case "numoperation":
-            case "binoperation":
+                case "booloperation":
+                case "stroperation":
+                case "numoperation":
+                case "binoperation":
 
-                LOGGER.info("OP " + n.getId());
-                assert(n.hasChildren());
-                StringBuilder out = new StringBuilder();
+                    LOGGER.info("OP " + n.getId());
+                    assert (n.hasChildren());
+                    StringBuilder out = new StringBuilder();
 
-                AstNode fchild = n.getFirstChild();
-                assert(fchild.getRule().matches("(boolop|strop|numop|binop)"));
+                    AstNode fchild = n.getFirstChild();
+                    assert (fchild.getRule().matches("(boolop|strop|numop|binop)"));
 
-                List<Node> params = new Vector<Node>();
+                    List<Node> params = new Vector<Node>();
 
-                LOGGER.info("LBL " + fchild.getLabel());
+                    LOGGER.info("LBL " + fchild.getLabel());
 
-                NodeKind kind = TRANSMAP.getNodeKindByLabel(fchild.getLabel());
+                    NodeKind kind = TRANSMAP.getNodeKindByLabel(fchild.getLabel());
 
-                assert(kind != null);
-                assert((kind instanceof NodeKind));
+                    assert (kind != null);
+                    assert ((kind instanceof NodeKind));
 
-                LOGGER.info("FHILD " + fchild.getLabel());
+                    LOGGER.info("FHILD " + fchild.getLabel());
 
-                n.getChildren().stream().filter(c -> !c.equals(fchild)).forEach(
-                        e ->  {
-                            assert(this.smap.containsKey(e));
-                            LOGGER.info("get " + e.getLabel());
-                            assert(this.smap.get(e) != null);
-                            params.add(this.smap.get(e));
+                    n.getChildren().stream().filter(c -> !c.equals(fchild)).forEach(
+                            e -> {
+                                assert (this.smap.containsKey(e));
+                                LOGGER.info("get " + e.getLabel());
+                                assert (this.smap.get(e) != null);
+                                params.add(this.smap.get(e));
+                            }
+                    );
+                    Node op = null;
+
+
+                    if (n.getRule().equals("numoperation") && params.size() == 1) {
+                        // unary operation
+                        assert (fchild.getLabel().matches("(\\-|\\+)"));
+                        String no = fchild.getLabel();
+                        for (Node p : params) {
+                            no += p.getLabel();
                         }
-                );
-                Node op = null;
+                        op = this.cn.addNode(new Operand(no, NodeKind.NUMLIT));
+                        LOGGER.info("add transformed node " + op.getLabel());
+                    } else {
+                        // sometimes the indexof operator assumes a startin index
+                        // of 0 implicitly
+                        if (kind == NodeKind.INDEXOF && params.size() == 2) {
+                            params.add(new Operand("0", NodeKind.NUMLIT));
+                        }
 
-
-                if(n.getRule().equals("numoperation") && params.size() == 1) {
-                    // unary operation
-                    assert(fchild.getLabel().matches("(\\-|\\+)"));
-                    String no = fchild.getLabel();
-                    for(Node p : params) {
-                        no += p.getLabel();
-                    }
-                    op = this.cn.addNode(new Operand(no,NodeKind.NUMLIT));
-                    LOGGER.info("add transformed node " + op.getLabel());
-                } else {
-                    // sometimes the indexof operator assumes a startin index
-                    // of 0 implicitly
-                    if(kind == NodeKind.INDEXOF && params.size() == 2) {
-                        params.add(new Operand("0", NodeKind.NUMLIT));
+                        op = this.cn.addOperation(kind, params);
+                        LOGGER.info("add Operation " + op.getLabel());
                     }
 
-                    op = this.cn.addOperation(kind, params);
-                    LOGGER.info("add Operation " + op.getLabel());
-                }
-
-                this.smap.put(n,op);
-                break;
-            case "boollit":
-                Node blit = this.cn.addNode(new Operand(n.getLabel(),NodeKind.BOOLLIT));
-                this.smap.put(n, blit);
-                break;
-            case "varname":
-                Node v = this.cn.getNodeByLabel(n.getLabel());
-                assert(v != null);
-                this.smap.put(n, v);
-                break;
-            case "rlit":
-                //LOGGER.info("rlit " + n.getLabel());
-                Node r = this.cn.addNode(new Operand(n.getLabel(),NodeKind.STRREXP));
-                this.smap.put(n, r);
-                break;
-            case "strlit":
-                assert(n.getLabel().length() >= 2);
-                String lbl = n.getLabel().substring(1,n.getLabel().length()-1);
-                lbl = StringUtils.unescapeSpecialCharacters(lbl);
-                this.smap.put(n, cn.addNode(new Operand(StringUtils.escapeSpecialCharacters(lbl),NodeKind.STRLIT)));
-                break;
-            case "number":
-                LOGGER.info("nunber "+ n.getLabel());
-                Node nlit = this.cn.addNode(new Operand(n.getLabel(),NodeKind.NUMLIT));
-                this.smap.put(n, nlit);
-                break;
-            case "operation":
-            case "param":
-            case "s":
-                simpleProp(n);
-                break;
-            case "assertion":
-                Node c = this.smap.get(n.getFirstChild());
-                // ite is a special case ... the return value remains
-                // parametrized
-                //if(c.getKind() != NodeKind.ITE) {
+                    this.smap.put(n, op);
+                    break;
+                case "boollit":
+                    Node blit = this.cn.addNode(new Operand(n.getLabel(), NodeKind.BOOLLIT));
+                    this.smap.put(n, blit);
+                    break;
+                case "varname":
+                    Node v = this.cn.getNodeByLabel(n.getLabel());
+                    assert (v != null);
+                    this.smap.put(n, v);
+                    break;
+                case "rlit":
+                    //LOGGER.info("rlit " + n.getLabel());
+                    Node r = this.cn.addNode(new Operand(n.getLabel(), NodeKind.STRREXP));
+                    this.smap.put(n, r);
+                    break;
+                case "strlit":
+                    assert (n.getLabel().length() >= 2);
+                    String lbl = n.getLabel().substring(1, n.getLabel().length() - 1);
+                    lbl = StringUtils.unescapeSpecialCharacters(lbl);
+                    this.smap.put(n, cn.addNode(new Operand(StringUtils.escapeSpecialCharacters(lbl), NodeKind.STRLIT)));
+                    break;
+                case "number":
+                    LOGGER.info("nunber " + n.getLabel());
+                    Node nlit = this.cn.addNode(new Operand(n.getLabel(), NodeKind.NUMLIT));
+                    this.smap.put(n, nlit);
+                    break;
+                case "operation":
+                case "param":
+                case "s":
+                    simpleProp(n);
+                    break;
+                case "assertion":
+                    Node c = this.smap.get(n.getFirstChild());
+                    // ite is a special case ... the return value remains
+                    // parametrized
+                    //if(c.getKind() != NodeKind.ITE) {
                     c.setDomain(NodeDomainFactory.INSTANCE.getDomain
                             (NodeKind.BOOLLIT, "true"));
 
-                    assert((c instanceof Operation) || (c instanceof Operand));
+                    assert ((c instanceof Operation) || (c instanceof Operand));
                     Operand top = new Operand("true", NodeKind.BOOLLIT);
 
                     // if then else is an exception the outcome of ITE is
                     // determined by the predicate
                     LOGGER.debug("ASSERTION " + c.getLabel());
 
-                Node constraint = null;
-                try {
-                    constraint = cn.addConstraint(NodeKind.BOOL_EQUALS, top, c);
-                } catch (EUFInconsistencyException e) {
-                    throw new AstProcessorException(e.getMessage());
-                }
-                this.smap.put(n, constraint);
-                //} else {
-                //    simpleProp(n);
-                //}
-                break;
-            case "copoperation":
-                NodeKind copkind = TRANSMAP
-                        .getNodeKindByLabel(n.getFirstChild().getLabel());
+                    Node constraint = null;
+                    try {
+                        constraint = cn.addConstraint(NodeKind.BOOL_EQUALS, top, c);
+                    } catch (EUFInconsistencyException e) {
+                        throw new AstProcessorException(e.getMessage());
+                    }
+                    this.smap.put(n, constraint);
+                    //} else {
+                    //    simpleProp(n);
+                    //}
+                    break;
+                case "copoperation":
+                    NodeKind copkind = TRANSMAP
+                            .getNodeKindByLabel(n.getFirstChild().getLabel());
 
-                if(copkind == NodeKind.ITE) {
+                    if (copkind == NodeKind.ITE) {
 
-                    assert n.getChildren().size() == 4;
+                        assert n.getChildren().size() == 4;
 
-                    Node par1 = this.smap.get(n.getChild(1));
-                    Node par2 = this.smap.get(n.getChild(2));
-                    Node par3 = this.smap.get(n.getChild(3));
+                        Node par1 = this.smap.get(n.getChild(1));
+                        Node par2 = this.smap.get(n.getChild(2));
+                        Node par3 = this.smap.get(n.getChild(3));
 
-                    assert par2.isBoolean() && par3.isBoolean();
-                    LOGGER.debug("par " + par1.getLabel());
-                    LOGGER.debug("knd " + par1.getKind());
-                    assert par1.isBoolean();
-
-
+                        assert par2.isBoolean() && par3.isBoolean();
+                        LOGGER.debug("par " + par1.getLabel());
+                        LOGGER.debug("knd " + par1.getKind());
+                        assert par1.isBoolean();
 
 
-                    //par1.setDomain(NodeDomainFactory.DBTRUE);
-                    //par2.setDomain(NodeDomainFactory.DBTRUE);
-                    //par3.setDomain(NodeDomainFactory.DBTRUE);
+                        //par1.setDomain(NodeDomainFactory.DBTRUE);
+                        //par2.setDomain(NodeDomainFactory.DBTRUE);
+                        //par3.setDomain(NodeDomainFactory.DBTRUE);
 
 
-                    Operation ite = cn.addOperation(NodeKind.ITE,
-                            par1, par2, par3);
+                        Operation ite = cn.addOperation(NodeKind.ITE,
+                                par1, par2, par3);
 
-                    this.smap.put(n,ite);
-                }
-
-
+                        this.smap.put(n, ite);
+                    }
+            }
+        } catch (EUFInconsistencyException e) {
+            throw new AstProcessorException(e.getMessage());
         }
     }
 

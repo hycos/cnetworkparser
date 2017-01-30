@@ -1,10 +1,10 @@
 import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.snt.cnetwork.core.ConstraintNetworkBuilder;
+import org.snt.cnetwork.core.NodeKind;
 import org.snt.cnetworkparser.exception.UnknownException;
 import org.snt.cnetworkparser.threatmodels.ThreatModelFactory;
-import org.snt.cnetwork.core.ConstraintNetwork;
-import org.snt.cnetwork.core.NodeKind;
 
 
 public class TestThreatModels {
@@ -15,14 +15,14 @@ public class TestThreatModels {
     private static String xmlInjection = ".*(\\<((! *- *-)?|( *- *-)?\\>)|\\< *CDATA\\[\\[.*\\]\\] *\\>).*";
 
 
-    public ConstraintNetwork getCNFor(NodeKind kind) {
+    public ConstraintNetworkBuilder getCNFor(NodeKind kind) {
         ThreatModelFactory tf = ThreatModelFactory.getInstance();
-        ConstraintNetwork cn = null;
+        ConstraintNetworkBuilder cn = null;
 
         try {
             cn = tf.getCNforVulnerability(kind);
             assert(cn != null);
-            LOGGER.info(cn.toDot());
+            //LOGGER.info(cn.toDot());
 
         } catch (UnknownException e) {
             e.printStackTrace();
@@ -35,9 +35,9 @@ public class TestThreatModels {
     public void testThreatModels() {
         assert(getCNFor(NodeKind.SQLINUM) != null);
 
-        ConstraintNetwork cn = getCNFor(NodeKind.SQLISTR);
+        ConstraintNetworkBuilder cn = getCNFor(NodeKind.SQLISTR);
 
-        LOGGER.info(cn.toDot());
+        //ConstraintNetworkBuilderLOGGER.info(cn.toDot());
         assert(getCNFor(NodeKind.SQLISTR) != null);
         assert(getCNFor(NodeKind.XPATHNUM) != null);
         assert(getCNFor(NodeKind.XPATHSTR) != null);
@@ -48,9 +48,9 @@ public class TestThreatModels {
 
     @Test
     public void test() {
-        ConstraintNetwork cn = getCNFor(NodeKind.XMLI);
+        ConstraintNetworkBuilder cn = getCNFor(NodeKind.XMLI);
 
-        LOGGER.info(cn.toDot());
+        //LOGGER.info(cn.toDot());
     }
 
 

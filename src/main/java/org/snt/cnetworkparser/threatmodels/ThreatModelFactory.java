@@ -1,5 +1,5 @@
 package org.snt.cnetworkparser.threatmodels;
-import org.snt.cnetwork.core.ConstraintNetwork;
+import org.snt.cnetwork.core.ConstraintNetworkBuilder;
 import org.snt.cnetwork.core.NodeKind;
 import org.snt.cnetworkparser.exception.UnknownException;
 
@@ -19,7 +19,7 @@ public class ThreatModelFactory {
     }
 
     private ThreatModelFactory() {
-        this.tmodel = new HashMap<NodeKind, ThreatModel>();
+        this.tmodel = new HashMap<>();
         this.tmodel.putAll(new Ldapi().getThreatModels());
         this.tmodel.putAll(new Sqli().getThreatModels());
         this.tmodel.putAll(new Xmli().getThreatModels());
@@ -28,7 +28,8 @@ public class ThreatModelFactory {
         this.tmodel.putAll(new Urli().getThreatModels());
     }
 
-    public ConstraintNetwork getCNforVulnerability(NodeKind kind) throws UnknownException {
+    public ConstraintNetworkBuilder getCNforVulnerability(NodeKind kind) throws
+            UnknownException {
 
         if(!tmodel.containsKey(kind))
             throw new UnknownException("Threat model " + kind + " is not known");

@@ -3,6 +3,7 @@ package org.snt.cnetworkparser.threatmodels;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.snt.cnetwork.core.*;
+import org.snt.cnetwork.exception.EUFInconsistencyException;
 
 import java.util.Map;
 
@@ -18,7 +19,7 @@ public class Urli extends ThreatModel {
     }
 
     @Override
-    public ConstraintNetwork delegate(NodeKind type) {
+    public ConstraintNetworkBuilder delegate(NodeKind type) {
         switch(type) {
             case URLI:
                 return getURLiThreatModel();
@@ -31,10 +32,14 @@ public class Urli extends ThreatModel {
         return this.tmodel;
     }
 
-    private ConstraintNetwork getURLiThreatModel() {
-        ConstraintNetwork cn = new ConstraintNetwork();
+    private ConstraintNetworkBuilder getURLiThreatModel() {
+        ConstraintNetworkBuilder cn = new ConstraintNetworkBuilder();
         Node op = new Operand(urlBlacklist, NodeKind.STRREXP);
-        cn.addVertex(op);
+        try {
+            cn.addNode(op);
+        } catch (EUFInconsistencyException e) {
+            assert false;
+        }
         cn.setStartNode(op);
         return cn;
     }

@@ -44,7 +44,7 @@ public class TestParser {
         }
         Assert.assertTrue(cn != null);
 
-        LOGGER.info(cn.toConfig());
+        //LOGGER.info(cn.toConfig());
     }
 
     @Test

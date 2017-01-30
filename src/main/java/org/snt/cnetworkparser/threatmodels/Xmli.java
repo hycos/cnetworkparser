@@ -2,7 +2,11 @@ package org.snt.cnetworkparser.threatmodels;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.snt.cnetwork.core.*;
+import org.snt.cnetwork.core.ConstraintNetworkBuilder;
+import org.snt.cnetwork.core.Node;
+import org.snt.cnetwork.core.NodeKind;
+import org.snt.cnetwork.core.Operand;
+import org.snt.cnetwork.exception.EUFInconsistencyException;
 
 import java.util.Map;
 
@@ -10,8 +14,6 @@ public class Xmli extends ThreatModel {
 
 
     private static String xmlInjection = ".*(\\<((! *- *-)?|( *- *-)?\\>)|\\< *CDATA\\[\\[.*\\]\\] *\\>).*";
-
-
 
 
     final static Logger LOGGER = LoggerFactory.getLogger(Xmli.class);
@@ -23,10 +25,14 @@ public class Xmli extends ThreatModel {
 
 
     @Override
-    public ConstraintNetwork delegate(NodeKind type) {
-        switch(type) {
+    public ConstraintNetworkBuilder delegate(NodeKind type) {
+        switch (type) {
             case XMLI:
-                return getXMLIThreatModel();
+                try {
+                    return getXMLIThreatModel();
+                } catch (EUFInconsistencyException e) {
+                    assert false;
+                }
         }
         return null;
     }
@@ -37,9 +43,11 @@ public class Xmli extends ThreatModel {
     }
 
 
-    private ConstraintNetwork getXMLIThreatModel() {
+    private ConstraintNetworkBuilder getXMLIThreatModel()
+            throws EUFInconsistencyException {
 
-        ConstraintNetwork cn = new ConstraintNetwork();
+        ConstraintNetworkBuilder cn = new ConstraintNetworkBuilder();
+
 
         Node strvar = new Operand("sv1", NodeKind.STRVAR);
         //Node op = new Operand(xmlInjection, NodeKind.STRREXP);
@@ -79,15 +87,7 @@ public class Xmli extends ThreatModel {
         //cn.addConstraint(NodeKind.OR, matches1, matches2);
 
         cn.setStartNode(strvar);
-
         return cn;
-
-        /**
-        ConstraintNetwork cn = new ConstraintNetwork();
-        Node op = new Operand(xmlInjection, NodeKind.STRREXP);
-        cn.addEquiClass(op);
-        cn.setStartNode(op);
-        return cn;**/
     }
 
 }

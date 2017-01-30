@@ -2,10 +2,9 @@ package org.snt.cnetworkparser.threatmodels;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.snt.cnetwork.core.ConstraintNetwork;
-import org.snt.cnetwork.core.Node;
-import org.snt.cnetwork.core.Operand;
-import org.snt.cnetwork.core.NodeKind;
+import org.snt.cnetwork.core.*;
+import org.snt.cnetwork.exception.EUFInconsistencyException;
+
 import java.util.Map;
 
 public class Xss extends ThreatModel {
@@ -28,10 +27,14 @@ public class Xss extends ThreatModel {
 
 
     @Override
-    public ConstraintNetwork delegate(NodeKind type) {
+    public ConstraintNetworkBuilder delegate(NodeKind type) {
         switch(type) {
             case XSS:
-                return getXMLIThreatModel();
+                try {
+                    return getXMLIThreatModel();
+                } catch (EUFInconsistencyException e) {
+                    assert false;
+                }
         }
         return null;
     }
@@ -42,11 +45,11 @@ public class Xss extends ThreatModel {
     }
 
 
-    private ConstraintNetwork getXMLIThreatModel() {
+    private ConstraintNetworkBuilder getXMLIThreatModel() throws EUFInconsistencyException {
 
-        ConstraintNetwork cn = new ConstraintNetwork();
+        ConstraintNetworkBuilder cn = new ConstraintNetworkBuilder();
         Node op = new Operand(xss, NodeKind.STRREXP);
-        cn.addVertex(op);
+        cn.addNode(op);
         cn.setStartNode(op);
         return cn;
     }

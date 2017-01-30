@@ -46,7 +46,11 @@ public class SolListener extends DefaultListener implements ConstraintNetworkPro
             op = new Operand(label, NodeKind.BOOLVAR);
         }
         assert op != null;
-        this.cbuilder.addNode(op);
+        try {
+            this.cbuilder.addNode(op);
+        } catch (EUFInconsistencyException e) {
+            assert false; // should never ever happen
+        }
     }
 
     public Operation addConstraint(BasicConstraint con) throws EUFInconsistencyException {
@@ -144,16 +148,36 @@ public class SolListener extends DefaultListener implements ConstraintNetworkPro
                 }
                 break;
             case "string":
-                handleString(this.ctx.getRecentCxt().pop().value);
+                try {
+                    handleString(this.ctx.getRecentCxt().pop().value);
+                } catch (EUFInconsistencyException e) {
+                    LOGGER.error(e.getMessage());
+                    System.exit(-1);
+                }
                 break;
             case "number":
-                handleNumber(this.ctx.getRecentCxt().pop().value);
+                try {
+                    handleNumber(this.ctx.getRecentCxt().pop().value);
+                } catch (EUFInconsistencyException e) {
+                    LOGGER.error(e.getMessage());
+                    System.exit(-1);
+                }
                 break;
             case "boollit":
-                handleBoollit(this.ctx.getRecentCxt().pop().value);
+                try {
+                    handleBoollit(this.ctx.getRecentCxt().pop().value);
+                } catch (EUFInconsistencyException e) {
+                    LOGGER.error(e.getMessage());
+                    System.exit(-1);
+                }
                 break;
             case "funccall":
-                handleOp();
+                try {
+                    handleOp();
+                } catch (EUFInconsistencyException e) {
+                    LOGGER.error(e.getMessage());
+                    System.exit(-1);
+                }
                 this.ctx.leaveOldCtx();
                 break;
             case "constraint":
@@ -187,12 +211,11 @@ public class SolListener extends DefaultListener implements ConstraintNetworkPro
         StringPair label = cctx.pop(); // vatype
         Node n = null;
 
-        ConstraintNetwork cn = this.cbuilder.getConstraintNetwork();
 
         //LOGGER.info("Tmodel " + rpoint);
         //LOGGER.info("Label " + label);
 
-        if ((n = cn.getNodeByLabel(label.value)) == null) {
+        if ((n = cbuilder.getNodeByLabel(label.value)) == null) {
             LOGGER.error("Parser Error: cannot link " + label.value + " to a threat model");
             System.exit(-1);
         }
@@ -201,7 +224,7 @@ public class SolListener extends DefaultListener implements ConstraintNetworkPro
 
         NodeKind tmodeltype = NodeKind.KindFromString(rpoint.value);
 
-        ConstraintNetwork subnet = null;
+        ConstraintNetworkBuilder subnet = null;
 
         try {
             subnet = ThreatModelFactory.getInstance().getCNforVulnerability(tmodeltype);
@@ -209,7 +232,7 @@ public class SolListener extends DefaultListener implements ConstraintNetworkPro
             e.printStackTrace();
         }
 
-        cn.join(NodeKind.MATCHES, n, subnet);
+        cbuilder.join(NodeKind.MATCHES, n, subnet);
         //cn.addConstraint(NodeKind.MATCHES, n, subnet.getStartNode());
 
         // join threat model subnetwork with reference point
@@ -220,7 +243,7 @@ public class SolListener extends DefaultListener implements ConstraintNetworkPro
         RuleScope cctx = this.ctx.getRecentCxt();
         StringPair id = cctx.pop(); // fidentifier
         StringPair bsig = cctx.pop(); // bsig
-        this.cbuilder.getConstraintNetwork().registerExtOperation(StringUtils.trimQuotesFromString(bsig.value),
+        this.cbuilder.registerExtOperation(StringUtils.trimQuotesFromString(bsig.value),
                 StringUtils.trimQuotesFromString(id.value));
 
     }
@@ -233,7 +256,7 @@ public class SolListener extends DefaultListener implements ConstraintNetworkPro
         addVariable(type.value, id.value);
     }
 
-    private void handleString(String name) {
+    private void handleString(String name) throws EUFInconsistencyException {
 
         String fctx = this.ctx.getRecentCxt().peek().value;
 
@@ -277,7 +300,7 @@ public class SolListener extends DefaultListener implements ConstraintNetworkPro
 
     }
 
-    private void handleNumber(String name) {
+    private void handleNumber(String name) throws EUFInconsistencyException {
         //LOGGER.info("NUMBER " + name);
 
         Node number = this.cbuilder.getNodeByLabel(name);
@@ -288,7 +311,7 @@ public class SolListener extends DefaultListener implements ConstraintNetworkPro
         ctx.push(number);
     }
 
-    private void handleBoollit(String name) {
+    private void handleBoollit(String name) throws EUFInconsistencyException {
 
         //LOGGER.info("DBOOL " + name);
 
@@ -334,7 +357,7 @@ public class SolListener extends DefaultListener implements ConstraintNetworkPro
         return true;
     }
 
-    private void handleOp() {
+    private void handleOp() throws EUFInconsistencyException {
 
         LinkedList<Node> params = this.ctx.getNodesForCtx();
 
@@ -386,9 +409,9 @@ public class SolListener extends DefaultListener implements ConstraintNetworkPro
         }
 
         if (okind == NodeKind.UNKNOWN) {
-            newop = this.cbuilder.getConstraintNetwork().addExtOperation(skind, params);
+            newop = this.cbuilder.addExtOperation(skind, params);
         } else {
-            newop = this.cbuilder.getConstraintNetwork().addOperation(okind, params);
+            newop = this.cbuilder.addOperation(okind, params);
         }
 
         LOGGER.info("NEWOP KIND " + newop.getKind().toString());
@@ -482,9 +505,10 @@ public class SolListener extends DefaultListener implements ConstraintNetworkPro
         } else if (nods.size() == 1) {
             switch (constraint.opKind) {
                 case EMTPY:
-                    return this.cbuilder.getConstraintNetwork().addConstraint(NodeKind.EMTPY, nods.get(0));
+                    return this.cbuilder.addConstraint(NodeKind.EMTPY, nods
+                            .get(0));
                 case NOT:
-                    return this.cbuilder.getConstraintNetwork().addConstraint(NodeKind.NOT, nods.get(0));
+                    return this.cbuilder.addConstraint(NodeKind.NOT, nods.get(0));
             }
         }
 
