@@ -4,6 +4,7 @@ import org.antlr.v4.runtime.ParserRuleContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.snt.cnetwork.core.ConstraintNetwork;
+import org.snt.cnetwork.exception.EUFInconsistencyException;
 import org.snt.inmemantlr.GenericParser;
 import org.snt.inmemantlr.exceptions.IllegalWorkflowException;
 import org.snt.inmemantlr.listener.DefaultListener;
@@ -26,6 +27,10 @@ public class CnetworkParser {
 
 
     public CnetworkParser(InputFormat inputFormat) {
+        this(inputFormat,false);
+    }
+
+    public CnetworkParser(InputFormat inputFormat, boolean eufEnabled) {
 
         this.inputFormat = inputFormat;
 
@@ -34,13 +39,15 @@ public class CnetworkParser {
         String s = FileUtils.getStringFromStream(is);
 
         this.gp = new GenericParser(s);
-        this.provider = inputFormat.getProvider();
+        this.provider = inputFormat.getProvider(eufEnabled);
         this.ctx = null;
         this.gp.setListener(provider.getListener());
         this.gp.compile();
     }
 
-    public ConstraintNetwork getCNfromFile(String path) {
+
+    public ConstraintNetwork getCNfromFile(String path) throws
+            EUFInconsistencyException {
 
         byte[] encoded = null;
         try {

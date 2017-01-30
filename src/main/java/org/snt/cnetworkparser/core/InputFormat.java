@@ -17,7 +17,6 @@ public enum InputFormat {
     private int id;
     private String name;
     private String grammar;
-    private CnetworkProvider listener;
 
     InputFormat(int id, String name, String grammar) {
         this.id = id;
@@ -43,12 +42,16 @@ public enum InputFormat {
         return null;
     }
 
-    public CnetworkProvider getProvider() {
+    public CnetworkProvider getProvider(){
+        return getProvider(false);
+    }
+
+    public CnetworkProvider getProvider(boolean eufEnabled) {
         switch (this) {
-            case SOL: return new SolListener();
-            case CVC4: return new CVC4Listener();
-            case Z3STR2: return new Z3Str2Listener();
-            case S3: return new S3Listener();
+            case SOL: return new SolListener(eufEnabled);
+            case CVC4: return new CVC4Listener(eufEnabled);
+            case Z3STR2: return new Z3Str2Listener(eufEnabled);
+            case S3: return new S3Listener(eufEnabled);
         }
         return null;
     }

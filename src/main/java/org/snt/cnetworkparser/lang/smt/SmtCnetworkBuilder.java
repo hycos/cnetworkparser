@@ -17,7 +17,7 @@ import java.util.List;
 import java.util.Set;
 import java.util.Vector;
 
-public class SmtCnetworkBuilder extends AstProcessor<ConstraintNetwork, Node> {
+public class SmtCnetworkBuilder extends AstProcessor<ConstraintNetworkBuilder, Node> {
 
 
     final static Logger LOGGER = LoggerFactory.getLogger(SmtCnetworkBuilder.class);
@@ -44,10 +44,11 @@ public class SmtCnetworkBuilder extends AstProcessor<ConstraintNetwork, Node> {
 
     protected static TransMap TRANSMAP;
 
-    protected ConstraintNetwork cn = new ConstraintNetwork();
+    protected ConstraintNetworkBuilder cn = null;
 
-    public SmtCnetworkBuilder(Ast ast, final TransMap tm) {
+    public SmtCnetworkBuilder(Ast ast, boolean euf, final TransMap tm) {
         super(ast);
+        cn = new ConstraintNetworkBuilder(euf);
         TRANSMAP = tm;
     }
 
@@ -62,7 +63,7 @@ public class SmtCnetworkBuilder extends AstProcessor<ConstraintNetwork, Node> {
     }
 
     @Override
-    public ConstraintNetwork process() {
+    public ConstraintNetworkBuilder process() {
 
         /**
          * Get regular expression subtrees and translate them
@@ -105,19 +106,19 @@ public class SmtCnetworkBuilder extends AstProcessor<ConstraintNetwork, Node> {
             }
             Operand op = new Operand(varname.getLabel(), kind);
             LOGGER.info("add operand " + op + " " + kind);
-            this.cn.addVertex(op);
+            this.cn.addNode(op);
             ast.removeSubtree(r);
         }
 
         //LOGGER.info(this.ast.toDot());
         // process the remaining tree and build constraint network
-        ConstraintNetwork cn = super.process();
+        ConstraintNetworkBuilder cn = super.process();
         //LOGGER.info(debug());
         return cn;
     }
 
 
-    public ConstraintNetwork getResult() {
+    public ConstraintNetworkBuilder getResult() {
         return this.cn;
     }
 
@@ -198,7 +199,7 @@ public class SmtCnetworkBuilder extends AstProcessor<ConstraintNetwork, Node> {
                 this.smap.put(n, blit);
                 break;
             case "varname":
-                Node v = this.cn.getOperandByLabel(n.getLabel());
+                Node v = this.cn.getNodeByLabel(n.getLabel());
                 assert(v != null);
                 this.smap.put(n, v);
                 break;
@@ -290,6 +291,10 @@ public class SmtCnetworkBuilder extends AstProcessor<ConstraintNetwork, Node> {
         NodeDomain dkind = NodeDomainFactory.INSTANCE.getDomain
                 (kind);
         dkind.setDomain(dkind);
+    }
+
+    public ConstraintNetworkBuilder getConstraintNetworkBuilder() {
+        return this.cn;
     }
 
 

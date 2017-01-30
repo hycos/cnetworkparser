@@ -3,14 +3,14 @@ package org.snt.cnetworkparser.lang.smt;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.snt.cnetwork.core.ConstraintNetwork;
+import org.snt.cnetwork.core.ConstraintNetworkBuilder;
 import org.snt.cnetwork.core.NodeKind;
-import org.snt.cnetworkparser.core.CnetworkProvider;
+import org.snt.cnetworkparser.core.CnetworkCreator;
 import org.snt.inmemantlr.listener.DefaultListener;
-import org.snt.inmemantlr.listener.DefaultTreeListener;
 import org.snt.inmemantlr.tree.Ast;
 
 
-public class S3Listener extends DefaultTreeListener implements CnetworkProvider {
+public class S3Listener extends CnetworkCreator {
 
     public static final SmtCnetworkBuilder.TransMap tm = new SmtCnetworkBuilder.TransMap() {{
         // for regular expressions
@@ -54,8 +54,8 @@ public class S3Listener extends DefaultTreeListener implements CnetworkProvider 
 
     final static Logger LOGGER = LoggerFactory.getLogger(S3Listener.class);
 
-    public S3Listener() {
-        super();
+    public S3Listener(boolean eufEnabled) {
+        super(eufEnabled);
     }
 
     @Override
@@ -65,12 +65,15 @@ public class S3Listener extends DefaultTreeListener implements CnetworkProvider 
 
     @Override
     public ConstraintNetwork getConstraintNetwork() {
-
         Ast ast = this.getAst();
+        SmtCnetworkBuilder builder = new SmtCnetworkBuilder(ast,eufEnabled,tm);
+        return builder.process().getConstraintNetwork();
+    }
 
-        SmtCnetworkBuilder builder = new SmtCnetworkBuilder(ast,tm);
-
+    @Override
+    public ConstraintNetworkBuilder getConstraintNetworkBuilder() {
+        Ast ast = this.getAst();
+        SmtCnetworkBuilder builder = new SmtCnetworkBuilder(ast,eufEnabled,tm);
         return builder.process();
-
     }
 }

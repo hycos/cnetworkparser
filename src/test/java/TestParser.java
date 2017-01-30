@@ -2,6 +2,7 @@ import org.junit.Assert;
 import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.snt.cnetwork.exception.EUFInconsistencyException;
 import org.snt.cnetworkparser.core.CnetworkParser;
 import org.snt.cnetworkparser.core.InputFormat;
 import org.snt.cnetwork.core.ConstraintNetwork;
@@ -122,8 +123,14 @@ public class TestParser {
 
     @Test
     public void testKaluza() {
-        ConstraintNetwork cn  = new CnetworkParser(InputFormat.Z3STR2).
-                getCNfromFile(getPath("kaluza4.z3"));
+        ConstraintNetwork cn = null;
+        try {
+            cn = new CnetworkParser(InputFormat.Z3STR2, true).
+                    getCNfromFile(getPath("kaluza4.z3"));
+        } catch (EUFInconsistencyException e) {
+            LOGGER.error(e.getMessage());
+            Assert.assertTrue(false);
+        }
         LOGGER.info(cn.toDot());
     }
 }
