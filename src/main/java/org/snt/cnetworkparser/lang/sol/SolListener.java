@@ -7,10 +7,11 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.snt.cnetwork.core.*;
 import org.snt.cnetwork.core.domain.*;
+import org.snt.cnetwork.exception.EUFInconsistencyException;
 import org.snt.cnetwork.exception.IllegalDomainException;
 import org.snt.cnetwork.utils.DomainUtils;
 import org.snt.cnetwork.utils.EscapeUtils;
-import org.snt.cnetworkparser.core.CnetworkProvider;
+import org.snt.cnetworkparser.core.ConstraintNetworkProvider;
 import org.snt.cnetworkparser.exception.UnknownException;
 import org.snt.cnetworkparser.threatmodels.ThreatModelFactory;
 import org.snt.cnetworkparser.utils.StringUtils;
@@ -20,7 +21,7 @@ import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
 
-public class SolListener extends DefaultListener implements CnetworkProvider {
+public class SolListener extends DefaultListener implements ConstraintNetworkProvider {
 
     final static Logger LOGGER = LoggerFactory.getLogger(SolListener.class);
 
@@ -48,7 +49,7 @@ public class SolListener extends DefaultListener implements CnetworkProvider {
         this.cbuilder.addNode(op);
     }
 
-    public Operation addConstraint(BasicConstraint con) {
+    public Operation addConstraint(BasicConstraint con) throws EUFInconsistencyException {
         return this.cbuilder.addConstraint(con.opKind, con.nodes.toArray(new
                 Node [con.nodes.size()]));
     }
@@ -158,7 +159,11 @@ public class SolListener extends DefaultListener implements CnetworkProvider {
             case "constraint":
                 NodeKind okind = NodeKind.KindFromString(this.ctx.pop().value);
                 constraint.setOpKind(okind);
-                handleConstraint();
+                try {
+                    handleConstraint();
+                } catch (EUFInconsistencyException e) {
+                    // @TODO: change this lateron
+                }
                 this.ctx.leaveOldCtx();
                 break;
             case "link":
@@ -436,7 +441,7 @@ public class SolListener extends DefaultListener implements CnetworkProvider {
         dkind.setDomain(dkind);
     }
 
-    private Operation handleConstraint() {
+    private Operation handleConstraint() throws EUFInconsistencyException {
         //LOGGER.info("HANDLE " + this.ctx.getRecentCxt().getName());
         List<Node> nods = this.ctx.getNodesForCtx();
         //LOGGER.info("SS " + nods.size());

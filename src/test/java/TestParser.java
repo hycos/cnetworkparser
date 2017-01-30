@@ -2,10 +2,12 @@ import org.junit.Assert;
 import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.snt.cnetwork.exception.EUFInconsistencyException;
-import org.snt.cnetworkparser.core.CnetworkParser;
-import org.snt.cnetworkparser.core.InputFormat;
 import org.snt.cnetwork.core.ConstraintNetwork;
+import org.snt.cnetwork.core.ConstraintNetworkBuilder;
+import org.snt.cnetwork.exception.EUFInconsistencyException;
+import org.snt.cnetworkparser.core.ConstraintNetworkParser;
+import org.snt.cnetworkparser.core.InputFormat;
+import org.snt.inmemantlr.exceptions.CompilationException;
 
 import java.io.File;
 
@@ -21,24 +23,25 @@ public class TestParser {
 
     @Test
     public void testSol() {
-
-        //ConstraintNetwork cn  = new CnetworkParser(InputFormat.SOL).
-        //        getCNfromFile(getPath("1.sol"));
-
-        //Assert.assertTrue(cn != null);
-
-        ConstraintNetwork cn  = new CnetworkParser(InputFormat.SOL).
-                getCNfromFile(getPath("2.sol"));
-
-        LOGGER.info(cn.toDot());
-
+        ConstraintNetwork cn = null;
+        try {
+            cn = new ConstraintNetworkParser(InputFormat
+                    .SOL).
+                    getConstraintNetworkFromFile(getPath("2.sol"));
+        } catch (EUFInconsistencyException | CompilationException e) {
+            Assert.assertFalse(true);
+        }
     }
 
     @Test
     public void testCVC() {
-
-        ConstraintNetwork cn  = new CnetworkParser(InputFormat.CVC4).
-                getCNfromFile(getPath("1.cvc"));
+        ConstraintNetwork cn = null;
+        try {
+            cn = new ConstraintNetworkParser(InputFormat.CVC4).
+                    getConstraintNetworkFromFile(getPath("1.cvc"));
+        }  catch (EUFInconsistencyException | CompilationException e) {
+            Assert.assertFalse(true);
+        }
         Assert.assertTrue(cn != null);
 
         LOGGER.info(cn.toConfig());
@@ -47,8 +50,13 @@ public class TestParser {
     @Test
     public void testS3() {
 
-        ConstraintNetwork cn  = new CnetworkParser(InputFormat.S3).
-                getCNfromFile(getPath("1.s3"));
+        ConstraintNetwork cn  = null;
+        try {
+            cn = new ConstraintNetworkParser(InputFormat.S3).
+                    getConstraintNetworkFromFile(getPath("1.s3"));
+        } catch (EUFInconsistencyException | CompilationException e) {
+            Assert.assertFalse(true);
+        }
 
 
         Assert.assertTrue(cn != null);
@@ -57,80 +65,59 @@ public class TestParser {
 
     @Test
     public void testZ3() {
-
-        /**ConstraintNetwork cn  = new CnetworkParser(InputFormat.Z3STR2).
-                getCNfromFile(getPath("2.z3"));
-
-        LOGGER.debug(cn.toDot());
-
-        String t = "\\";**/
-
-        //ConstraintNetwork cn  = new CnetworkParser(InputFormat.Z3STR2).
-        //        getCNfromFile(getPath("1.z3"));
-
-        //Assert.assertTrue(cn != null);
-        //ConstraintNetwork cn  = new CnetworkParser(InputFormat.Z3STR2).
-        //        getCNfromFile(getPath("beasties10.z3"));
-
-        //Assert.assertNotNull(cn);
-
-        //ConstraintNetwork cn  = new CnetworkParser(InputFormat.Z3STR2).
-        //        getCNfromFile(getPath("htmlCleaner11.z3"));
-
-        //ConstraintNetwork cn  = new CnetworkParser(InputFormat.Z3STR2).
-        //       getCNfromFile(getPath("mathParser1.z3"));
-
-        //Assert.assertNotNull(cn);
-
-        //ConstraintNetwork cn  = new CnetworkParser(InputFormat.Z3STR2).
-        //        getCNfromFile(getPath("t01.z3"));
-
-        //ConstraintNetwork cn  = new CnetworkParser(InputFormat.Z3STR2).
-        //        getCNfromFile(getPath("t02.z3"));
-
-
-
-
-        ConstraintNetwork cn  = new CnetworkParser(InputFormat.Z3STR2).
-                getCNfromFile(getPath("pisa/pisa-002.z3"));
-
-
-
+        ConstraintNetwork cn  = null;
+        try {
+            cn = new ConstraintNetworkParser(InputFormat
+                    .Z3STR2).
+                    getConstraintNetworkFromFile(getPath("pisa/pisa-002.z3"));
+        } catch (EUFInconsistencyException | CompilationException e) {
+            Assert.assertFalse(true);
+        }
 
         LOGGER.debug(cn.toDot());
-
-
     }
 
     @Test
     public void testSamples() {
-
-        ConstraintNetwork cn  = new CnetworkParser(InputFormat.SOL).
-                getCNfromFile(getPath("simple01.sol"));
-
+        ConstraintNetwork cn = null;
+        try {
+            cn = new ConstraintNetworkParser(InputFormat
+                    .SOL).
+                    getConstraintNetworkFromFile(getPath("simple01.sol"));
+        } catch (EUFInconsistencyException | CompilationException e) {
+            Assert.assertFalse(true);
+        }
         LOGGER.info(cn.toDot());
-
         Assert.assertTrue(cn != null);
 
     }
 
     @Test
     public void testZ3Num(){
-        ConstraintNetwork cn  = new CnetworkParser(InputFormat.Z3STR2).
-                getCNfromFile(getPath("z3num.z3"));
+        ConstraintNetwork cn = null;
+        try {
+            cn = new ConstraintNetworkParser(InputFormat
+                    .Z3STR2).
+                    getConstraintNetworkFromFile(getPath("z3num.z3"));
+        } catch (EUFInconsistencyException | CompilationException e) {
+            Assert.assertFalse(true);
+        }
         LOGGER.info(cn.toDot());
     }
 
     @Test
-    public void testKaluza() {
-        ConstraintNetwork cn = null;
+    public void testKaluzaEUF() {
+        ConstraintNetworkBuilder cn = null;
         try {
-            cn = new CnetworkParser(InputFormat.Z3STR2, true).
-                    getCNfromFile(getPath("kaluza4.z3"));
-        } catch (EUFInconsistencyException e) {
-            LOGGER.error(e.getMessage());
-            Assert.assertTrue(false);
+            cn = new ConstraintNetworkParser(InputFormat.Z3STR2, true).
+                    getConstraintNetworkBuilderFromFile(getPath("kaluza4.z3"));
+        } catch (EUFInconsistencyException | CompilationException e) {
+            Assert.assertFalse(true);
         }
-        LOGGER.info(cn.toDot());
+
+        LOGGER.debug(cn.getEufLattice().toDot());
+
     }
+
+
 }

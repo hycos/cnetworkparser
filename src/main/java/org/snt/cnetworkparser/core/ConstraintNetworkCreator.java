@@ -3,10 +3,12 @@ package org.snt.cnetworkparser.core;
 import org.snt.inmemantlr.listener.DefaultTreeListener;
 
 
-public abstract class CnetworkCreator extends DefaultTreeListener implements
-        CnetworkProvider {
+public abstract class ConstraintNetworkCreator extends DefaultTreeListener implements
+        ConstraintNetworkProvider {
+
     protected boolean eufEnabled = false;
-    public CnetworkCreator(boolean eufEnabled) {
+
+    public ConstraintNetworkCreator(boolean eufEnabled) {
         this.eufEnabled = eufEnabled;
     }
 }

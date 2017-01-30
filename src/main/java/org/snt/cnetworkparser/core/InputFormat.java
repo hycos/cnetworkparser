@@ -42,11 +42,11 @@ public enum InputFormat {
         return null;
     }
 
-    public CnetworkProvider getProvider(){
+    public ConstraintNetworkProvider getProvider(){
         return getProvider(false);
     }
 
-    public CnetworkProvider getProvider(boolean eufEnabled) {
+    public ConstraintNetworkProvider getProvider(boolean eufEnabled) {
         switch (this) {
             case SOL: return new SolListener(eufEnabled);
             case CVC4: return new CVC4Listener(eufEnabled);

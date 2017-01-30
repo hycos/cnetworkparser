@@ -5,12 +5,14 @@ import org.slf4j.LoggerFactory;
 import org.snt.cnetwork.core.ConstraintNetwork;
 import org.snt.cnetwork.core.ConstraintNetworkBuilder;
 import org.snt.cnetwork.core.NodeKind;
-import org.snt.cnetworkparser.core.CnetworkCreator;
+import org.snt.cnetwork.exception.EUFInconsistencyException;
+import org.snt.cnetworkparser.core.ConstraintNetworkCreator;
+import org.snt.inmemantlr.exceptions.AstProcessorException;
 import org.snt.inmemantlr.listener.DefaultListener;
 import org.snt.inmemantlr.tree.Ast;
 
 
-public class CVC4Listener extends CnetworkCreator {
+public class CVC4Listener extends ConstraintNetworkCreator {
 
     final static Logger LOGGER = LoggerFactory.getLogger(CVC4Listener.class);
 
@@ -63,16 +65,24 @@ public class CVC4Listener extends CnetworkCreator {
 
 
     @Override
-    public ConstraintNetwork getConstraintNetwork() {
+    public ConstraintNetwork getConstraintNetwork() throws EUFInconsistencyException {
         Ast ast = this.getAst();
         SmtCnetworkBuilder builder = new SmtCnetworkBuilder(ast,eufEnabled,tm);
-        return builder.process().getConstraintNetwork();
+        try {
+            return builder.process().getConstraintNetwork();
+        } catch (AstProcessorException e) {
+            throw new EUFInconsistencyException(e.getMessage());
+        }
     }
 
     @Override
-    public ConstraintNetworkBuilder getConstraintNetworkBuilder() {
+    public ConstraintNetworkBuilder getConstraintNetworkBuilder() throws EUFInconsistencyException {
         Ast ast = this.getAst();
         SmtCnetworkBuilder builder = new SmtCnetworkBuilder(ast,eufEnabled,tm);
-        return builder.process();
+        try {
+            return builder.process();
+        } catch (AstProcessorException e) {
+            throw new EUFInconsistencyException(e.getMessage());
+        }
     }
 }

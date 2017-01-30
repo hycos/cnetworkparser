@@ -6,9 +6,11 @@ import org.snt.cnetwork.core.*;
 import org.snt.cnetwork.core.domain.DomainKind;
 import org.snt.cnetwork.core.domain.NodeDomain;
 import org.snt.cnetwork.core.domain.NodeDomainFactory;
+import org.snt.cnetwork.exception.EUFInconsistencyException;
 import org.snt.cnetwork.exception.IllegalDomainException;
 import org.snt.cnetworkparser.utils.QuadrupleMap;
 import org.snt.cnetworkparser.utils.StringUtils;
+import org.snt.inmemantlr.exceptions.AstProcessorException;
 import org.snt.inmemantlr.tree.Ast;
 import org.snt.inmemantlr.tree.AstNode;
 import org.snt.inmemantlr.tree.AstProcessor;
@@ -17,7 +19,8 @@ import java.util.List;
 import java.util.Set;
 import java.util.Vector;
 
-public class SmtCnetworkBuilder extends AstProcessor<ConstraintNetworkBuilder, Node> {
+public class SmtCnetworkBuilder extends
+        AstProcessor<ConstraintNetworkBuilder, Node> {
 
 
     final static Logger LOGGER = LoggerFactory.getLogger(SmtCnetworkBuilder.class);
@@ -63,7 +66,7 @@ public class SmtCnetworkBuilder extends AstProcessor<ConstraintNetworkBuilder, N
     }
 
     @Override
-    public ConstraintNetworkBuilder process() {
+    public ConstraintNetworkBuilder process() throws AstProcessorException {
 
         /**
          * Get regular expression subtrees and translate them
@@ -74,7 +77,9 @@ public class SmtCnetworkBuilder extends AstProcessor<ConstraintNetworkBuilder, N
         for(Ast r : regex) {
             //LOGGER.info(r.toDot());
             SmtRegexBuilder regexbuilder = new SmtRegexBuilder(r,TRANSMAP);
-            String sregex = regexbuilder.process();
+            String sregex = null;
+            sregex = regexbuilder.process();
+
             //LOGGER.info("REGEX " + sregex);
             // print changed tree
             Ast replacement = new Ast("rlit", sregex);
@@ -112,7 +117,11 @@ public class SmtCnetworkBuilder extends AstProcessor<ConstraintNetworkBuilder, N
 
         //LOGGER.info(this.ast.toDot());
         // process the remaining tree and build constraint network
-        ConstraintNetworkBuilder cn = super.process();
+
+        ConstraintNetworkBuilder cn = null;
+
+        cn = super.process();
+
         //LOGGER.info(debug());
         return cn;
     }
@@ -132,7 +141,7 @@ public class SmtCnetworkBuilder extends AstProcessor<ConstraintNetworkBuilder, N
     }
 
     @Override
-    protected void process(AstNode n) {
+    protected void process(AstNode n) throws AstProcessorException {
 
         LOGGER.info("ID " + n.getId() + " " + n.getRule() + " " + n.getLabel());
 
@@ -239,8 +248,13 @@ public class SmtCnetworkBuilder extends AstProcessor<ConstraintNetworkBuilder, N
                     // determined by the predicate
                     LOGGER.debug("ASSERTION " + c.getLabel());
 
-                    Node constraint = cn.addConstraint(NodeKind.BOOL_EQUALS, top, c);
-                    this.smap.put(n, constraint);
+                Node constraint = null;
+                try {
+                    constraint = cn.addConstraint(NodeKind.BOOL_EQUALS, top, c);
+                } catch (EUFInconsistencyException e) {
+                    throw new AstProcessorException(e.getMessage());
+                }
+                this.smap.put(n, constraint);
                 //} else {
                 //    simpleProp(n);
                 //}

@@ -4,8 +4,10 @@ import org.antlr.v4.runtime.ParserRuleContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.snt.cnetwork.core.ConstraintNetwork;
+import org.snt.cnetwork.core.ConstraintNetworkBuilder;
 import org.snt.cnetwork.exception.EUFInconsistencyException;
 import org.snt.inmemantlr.GenericParser;
+import org.snt.inmemantlr.exceptions.CompilationException;
 import org.snt.inmemantlr.exceptions.IllegalWorkflowException;
 import org.snt.inmemantlr.listener.DefaultListener;
 import org.snt.inmemantlr.utils.FileUtils;
@@ -15,22 +17,24 @@ import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 
-public class CnetworkParser {
+public class ConstraintNetworkParser {
 
-    final static Logger LOGGER = LoggerFactory.getLogger(CnetworkParser.class);
+    final static Logger LOGGER = LoggerFactory.getLogger(ConstraintNetworkParser.class);
 
     private GenericParser gp = null;
     private ParserRuleContext ctx = null;
     private DefaultListener rl = null;
     private InputFormat inputFormat;
-    private CnetworkProvider provider = null;
+    private ConstraintNetworkProvider provider = null;
 
 
-    public CnetworkParser(InputFormat inputFormat) {
+    public ConstraintNetworkParser(InputFormat inputFormat) throws
+            CompilationException {
         this(inputFormat,false);
     }
 
-    public CnetworkParser(InputFormat inputFormat, boolean eufEnabled) {
+    public ConstraintNetworkParser(InputFormat inputFormat, boolean
+            eufEnabled) throws CompilationException {
 
         this.inputFormat = inputFormat;
 
@@ -46,8 +50,7 @@ public class CnetworkParser {
     }
 
 
-    public ConstraintNetwork getCNfromFile(String path) throws
-            EUFInconsistencyException {
+    public ConstraintNetwork getConstraintNetworkFromFile(String path) throws EUFInconsistencyException {
 
         byte[] encoded = null;
         try {
@@ -67,6 +70,25 @@ public class CnetworkParser {
         ConstraintNetwork cn = this.provider.getConstraintNetwork();
         cn.buildNodeIdx();
         return cn;
+    }
+
+    public ConstraintNetworkBuilder getConstraintNetworkBuilderFromFile(String path) throws EUFInconsistencyException {
+
+        byte[] encoded = null;
+        try {
+            encoded = Files.readAllBytes(Paths.get(path));
+        } catch (IOException e) {
+            return null;
+        }
+
+        String s = new String(encoded);
+
+        try {
+            this.gp.parse(s);
+        } catch (IllegalWorkflowException e) {
+            e.printStackTrace();
+        }
+        return this.provider.getConstraintNetworkBuilder();
     }
 
 
