@@ -94,15 +94,31 @@ public class TestParser {
 
     @Test
     public void testZ3Num(){
-        ConstraintNetwork cn = null;
+        ConstraintNetworkBuilder cn = null;
         try {
             cn = new ConstraintNetworkParser(InputFormat
                     .Z3STR2).
-                    getConstraintNetworkFromFile(getPath("z3num.z3"));
+                    getConstraintNetworkBuilderFromFile(getPath("z3num.z3"));
         } catch (EUFInconsistencyException | CompilationException e) {
             Assert.assertFalse(true);
         }
-        LOGGER.info(cn.toDot());
+        LOGGER.info("euf");
+        LOGGER.info(cn.getEufLattice().toDot());
+    }
+
+    @Test
+    public void testZ3Lencheck(){
+        ConstraintNetworkBuilder cn = null;
+        try {
+            cn = new ConstraintNetworkParser(InputFormat
+                    .Z3STR2, true).
+                    getConstraintNetworkBuilderFromFile(getPath("lencheck.z3"));
+        } catch (EUFInconsistencyException | CompilationException e) {
+            Assert.assertFalse(true);
+        }
+        LOGGER.info("euf");
+        LOGGER.debug(cn.getConstraintNetwork().toDot());
+        LOGGER.info(cn.getEufLattice().toDot());
     }
 
     @Test
@@ -116,7 +132,20 @@ public class TestParser {
         }
 
         LOGGER.debug(cn.getEufLattice().toDot());
+    }
 
+    @Test
+    public void testIdxOfEUF() {
+        ConstraintNetworkBuilder cn = null;
+        try {
+            cn = new ConstraintNetworkParser(InputFormat.Z3STR2, true).
+                    getConstraintNetworkBuilderFromFile(getPath
+                            ("pisa-004t.z3"));
+        } catch (EUFInconsistencyException | CompilationException e) {
+            Assert.assertFalse(true);
+        }
+
+        LOGGER.debug(cn.getEufLattice().toDot());
     }
 
 

@@ -122,9 +122,7 @@ public class SmtCnetworkBuilder extends
         //LOGGER.info(this.ast.toDot());
         // process the remaining tree and build constraint network
 
-        ConstraintNetworkBuilder cn = null;
-
-        cn = super.process();
+        ConstraintNetworkBuilder cn = super.process();
 
         //LOGGER.info(debug());
         return cn;
