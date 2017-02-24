@@ -285,7 +285,7 @@ public class SmtCnetworkBuilder extends
                         //par3.setDomain(NodeDomainFactory.DBTRUE);
 
 
-                        Operation ite = cn.addOperation(NodeKind.ITE,
+                        Node ite = cn.addOperation(NodeKind.ITE,
                                 par1, par2, par3);
 
                         this.smap.put(n, ite);

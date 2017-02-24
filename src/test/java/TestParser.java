@@ -149,4 +149,20 @@ public class TestParser {
     }
 
 
+    @Test
+    public void testLogic() {
+        ConstraintNetworkBuilder cn = null;
+        try {
+            cn = new ConstraintNetworkParser(InputFormat.LOGIC, true).
+                    getConstraintNetworkBuilderFromFile(getPath
+                            ("test0.logic"));
+        } catch (EUFInconsistencyException | CompilationException e) {
+            Assert.assertFalse(true);
+        }
+
+        LOGGER.debug(cn.getConstraintNetwork().toDot());
+    }
+
+
+
 }

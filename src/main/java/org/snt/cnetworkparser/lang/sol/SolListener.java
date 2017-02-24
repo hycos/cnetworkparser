@@ -53,7 +53,8 @@ public class SolListener extends DefaultListener implements ConstraintNetworkPro
         }
     }
 
-    public Operation addConstraint(BasicConstraint con) throws EUFInconsistencyException {
+    public Node addConstraint(BasicConstraint con) throws
+            EUFInconsistencyException {
         return this.cbuilder.addConstraint(con.opKind, con.nodes.toArray(new
                 Node [con.nodes.size()]));
     }
@@ -388,7 +389,7 @@ public class SolListener extends DefaultListener implements ConstraintNetworkPro
         NodeKind okind = NodeKind.KindFromString(skind);
 
         //LOGGER.info("OKIND " + okind);
-        Operation newop = null;
+        Node newop = null;
 
         // infer the types for overloaded operators (==)
 
@@ -464,7 +465,7 @@ public class SolListener extends DefaultListener implements ConstraintNetworkPro
         dkind.setDomain(dkind);
     }
 
-    private Operation handleConstraint() throws EUFInconsistencyException {
+    private Node handleConstraint() throws EUFInconsistencyException {
         //LOGGER.info("HANDLE " + this.ctx.getRecentCxt().getName());
         List<Node> nods = this.ctx.getNodesForCtx();
         //LOGGER.info("SS " + nods.size());
@@ -493,7 +494,7 @@ public class SolListener extends DefaultListener implements ConstraintNetworkPro
             }
             assert constraint.opKind != null;
 
-            Operation c = addConstraint(constraint);
+            Node c = addConstraint(constraint);
 
             if (negate) {
                 c.setDomain(NodeDomainFactory.INSTANCE.getDomain
