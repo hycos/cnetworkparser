@@ -32,7 +32,7 @@ public class LogicListener extends ConstraintNetworkCreator {
     @Override
     public ConstraintNetwork getConstraintNetwork() throws EUFInconsistencyException {
         Ast ast = this.getAst();
-        SimpleLogic builder = new SimpleLogic(ast,eufEnabled);
+        LogicBuilder builder = new LogicBuilder(ast,eufEnabled);
         try {
             return builder.process().getConstraintNetwork();
         } catch (AstProcessorException e) {
@@ -43,7 +43,7 @@ public class LogicListener extends ConstraintNetworkCreator {
     @Override
     public ConstraintNetworkBuilder getConstraintNetworkBuilder() throws EUFInconsistencyException {
         Ast ast = this.getAst();
-        SimpleLogic builder = new SimpleLogic(ast,eufEnabled);
+        LogicBuilder builder = new LogicBuilder(ast,eufEnabled);
         try {
             return builder.process();
         } catch (AstProcessorException e) {

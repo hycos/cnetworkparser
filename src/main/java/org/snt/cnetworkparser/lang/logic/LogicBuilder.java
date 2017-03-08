@@ -13,20 +13,20 @@ import org.snt.inmemantlr.tree.AstNode;
 import org.snt.inmemantlr.tree.AstProcessor;
 
 
-public class SimpleLogic extends
+public class LogicBuilder extends
         AstProcessor<ConstraintNetworkBuilder, Node> {
 
 
     protected ConstraintNetworkBuilder cn = null;
 
-    final static Logger LOGGER = LoggerFactory.getLogger(SimpleLogic.class);
+    final static Logger LOGGER = LoggerFactory.getLogger(LogicBuilder.class);
 
     /**
      * constructor
      *
      * @param ast abstract syntax tree to process
      */
-    public SimpleLogic(Ast ast, boolean eufEnabled) {
+    public LogicBuilder(Ast ast, boolean eufEnabled) {
         super(ast);
 
         LOGGER.debug(ast.toDot());
