@@ -49,7 +49,7 @@ public class Xss extends ThreatModel {
 
         ConstraintNetworkBuilder cn = new ConstraintNetworkBuilder();
         Node op = new Operand(xss, NodeKind.STRREXP);
-        cn.addNode(op);
+        cn.addOperand(NodeKind.STRREXP, xss);
         cn.setStartNode(op);
         return cn;
     }

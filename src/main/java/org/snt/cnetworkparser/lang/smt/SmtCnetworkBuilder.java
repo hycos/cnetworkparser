@@ -111,11 +111,9 @@ public class SmtCnetworkBuilder extends
             }
             Operand op = new Operand(varname.getLabel(), kind);
             LOGGER.info("add operand " + op + " " + kind);
-            try {
-                this.cn.addNode(op);
-            } catch (EUFInconsistencyException e) {
-                throw new AstProcessorException(e.getMessage());
-            }
+
+            //this.cn.addNode(op);
+            cn.addOperand(kind, varname.getLabel());
             ast.removeSubtree(r);
         }
 
@@ -191,7 +189,10 @@ public class SmtCnetworkBuilder extends
                         for (Node p : params) {
                             no += p.getLabel();
                         }
-                        op = this.cn.addNode(new Operand(no, NodeKind.NUMLIT));
+                        //op = this.cn.addNode(new Operand(no, NodeKind
+                        // .NUMLIT));
+
+                        op = cn.addOperand(NodeKind.NUMLIT, no);
                         LOGGER.info("add transformed node " + op.getLabel());
                     } else {
                         // sometimes the indexof operator assumes a startin index
@@ -207,29 +208,41 @@ public class SmtCnetworkBuilder extends
                     this.smap.put(n, op);
                     break;
                 case "boollit":
-                    Node blit = this.cn.addNode(new Operand(n.getLabel(), NodeKind.BOOLLIT));
+                    //Node blit = this.cn.addNode(new Operand(n.getLabel(),
+                    //    NodeKind.BOOLLIT));
+                    Node blit = cn.addOperand(NodeKind.BOOLLIT, n.getLabel());
                     this.smap.put(n, blit);
                     break;
                 case "varname":
-                    Node v = this.cn.getNodeByLabel(n.getLabel());
+                    LOGGER.debug(cn.getConstraintNetwork().toDot());
+                    Node v = cn.getNodeByLabel(n.getLabel());
                     assert (v != null);
                     this.smap.put(n, v);
                     break;
                 case "rlit":
                     //LOGGER.info("rlit " + n.getLabel());
-                    Node r = this.cn.addNode(new Operand(n.getLabel(), NodeKind.STRREXP));
+                    //Node r = this.cn.addNode(new Operand(n.getLabel(),
+                    //    NodeKind.STRREXP));
+
+                    Node r = cn.addOperand(NodeKind.STRREXP, n.getLabel());
                     this.smap.put(n, r);
                     break;
                 case "strlit":
                     assert (n.getLabel().length() >= 2);
                     String lbl = n.getLabel().substring(1, n.getLabel().length() - 1);
                     lbl = StringUtils.unescapeSpecialCharacters(lbl);
-                    this.smap.put(n, cn.addNode(new Operand(StringUtils.escapeSpecialCharacters(lbl), NodeKind.STRLIT)));
+
+                    Node nn = cn.addOperand(NodeKind.STRLIT, StringUtils
+                            .escapeSpecialCharacters(lbl));
+                    this.smap.put(n, nn);
                     break;
                 case "number":
                     LOGGER.info("nunber " + n.getLabel());
-                    Node nlit = this.cn.addNode(new Operand(n.getLabel(), NodeKind.NUMLIT));
-                    this.smap.put(n, nlit);
+                    //Node nlit = this.cn.addNode(new Operand(n.getLabel(),
+                    //    NodeKind.NUMLIT));
+
+                    Node nl = cn.addOperand(NodeKind.NUMLIT, n.getLabel());
+                    this.smap.put(n, nl);
                     break;
                 case "operation":
                 case "param":

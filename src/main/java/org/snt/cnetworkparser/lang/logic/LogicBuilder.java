@@ -5,7 +5,6 @@ import org.slf4j.LoggerFactory;
 import org.snt.cnetwork.core.ConstraintNetworkBuilder;
 import org.snt.cnetwork.core.Node;
 import org.snt.cnetwork.core.NodeKind;
-import org.snt.cnetwork.core.Operand;
 import org.snt.cnetwork.exception.EUFInconsistencyException;
 import org.snt.inmemantlr.exceptions.AstProcessorException;
 import org.snt.inmemantlr.tree.Ast;
@@ -99,8 +98,8 @@ public class LogicBuilder extends
                     }
                     break;
                 case "atom":
-                    Node bool = this.cn.addNode(new Operand(n.getLabel(),
-                            NodeKind.BOOLVAR));
+                    Node bool = this.cn.addOperand(NodeKind.BOOLVAR,n
+                            .getLabel());
                     this.smap.put(n, bool);
                     break;
                 case "s":

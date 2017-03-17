@@ -39,18 +39,21 @@ public class SolListener extends DefaultListener implements ConstraintNetworkPro
         //LOGGER.info("type " + type);
         //LOGGER.info("label " + label);
         if (type.equals("string")) {
-            op = new Operand(label, NodeKind.STRVAR);
+            //op = new Operand(label, NodeKind.STRVAR);
+            cbuilder.addOperand(NodeKind.STRVAR, label);
         } else if (type.equals("int")) {
-            op = new Operand(label, NodeKind.NUMVAR);
+            //op = new Operand(label, NodeKind.NUMVAR);
+            cbuilder.addOperand(NodeKind.NUMVAR, label);
         } else if (type.equals("bool")) {
-            op = new Operand(label, NodeKind.BOOLVAR);
+            //op = new Operand(label, NodeKind.BOOLVAR);
+            cbuilder.addOperand(NodeKind.BOOLVAR, label);
         }
         assert op != null;
-        try {
-            this.cbuilder.addNode(op);
-        } catch (EUFInconsistencyException e) {
-            assert false; // should never ever happen
-        }
+        //try {
+        //    this.cbuilder.addNode(op);
+        //} catch (EUFInconsistencyException e) {
+        //    assert false; // should never ever happen
+        //}
     }
 
     public Node addConstraint(BasicConstraint con) throws
@@ -285,16 +288,15 @@ public class SolListener extends DefaultListener implements ConstraintNetworkPro
             Automaton a = new Automaton(nname);
 
             if (a.getSingleton() != null) {
-                string = new Operand(nname, NodeKind.STRLIT);
+                string = cbuilder.addOperand(NodeKind.STRLIT,nname);
             } else {
-                string = new Operand(nname, NodeKind.STRREXP);
+                string =  cbuilder.addOperand(NodeKind.STRREXP,nname);
             }
 
             NodeDomain nd = new NodeDomain(DomainKind.STRING, a, new NumRange(DomainUtils
                     .getApproxLenRange(a)));
 
             string.setDomain(nd);
-            this.cbuilder.addNode(string);
         }
 
         this.ctx.push(string);
@@ -306,8 +308,7 @@ public class SolListener extends DefaultListener implements ConstraintNetworkPro
 
         Node number = this.cbuilder.getNodeByLabel(name);
         if (number == null) {
-            number = new Operand(name, NodeKind.NUMLIT);
-            cbuilder.addNode(number);
+            cbuilder.addOperand(NodeKind.NUMLIT, name);
         }
         ctx.push(number);
     }
@@ -318,10 +319,7 @@ public class SolListener extends DefaultListener implements ConstraintNetworkPro
 
         Node boollit = this.cbuilder.getNodeByLabel(name);
         if (boollit == null) {
-            boollit = new Operand(name, NodeKind.BOOLLIT);
-
-            //LOGGER.info("ADD NODE  " + boollit.toString());
-            this.cbuilder.addNode(boollit);
+            cbuilder.addOperand(NodeKind.BOOLLIT, name);
         }
         this.ctx.push(boollit);
 
