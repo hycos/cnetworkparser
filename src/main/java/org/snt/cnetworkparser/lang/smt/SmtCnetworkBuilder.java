@@ -3,11 +3,8 @@ package org.snt.cnetworkparser.lang.smt;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.snt.cnetwork.core.*;
-import org.snt.cnetwork.core.domain.DomainKind;
-import org.snt.cnetwork.core.domain.NodeDomain;
 import org.snt.cnetwork.core.domain.NodeDomainFactory;
 import org.snt.cnetwork.exception.EUFInconsistencyException;
-import org.snt.cnetwork.exception.IllegalDomainException;
 import org.snt.cnetworkparser.utils.QuadrupleMap;
 import org.snt.cnetworkparser.utils.StringUtils;
 import org.snt.inmemantlr.exceptions.AstProcessorException;
@@ -49,9 +46,9 @@ public class SmtCnetworkBuilder extends
 
     protected ConstraintNetworkBuilder cn = null;
 
-    public SmtCnetworkBuilder(Ast ast, boolean euf, final TransMap tm) {
+    public SmtCnetworkBuilder(Ast ast, final TransMap tm) {
         super(ast);
-        cn = new ConstraintNetworkBuilder(euf);
+        cn = new ConstraintNetworkBuilder();
         TRANSMAP = tm;
     }
 
@@ -109,8 +106,8 @@ public class SmtCnetworkBuilder extends
                     kind = NodeKind.NUMVAR;
                     break;
             }
-            Operand op = new Operand(varname.getLabel(), kind);
-            LOGGER.info("add operand " + op + " " + kind);
+
+
 
             //this.cn.addNode(op);
             cn.addOperand(kind, varname.getLabel());
@@ -215,6 +212,7 @@ public class SmtCnetworkBuilder extends
                     break;
                 case "varname":
                     LOGGER.debug(cn.getConstraintNetwork().toDot());
+                    LOGGER.debug(cn.getEufLattice().toDot());
                     Node v = cn.getNodeByLabel(n.getLabel());
                     assert (v != null);
                     this.smap.put(n, v);
@@ -307,23 +305,6 @@ public class SmtCnetworkBuilder extends
         } catch (EUFInconsistencyException e) {
             throw new AstProcessorException(e.getMessage());
         }
-    }
-
-    private void alterDomain(Node n, DomainKind newKind) {
-        NodeKind kind = n.getKind();
-        try {
-            kind.setDomainKind(newKind);
-        } catch (IllegalDomainException e) {
-            LOGGER.error(e.getMessage());
-            System.exit(-1);
-        }
-        NodeDomain dkind = NodeDomainFactory.INSTANCE.getDomain
-                (kind);
-        dkind.setDomain(dkind);
-    }
-
-    public ConstraintNetworkBuilder getConstraintNetworkBuilder() {
-        return this.cn;
     }
 
 

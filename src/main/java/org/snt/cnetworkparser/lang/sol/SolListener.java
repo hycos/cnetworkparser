@@ -30,8 +30,8 @@ public class SolListener extends DefaultListener implements ConstraintNetworkPro
     private ConstraintNetworkBuilder cbuilder = null;
 
 
-    public SolListener(boolean eufEnabled) {
-        this.cbuilder = new ConstraintNetworkBuilder(eufEnabled);
+    public SolListener() {
+        this.cbuilder = new ConstraintNetworkBuilder();
     }
 
     public void addVariable(String type, String label) {

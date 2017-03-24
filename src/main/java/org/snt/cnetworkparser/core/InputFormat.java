@@ -45,17 +45,14 @@ public enum InputFormat {
         return null;
     }
 
-    public ConstraintNetworkProvider getProvider(){
-        return getProvider(false);
-    }
 
-    public ConstraintNetworkProvider getProvider(boolean eufEnabled) {
+    public ConstraintNetworkProvider getProvider() {
         switch (this) {
-            case SOL: return new SolListener(eufEnabled);
-            case CVC4: return new CVC4Listener(eufEnabled);
-            case Z3STR2: return new Z3Str2Listener(eufEnabled);
-            case S3: return new S3Listener(eufEnabled);
-            case LOGIC: return new LogicListener(eufEnabled);
+            case SOL: return new SolListener();
+            case CVC4: return new CVC4Listener();
+            case Z3STR2: return new Z3Str2Listener();
+            case S3: return new S3Listener();
+            case LOGIC: return new LogicListener();
         }
         return null;
     }

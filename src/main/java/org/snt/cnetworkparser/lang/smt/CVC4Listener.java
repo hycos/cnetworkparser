@@ -54,8 +54,8 @@ public class CVC4Listener extends ConstraintNetworkCreator {
     }};
 
 
-    public CVC4Listener(boolean eufEnabled) {
-        super(eufEnabled);
+    public CVC4Listener() {
+        super();
     }
 
     @Override
@@ -67,7 +67,7 @@ public class CVC4Listener extends ConstraintNetworkCreator {
     @Override
     public ConstraintNetwork getConstraintNetwork() throws EUFInconsistencyException {
         Ast ast = this.getAst();
-        SmtCnetworkBuilder builder = new SmtCnetworkBuilder(ast,eufEnabled,tm);
+        SmtCnetworkBuilder builder = new SmtCnetworkBuilder(ast,tm);
         try {
             return builder.process().getConstraintNetwork();
         } catch (AstProcessorException e) {
@@ -78,7 +78,7 @@ public class CVC4Listener extends ConstraintNetworkCreator {
     @Override
     public ConstraintNetworkBuilder getConstraintNetworkBuilder() throws EUFInconsistencyException {
         Ast ast = this.getAst();
-        SmtCnetworkBuilder builder = new SmtCnetworkBuilder(ast,eufEnabled,tm);
+        SmtCnetworkBuilder builder = new SmtCnetworkBuilder(ast,tm);
         try {
             return builder.process();
         } catch (AstProcessorException e) {

@@ -37,7 +37,7 @@ public class Ldapi extends ThreatModel {
     }
 
     private ConstraintNetworkBuilder getLDAPIThreatModel() throws EUFInconsistencyException {
-        ConstraintNetworkBuilder cn = new ConstraintNetworkBuilder(false);
+        ConstraintNetworkBuilder cn = new ConstraintNetworkBuilder();
         Node op = new Operand(ldapBlacklist, NodeKind.STRREXP);
         cn.addOperand(NodeKind.STRREXP, ldapBlacklist);
         cn.setStartNode(op);

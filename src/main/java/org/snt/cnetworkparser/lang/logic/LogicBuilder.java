@@ -25,11 +25,11 @@ public class LogicBuilder extends
      *
      * @param ast abstract syntax tree to process
      */
-    public LogicBuilder(Ast ast, boolean eufEnabled) {
+    public LogicBuilder(Ast ast) {
         super(ast);
 
         LOGGER.debug(ast.toDot());
-        cn = new ConstraintNetworkBuilder(eufEnabled);
+        cn = new ConstraintNetworkBuilder();
     }
 
 

@@ -65,16 +65,18 @@ public class TestParser {
 
     @Test
     public void testZ3() {
-        ConstraintNetwork cn  = null;
+        ConstraintNetworkBuilder cn  = null;
         try {
             cn = new ConstraintNetworkParser(InputFormat
                     .Z3STR2).
-                    getConstraintNetworkFromFile(getPath("pisa/pisa-002.z3"));
+                    getConstraintNetworkBuilderFromFile(getPath("pisa/pisa-002.z3"));
         } catch (EUFInconsistencyException | CompilationException e) {
             Assert.assertFalse(true);
         }
+        LOGGER.debug(cn.getConstraintNetwork().toDot());
+        LOGGER.debug(cn.getEufLattice().toDot());
 
-        LOGGER.debug(cn.toDot());
+
     }
 
     @Test
@@ -111,7 +113,7 @@ public class TestParser {
         ConstraintNetworkBuilder cn = null;
         try {
             cn = new ConstraintNetworkParser(InputFormat
-                    .Z3STR2, true).
+                    .Z3STR2).
                     getConstraintNetworkBuilderFromFile(getPath("lencheck.z3"));
         } catch (EUFInconsistencyException | CompilationException e) {
             Assert.assertFalse(true);
@@ -125,7 +127,7 @@ public class TestParser {
     public void testKaluzaEUF() {
         ConstraintNetworkBuilder cn = null;
         try {
-            cn = new ConstraintNetworkParser(InputFormat.Z3STR2, true).
+            cn = new ConstraintNetworkParser(InputFormat.Z3STR2).
                     getConstraintNetworkBuilderFromFile(getPath("kaluza4.z3"));
         } catch (EUFInconsistencyException | CompilationException e) {
             Assert.assertFalse(true);
@@ -138,7 +140,7 @@ public class TestParser {
     public void testIdxOfEUF() {
         ConstraintNetworkBuilder cn = null;
         try {
-            cn = new ConstraintNetworkParser(InputFormat.Z3STR2, true).
+            cn = new ConstraintNetworkParser(InputFormat.Z3STR2).
                     getConstraintNetworkBuilderFromFile(getPath
                             ("pisa-004t.z3"));
         } catch (EUFInconsistencyException | CompilationException e) {
@@ -153,7 +155,7 @@ public class TestParser {
     public void testLogic() {
         ConstraintNetworkBuilder cn = null;
         try {
-            cn = new ConstraintNetworkParser(InputFormat.LOGIC, true).
+            cn = new ConstraintNetworkParser(InputFormat.LOGIC).
                     getConstraintNetworkBuilderFromFile(getPath
                             ("test0.logic"));
         } catch (EUFInconsistencyException | CompilationException e) {

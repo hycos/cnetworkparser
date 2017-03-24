@@ -28,13 +28,7 @@ public class ConstraintNetworkParser {
     private ConstraintNetworkProvider provider = null;
 
 
-    public ConstraintNetworkParser(InputFormat inputFormat) throws
-            CompilationException {
-        this(inputFormat,false);
-    }
-
-    public ConstraintNetworkParser(InputFormat inputFormat, boolean
-            eufEnabled) throws CompilationException {
+    public ConstraintNetworkParser(InputFormat inputFormat) throws CompilationException {
 
         this.inputFormat = inputFormat;
 
@@ -43,7 +37,7 @@ public class ConstraintNetworkParser {
         String s = FileUtils.getStringFromStream(is);
 
         this.gp = new GenericParser(s);
-        this.provider = inputFormat.getProvider(eufEnabled);
+        this.provider = inputFormat.getProvider();
         this.ctx = null;
         this.gp.setListener(provider.getListener());
         this.gp.compile();

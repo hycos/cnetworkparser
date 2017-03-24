@@ -56,8 +56,8 @@ public class S3Listener extends ConstraintNetworkCreator {
 
     final static Logger LOGGER = LoggerFactory.getLogger(S3Listener.class);
 
-    public S3Listener(boolean eufEnabled) {
-        super(eufEnabled);
+    public S3Listener() {
+
     }
 
     @Override
@@ -68,7 +68,7 @@ public class S3Listener extends ConstraintNetworkCreator {
     @Override
     public ConstraintNetwork getConstraintNetwork() throws EUFInconsistencyException {
         Ast ast = this.getAst();
-        SmtCnetworkBuilder builder = new SmtCnetworkBuilder(ast,eufEnabled,tm);
+        SmtCnetworkBuilder builder = new SmtCnetworkBuilder(ast,tm);
         try {
             return builder.process().getConstraintNetwork();
         } catch (AstProcessorException e) {
@@ -79,7 +79,7 @@ public class S3Listener extends ConstraintNetworkCreator {
     @Override
     public ConstraintNetworkBuilder getConstraintNetworkBuilder() throws EUFInconsistencyException {
         Ast ast = this.getAst();
-        SmtCnetworkBuilder builder = new SmtCnetworkBuilder(ast,eufEnabled,tm);
+        SmtCnetworkBuilder builder = new SmtCnetworkBuilder(ast,tm);
         try {
             return builder.process();
         } catch (AstProcessorException e) {
