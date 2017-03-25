@@ -50,7 +50,7 @@ public class TestThreatModels {
     public void test() {
         ConstraintNetworkBuilder cn = getCNFor(NodeKind.XMLI);
 
-        //LOGGER.info(cn.toDot());
+        LOGGER.debug(cn.getConstraintNetwork().toDot());
     }
 
 

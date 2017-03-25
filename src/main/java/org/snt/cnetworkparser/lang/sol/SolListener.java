@@ -36,24 +36,18 @@ public class SolListener extends DefaultListener implements ConstraintNetworkPro
 
     public void addVariable(String type, String label) {
         Node op = null;
-        //LOGGER.info("type " + type);
-        //LOGGER.info("label " + label);
+
+        LOGGER.info("type " + type);
+        LOGGER.info("label " + label);
+
         if (type.equals("string")) {
-            //op = new Operand(label, NodeKind.STRVAR);
             op = cbuilder.addOperand(NodeKind.STRVAR, label);
         } else if (type.equals("int")) {
-            //op = new Operand(label, NodeKind.NUMVAR);
             op = cbuilder.addOperand(NodeKind.NUMVAR, label);
         } else if (type.equals("bool")) {
-            //op = new Operand(label, NodeKind.BOOLVAR);
             op = cbuilder.addOperand(NodeKind.BOOLVAR, label);
         }
         assert op != null;
-        //try {
-        //    this.cbuilder.addNode(op);
-        //} catch (EUFInconsistencyException e) {
-        //    assert false; // should never ever happen
-        //}
     }
 
     public Node addConstraint(BasicConstraint con) throws
@@ -202,7 +196,7 @@ public class SolListener extends DefaultListener implements ConstraintNetworkPro
     }
 
     private void handleVidentifer(String name) {
-        //LOGGER.info("get " + name);
+        LOGGER.debug("get " + name);
         Node op = this.cbuilder.getNodeByLabel(name);
         assert (op != null);
         this.ctx.push(op);
@@ -281,10 +275,10 @@ public class SolListener extends DefaultListener implements ConstraintNetworkPro
 
         //LOGGER.info("NAME  " + name);
         //LOGGER.info("NNAME  " + nname);
-        Node string = this.cbuilder.getNodeByLabel(name);
+        //Node string = this.cbuilder.getNodeByLabel(name);
 
-
-        if (string == null) {
+        Node string = null;
+       // if (string == null) {
             Automaton a = new Automaton(nname);
 
             if (a.getSingleton() != null) {
@@ -297,32 +291,21 @@ public class SolListener extends DefaultListener implements ConstraintNetworkPro
                     .getApproxLenRange(a)));
 
             string.setDomain(nd);
-        }
+        //}
 
         this.ctx.push(string);
 
     }
 
     private void handleNumber(String name) throws EUFInconsistencyException {
-        //LOGGER.info("NUMBER " + name);
-
-        Node number = this.cbuilder.getNodeByLabel(name);
-        if (number == null) {
-            cbuilder.addOperand(NodeKind.NUMLIT, name);
-        }
+        LOGGER.debug("NUMBER " + name);
+        Node number = cbuilder.addOperand(NodeKind.NUMLIT, name);
         ctx.push(number);
     }
 
     private void handleBoollit(String name) throws EUFInconsistencyException {
-
-        //LOGGER.info("DBOOL " + name);
-
-        Node boollit = this.cbuilder.getNodeByLabel(name);
-        if (boollit == null) {
-            cbuilder.addOperand(NodeKind.BOOLLIT, name);
-        }
+        Node boollit = cbuilder.addOperand(NodeKind.BOOLLIT, name);
         this.ctx.push(boollit);
-
     }
 
     public boolean areString(Collection<Node> nset) {
