@@ -229,9 +229,7 @@ public class SmtCnetworkBuilder extends
                     assert (n.getLabel().length() >= 2);
                     String lbl = n.getLabel().substring(1, n.getLabel().length() - 1);
                     lbl = StringUtils.unescapeSpecialCharacters(lbl);
-
-                    Node nn = cn.addOperand(NodeKind.STRLIT, StringUtils
-                            .escapeSpecialCharacters(lbl));
+                    Node nn = cn.addOperand(NodeKind.STRLIT, lbl);
                     this.smap.put(n, nn);
                     break;
                 case "number":
