@@ -16,7 +16,6 @@
         <version>1.0</version>
     </parent>
 
-
     <dependencies>
         <dependency>
             <groupId>dk.brics.automaton</groupId>
@@ -24,14 +23,13 @@
             <version>1.11-8</version>
         </dependency>
         <dependency>
-            <groupId>org.snt</groupId>
-            <artifactId>cnetwork</artifactId>
-            <version>1.0</version>
-        </dependency>
-        <dependency>
             <groupId>com.github.julianthome</groupId>
             <artifactId>inmemantlr-api</artifactId>
             <version>1.3.3</version>
+        </dependency>
+        <dependency>
+            <groupId>org.snt</groupId>
+            <artifactId>cnetwork</artifactId>
         </dependency>
     </dependencies>
 </project>

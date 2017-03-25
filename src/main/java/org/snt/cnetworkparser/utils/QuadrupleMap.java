@@ -11,8 +11,8 @@ public class QuadrupleMap<FIRST,SECOND,THIRD,FOURTH> {
 
 
     public QuadrupleMap() {
-        this.fmap = new HashMap<FIRST, Quadruple<FIRST,SECOND, THIRD, FOURTH>>();
-        this.smap = new HashMap<SECOND,FIRST>();
+        this.fmap = new HashMap<>();
+        this.smap = new HashMap<>();
     }
 
     public void put(FIRST first, SECOND second ,THIRD third, FOURTH fourth) {

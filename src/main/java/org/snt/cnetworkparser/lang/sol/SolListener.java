@@ -35,18 +35,18 @@ public class SolListener extends DefaultListener implements ConstraintNetworkPro
     }
 
     public void addVariable(String type, String label) {
-        Operand op = null;
+        Node op = null;
         //LOGGER.info("type " + type);
         //LOGGER.info("label " + label);
         if (type.equals("string")) {
             //op = new Operand(label, NodeKind.STRVAR);
-            cbuilder.addOperand(NodeKind.STRVAR, label);
+            op = cbuilder.addOperand(NodeKind.STRVAR, label);
         } else if (type.equals("int")) {
             //op = new Operand(label, NodeKind.NUMVAR);
-            cbuilder.addOperand(NodeKind.NUMVAR, label);
+            op = cbuilder.addOperand(NodeKind.NUMVAR, label);
         } else if (type.equals("bool")) {
             //op = new Operand(label, NodeKind.BOOLVAR);
-            cbuilder.addOperand(NodeKind.BOOLVAR, label);
+            op = cbuilder.addOperand(NodeKind.BOOLVAR, label);
         }
         assert op != null;
         //try {

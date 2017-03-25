@@ -15,8 +15,8 @@ public class TestParser {
 
     final static Logger LOGGER = LoggerFactory.getLogger(TestParser.class);
 
-    private String getPath(String f){
-        ClassLoader classLoader = getClass().getClassLoader();
+    private static String getPath(String f){
+        ClassLoader classLoader = TestParser.class.getClassLoader();
         File sfile = new File(classLoader.getResource(f).getFile());
         return sfile.getAbsolutePath();
     }
@@ -49,7 +49,6 @@ public class TestParser {
 
     @Test
     public void testS3() {
-
         ConstraintNetwork cn  = null;
         try {
             cn = new ConstraintNetworkParser(InputFormat.S3).
@@ -57,26 +56,24 @@ public class TestParser {
         } catch (EUFInconsistencyException | CompilationException e) {
             Assert.assertFalse(true);
         }
-
-
         Assert.assertTrue(cn != null);
-
     }
 
     @Test
     public void testZ3() {
         ConstraintNetworkBuilder cn  = null;
+
+        String s = getPath("pisa/pisa-002.z3");
+        LOGGER.debug("s {}",s);
+
         try {
-            cn = new ConstraintNetworkParser(InputFormat
-                    .Z3STR2).
-                    getConstraintNetworkBuilderFromFile(getPath("pisa/pisa-002.z3"));
+            cn = new ConstraintNetworkParser(InputFormat.Z3STR2).
+                    getConstraintNetworkBuilderFromFile(s);
         } catch (EUFInconsistencyException | CompilationException e) {
             Assert.assertFalse(true);
         }
         LOGGER.debug(cn.getConstraintNetwork().toDot());
         LOGGER.debug(cn.getEufLattice().toDot());
-
-
     }
 
     @Test
