@@ -8,7 +8,6 @@ import org.slf4j.LoggerFactory;
 import org.snt.cnetwork.core.*;
 import org.snt.cnetwork.core.domain.*;
 import org.snt.cnetwork.exception.EUFInconsistencyException;
-import org.snt.cnetwork.exception.IllegalDomainException;
 import org.snt.cnetwork.utils.DomainUtils;
 import org.snt.cnetwork.utils.EscapeUtils;
 import org.snt.cnetworkparser.core.ConstraintNetworkProvider;
@@ -416,7 +415,8 @@ public class SolListener extends DefaultListener implements ConstraintNetworkPro
             else if (params.get(2).isOperation())
                 parop = (Operation) params.get(2);
 
-            if (parop != null) {
+            // @Julian: change lateron
+            /**if (parop != null) {
                 alterDomain(newop, params.get(1).getKind
                         ().getDomainKind());
             } else {
@@ -425,7 +425,7 @@ public class SolListener extends DefaultListener implements ConstraintNetworkPro
                 } else if (params.get(1).isString()) {
                     alterDomain(newop, DomainKind.STRING);
                 }
-            }
+            }**/
         }
 
 
@@ -433,7 +433,7 @@ public class SolListener extends DefaultListener implements ConstraintNetworkPro
         this.ctx.getRecentCxt().getBackref().addNode(newop);
     }
 
-    private void alterDomain(Node n, DomainKind newKind) {
+    /**private void alterDomain(Node n, DomainKind newKind) {
         NodeKind kind = n.getKind();
         try {
             kind.setDomainKind(newKind);
@@ -444,7 +444,7 @@ public class SolListener extends DefaultListener implements ConstraintNetworkPro
         NodeDomain dkind = NodeDomainFactory.INSTANCE.getDomain
                 (kind);
         dkind.setDomain(dkind);
-    }
+    }**/
 
     private Node handleConstraint() throws EUFInconsistencyException {
         //LOGGER.info("HANDLE " + this.ctx.getRecentCxt().getName());
