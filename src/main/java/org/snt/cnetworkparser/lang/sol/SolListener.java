@@ -462,7 +462,7 @@ public class SolListener extends DefaultListener implements ConstraintNetworkPro
 
             //LOGGER.info("OPKIND " + constraint.opKind.getId());
             // type inference
-            if (constraint.opKind == NodeKind.EQUALS || negate) {
+            /**if (constraint.opKind == NodeKind.EQUALS || negate) {
                 if (constraint.isNumeric()) {
                     constraint.setOpKind(NodeKind.NUM_EQUALS);
                 } else if (constraint.isString()) {
@@ -472,7 +472,7 @@ public class SolListener extends DefaultListener implements ConstraintNetworkPro
                 } else {
                     assert (false);
                 }
-            }
+            }**/
             assert constraint.opKind != null;
 
             Node c = addConstraint(constraint);
