@@ -22,6 +22,20 @@ public class TestParser {
     }
 
     @Test
+    public void testMisc0() {
+        ConstraintNetworkBuilder cn = null;
+        boolean thrown = false;
+        try {
+            cn = new ConstraintNetworkParser(InputFormat.Z3STR2).
+                    getConstraintNetworkBuilderFromFile(getPath("misc/ite0.z3"));
+        } catch (EUFInconsistencyException | CompilationException e) {
+           thrown = true;
+        }
+
+        Assert.assertTrue(thrown);
+    }
+
+    @Test
     public void testSol() {
         ConstraintNetwork cn = null;
         try {

@@ -32,9 +32,9 @@ public class Z3Str2Listener extends ConstraintNetworkCreator {
                 .getValue(), NodeKind.INDEXOF);
         put(LanguageElements.INDEXOF, "Indexof2", NodeKind.INDEXOF
                 .getValue(), NodeKind.INDEXOF);
-        put(LanguageElements.INDEXOF, "LastIndexof", NodeKind.INDEXOF.getValue
-                        (), NodeKind.INDEXOF);
-        put(LanguageElements.INDEXOF, "LastIndexOf", NodeKind.INDEXOF.getValue(), NodeKind.INDEXOF);
+        put(LanguageElements.LASTINDEXOF, "LastIndexof", NodeKind.LASTINDEXOF.getValue
+                        (), NodeKind.LASTINDEXOF);
+        put(LanguageElements.LASTINDEXOF, "LastIndexOf", NodeKind.LASTINDEXOF.getValue(), NodeKind.LASTINDEXOF);
         put(LanguageElements.PREFIXOF, "StartsWith", NodeKind.STARTSWITH.getValue(), NodeKind.STARTSWITH);
         put(LanguageElements.SUFFIXOF, "EndsWith", NodeKind.ENDSWITH.getValue(), NodeKind.ENDSWITH);
         put(LanguageElements.SCONCAT, "Concat", NodeKind.CONCAT.getValue(), NodeKind.CONCAT);

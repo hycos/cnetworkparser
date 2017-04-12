@@ -15,6 +15,7 @@ public enum LanguageElements {
     LEN("LEN"),
     CONTAINS("CONTAINS"),
     INDEXOF("INDEXOF"),
+    LASTINDEXOF("LASTINDEXOF"),
     PREFIXOF("PREFIXOF"),
     SUFFIXOF("SUFFIXOF"),
     SCONCAT("SCONCAT"),
