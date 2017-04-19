@@ -22,6 +22,42 @@ public class TestParser {
     }
 
     @Test
+    public void testSimpleNum0() {
+        ConstraintNetworkBuilder cn = null;
+        boolean thrown = false;
+        try {
+            cn = new ConstraintNetworkParser(InputFormat.Z3STR2).
+                    getConstraintNetworkBuilderFromFile(getPath("simplenum" +
+                            "0.z3"));
+        } catch (EUFInconsistencyException | CompilationException e) {
+            thrown = true;
+        }
+
+        LOGGER.debug(cn.getConstraintNetwork().toDot());
+        LOGGER.debug(cn.getEufLattice().toDot());
+
+        Assert.assertFalse(thrown);
+    }
+
+    @Test
+    public void testSimpleNum1() {
+        ConstraintNetworkBuilder cn = null;
+        boolean thrown = false;
+        try {
+            cn = new ConstraintNetworkParser(InputFormat.Z3STR2).
+                    getConstraintNetworkBuilderFromFile(getPath("simplenum" +
+                            "1.z3"));
+        } catch (EUFInconsistencyException | CompilationException e) {
+            thrown = true;
+        }
+
+        LOGGER.debug(cn.getConstraintNetwork().toDot());
+        LOGGER.debug(cn.getEufLattice().toDot());
+
+        Assert.assertFalse(thrown);
+    }
+
+    @Test
     public void testMisc0() {
         ConstraintNetworkBuilder cn = null;
         boolean thrown = false;

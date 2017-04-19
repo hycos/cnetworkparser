@@ -194,9 +194,9 @@ public class SmtCnetworkBuilder extends
                     } else {
                         // sometimes the indexof operator assumes a startin index
                         // of 0 implicitly
-                        if (kind == NodeKind.INDEXOF && params.size() == 2) {
-                            params.add(new Operand("0", NodeKind.NUMLIT));
-                        }
+                        //if (kind == NodeKind.INDEXOF && params.size() == 2) {
+                        //    params.add(new Operand("0", NodeKind.NUMLIT));
+                        //}
 
                         op = this.cn.addOperation(kind, params);
                         LOGGER.info("add Operation " + op.getLabel());
@@ -254,7 +254,7 @@ public class SmtCnetworkBuilder extends
                             (NodeKind.BOOLLIT, "true"));
 
                     assert ((c instanceof Operation) || (c instanceof Operand));
-                    Operand top = new Operand("true", NodeKind.BOOLLIT);
+                    /**Operand top = new Operand("true", NodeKind.BOOLLIT);
 
                     // if then else is an exception the outcome of ITE is
                     // determined by the predicate
@@ -265,8 +265,8 @@ public class SmtCnetworkBuilder extends
                         constraint = cn.addConstraint(NodeKind.BOOL_EQUALS, top, c);
                     } catch (EUFInconsistencyException e) {
                         throw new AstProcessorException(e.getMessage());
-                    }
-                    this.smap.put(n, constraint);
+                    }**/
+                    this.smap.put(n, c);
                     //} else {
                     //    simpleProp(n);
                     //}
