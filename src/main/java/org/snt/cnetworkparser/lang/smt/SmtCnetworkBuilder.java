@@ -250,8 +250,7 @@ public class SmtCnetworkBuilder extends
                     // ite is a special case ... the return value remains
                     // parametrized
                     //if(c.getKind() != NodeKind.ITE) {
-                    c.setDomain(NodeDomainFactory.INSTANCE.getDomain
-                            (NodeKind.BOOLLIT, "true"));
+                    c.setDomain(NodeDomainFactory.DBTRUE);
 
                     assert ((c instanceof Operation) || (c instanceof Operand));
                     /**Operand top = new Operand("true", NodeKind.BOOLLIT);

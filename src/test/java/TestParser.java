@@ -2,14 +2,17 @@ import org.junit.Assert;
 import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.snt.cnetwork.analytics.CnetworkAnalyzer;
 import org.snt.cnetwork.core.ConstraintNetwork;
 import org.snt.cnetwork.core.ConstraintNetworkBuilder;
+import org.snt.cnetwork.core.Node;
 import org.snt.cnetwork.exception.EUFInconsistencyException;
 import org.snt.cnetworkparser.core.ConstraintNetworkParser;
 import org.snt.cnetworkparser.core.InputFormat;
 import org.snt.inmemantlr.exceptions.CompilationException;
 
 import java.io.File;
+import java.util.Set;
 
 public class TestParser {
 
@@ -33,10 +36,14 @@ public class TestParser {
             thrown = true;
         }
 
-        LOGGER.debug(cn.getConstraintNetwork().toDot());
-        LOGGER.debug(cn.getEufLattice().toDot());
+        //LOGGER.debug(cn.getConstraintNetwork().toDot());
+        //LOGGER.debug(cn.getEufLattice().toDot());
 
         Assert.assertFalse(thrown);
+
+
+        CnetworkAnalyzer.INSTANCE.detectLoopPoints(cn.getConstraintNetwork());
+
     }
 
     @Test
@@ -53,6 +60,10 @@ public class TestParser {
 
         LOGGER.debug(cn.getConstraintNetwork().toDot());
         LOGGER.debug(cn.getEufLattice().toDot());
+
+        Set<Node> ret = CnetworkAnalyzer.INSTANCE.detectLoopPoints(cn);
+
+        LOGGER.debug("-- {}", ret);
 
         Assert.assertFalse(thrown);
     }
@@ -193,7 +204,7 @@ public class TestParser {
         } catch (EUFInconsistencyException | CompilationException e) {
             Assert.assertFalse(true);
         }
-
+        CnetworkAnalyzer.INSTANCE.checkForCycles(cn);
         LOGGER.debug(cn.getEufLattice().toDot());
     }
 
