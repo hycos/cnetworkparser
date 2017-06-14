@@ -1,6 +1,6 @@
 package org.snt.cnetworkparser.lang.sol;
 
-import org.snt.cnetwork.core.Node;
+import org.snt.cnetwork.core.graph.Node;
 
 import java.util.LinkedList;
 import java.util.Stack;

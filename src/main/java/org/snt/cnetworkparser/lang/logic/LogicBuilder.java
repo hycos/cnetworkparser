@@ -2,9 +2,9 @@ package org.snt.cnetworkparser.lang.logic;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.snt.cnetwork.core.ConstraintNetworkBuilder;
-import org.snt.cnetwork.core.Node;
-import org.snt.cnetwork.core.NodeKind;
+import org.snt.cnetwork.core.graph.ConstraintNetworkBuilder;
+import org.snt.cnetwork.core.graph.Node;
+import org.snt.cnetwork.core.graph.NodeKind;
 import org.snt.cnetwork.exception.EUFInconsistencyException;
 import org.snt.inmemantlr.exceptions.AstProcessorException;
 import org.snt.inmemantlr.tree.Ast;

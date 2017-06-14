@@ -1,7 +1,7 @@
 package org.snt.cnetworkparser.threatmodels;
 
-import org.snt.cnetwork.core.ConstraintNetworkBuilder;
-import org.snt.cnetwork.core.NodeKind;
+import org.snt.cnetwork.core.graph.ConstraintNetworkBuilder;
+import org.snt.cnetwork.core.graph.NodeKind;
 
 import java.util.HashMap;
 import java.util.Map;

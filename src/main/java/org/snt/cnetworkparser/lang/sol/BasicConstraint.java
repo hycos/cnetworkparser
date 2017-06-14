@@ -1,7 +1,7 @@
 package org.snt.cnetworkparser.lang.sol;
 
-import org.snt.cnetwork.core.Node;
-import org.snt.cnetwork.core.NodeKind;
+import org.snt.cnetwork.core.graph.Node;
+import org.snt.cnetwork.core.graph.NodeKind;
 
 import java.util.LinkedHashSet;
 import java.util.Set;

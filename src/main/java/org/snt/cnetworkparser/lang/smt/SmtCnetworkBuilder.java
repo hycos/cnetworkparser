@@ -2,8 +2,8 @@ package org.snt.cnetworkparser.lang.smt;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.snt.cnetwork.core.*;
 import org.snt.cnetwork.core.domain.NodeDomainFactory;
+import org.snt.cnetwork.core.graph.*;
 import org.snt.cnetwork.exception.EUFInconsistencyException;
 import org.snt.cnetworkparser.utils.QuadrupleMap;
 import org.snt.cnetworkparser.utils.StringUtils;
@@ -131,7 +131,7 @@ public class SmtCnetworkBuilder extends
     @Override
     protected void initialize() {
 
-        LOGGER.info(ast.toDot());
+        //LOGGER.info(ast.toDot());
         for(AstNode n : this.ast.getNodes()) {
             this.smap.put(n, null);
         }
@@ -170,9 +170,9 @@ public class SmtCnetworkBuilder extends
 
                     n.getChildren().stream().filter(c -> !c.equals(fchild)).forEach(
                             e -> {
-                                assert (this.smap.containsKey(e));
-                                LOGGER.info("get " + e.getLabel());
-                                assert (this.smap.get(e) != null);
+                                //assert (this.smap.containsKey(e));
+                                //LOGGER.info("get " + e.getLabel());
+                                //assert (this.smap.get(e) != null);
                                 params.add(this.smap.get(e));
                             }
                     );
@@ -211,8 +211,8 @@ public class SmtCnetworkBuilder extends
                     this.smap.put(n, blit);
                     break;
                 case "varname":
-                    LOGGER.debug(cn.getConstraintNetwork().toDot());
-                    LOGGER.debug(cn.getEufLattice().toDot());
+                    //LOGGER.debug(cn.getConstraintNetwork().toDot());
+                    //LOGGER.debug(cn.getEufLattice().toDot());
                     Node v = cn.getNodeByLabel(n.getLabel());
                     assert (v != null);
                     this.smap.put(n, v);
@@ -229,6 +229,7 @@ public class SmtCnetworkBuilder extends
                     assert (n.getLabel().length() >= 2);
                     String lbl = n.getLabel().substring(1, n.getLabel().length() - 1);
                     lbl = StringUtils.unescapeSpecialCharacters(lbl);
+                    LOGGER.debug("add strlit {}", lbl);
                     Node nn = cn.addOperand(NodeKind.STRLIT, lbl);
                     this.smap.put(n, nn);
                     break;

@@ -5,8 +5,10 @@ import org.antlr.v4.runtime.tree.ErrorNode;
 import org.antlr.v4.runtime.tree.TerminalNode;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.snt.cnetwork.core.*;
 import org.snt.cnetwork.core.domain.*;
+import org.snt.cnetwork.core.domain.automaton.SimpleAutomaton;
+import org.snt.cnetwork.core.domain.range.NumRange;
+import org.snt.cnetwork.core.graph.*;
 import org.snt.cnetwork.exception.EUFInconsistencyException;
 import org.snt.cnetwork.utils.DomainUtils;
 import org.snt.cnetwork.utils.EscapeUtils;
@@ -278,7 +280,7 @@ public class SolListener extends DefaultListener implements ConstraintNetworkPro
 
         Node string = null;
        // if (string == null) {
-            Automaton a = new Automaton(nname);
+            SimpleAutomaton a = new SimpleAutomaton(nname);
 
             if (a.getSingleton() != null) {
                 string = cbuilder.addOperand(NodeKind.STRLIT,nname);
@@ -441,7 +443,7 @@ public class SolListener extends DefaultListener implements ConstraintNetworkPro
             LOGGER.error(e.getMessage());
             System.exit(-1);
         }
-        NodeDomain dkind = NodeDomainFactory.INSTANCE.getDomain
+        NodeDomain dkind = NodeDomainFactory.INSTANCE.getDomainForKind
                 (kind);
         dkind.setDomain(dkind);
     }**/
@@ -478,8 +480,7 @@ public class SolListener extends DefaultListener implements ConstraintNetworkPro
             Node c = addConstraint(constraint);
 
             if (negate) {
-                c.setDomain(NodeDomainFactory.INSTANCE.getDomain
-                        (NodeKind.BOOLLIT, "false"));
+                c.setDomain(NodeDomainFactory.DBFALSE.clone());
             }
 
             return c;
