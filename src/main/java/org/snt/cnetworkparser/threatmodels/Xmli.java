@@ -73,7 +73,7 @@ public class Xmli extends ThreatModel {
 
         Node regex = new Operand("[a-zA-Z0-9]+", NodeKind.STRREXP);
 
-        cn.addConstraint(NodeKind.STR_EQUALSIC, startag, endtag);
+        cn.addConstraint(NodeKind.STR_EQUALS, startag, endtag);
         cn.addConstraint(NodeKind.MATCHES, startag, regex);
         cn.addConstraint(NodeKind.MATCHES, endtag, regex);
 

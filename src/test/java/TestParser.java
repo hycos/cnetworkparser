@@ -209,4 +209,19 @@ public class TestParser {
     }
 
 
+    @Test
+    public void testAuthorizationServlet() {
+        ConstraintNetworkBuilder cn = null;
+        try {
+            cn = new ConstraintNetworkParser(InputFormat.SOL).
+                    getConstraintNetworkBuilderFromFile(getPath
+                            ("AuthorizationServlet0.sol"));
+        } catch (EUFInconsistencyException | CompilationException e) {
+            Assert.assertFalse(true);
+        }
+        //CnetworkAnalyzer.INSTANCE.checkForCycles(cn);
+        LOGGER.debug(cn.getConstraintNetwork().toDot());
+    }
+
+
 }

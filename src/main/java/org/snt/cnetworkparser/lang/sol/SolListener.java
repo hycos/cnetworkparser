@@ -5,13 +5,9 @@ import org.antlr.v4.runtime.tree.ErrorNode;
 import org.antlr.v4.runtime.tree.TerminalNode;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.snt.cnetwork.core.domain.*;
 import org.snt.cnetwork.core.domain.automaton.SimpleAutomaton;
-import org.snt.cnetwork.core.domain.range.NumRange;
 import org.snt.cnetwork.core.graph.*;
 import org.snt.cnetwork.exception.EUFInconsistencyException;
-import org.snt.cnetwork.utils.DomainUtils;
-import org.snt.cnetwork.utils.EscapeUtils;
 import org.snt.cnetworkparser.core.ConstraintNetworkProvider;
 import org.snt.cnetworkparser.exception.UnknownException;
 import org.snt.cnetworkparser.threatmodels.ThreatModelFactory;
@@ -180,11 +176,22 @@ public class SolListener extends DefaultListener implements ConstraintNetworkPro
                 this.ctx.leaveOldCtx();
                 break;
             case "constraint":
-                NodeKind okind = NodeKind.KindFromString(this.ctx.pop().value);
+                //this.ctx.leaveOldCtx();
+
+                String rec = this.ctx.getRecentCxt().pop().value;
+
+                LOGGER.debug("REC {}", rec);
+
+                NodeKind okind = NodeKind.KindFromString(rec);
+
+                LOGGER.debug("okind {}", okind.getDesc());
+
                 constraint.setOpKind(okind);
                 try {
                     handleConstraint();
                 } catch (EUFInconsistencyException e) {
+
+                    e.printStackTrace();
                     // @TODO: change this lateron
                 }
                 this.ctx.leaveOldCtx();
@@ -261,22 +268,32 @@ public class SolListener extends DefaultListener implements ConstraintNetworkPro
 
         boolean rexp = false;
 
-        String nname = StringUtils.trimQuotesFromString(name);
-        //LOGGER.info("NNAME 1 " + nname);
-        nname = nname.replaceAll("\\\\\"", "\\\"");
-        //LOGGER.info("NNAME 2 " + nname);
-        nname = StringUtils.trimQuotesFromString(nname);
-        //LOGGER.info("NNAME 3 " + nname);
+        LOGGER.debug("NAME before {}", name);
 
-        //LOGGER.info("FCTX " + fctx);
-        if (fctx.equals("tolit")) {
+        String nname = StringUtils.trimQuotesFromString(name);
+//        LOGGER.info("NNAME 1 " + nname);
+        //nname = nname.replaceAll("\\\\\"", "\\\"");
+//        LOGGER.info("NNAME 2 " + nname);
+        //nname = StringUtils.trimQuotesFromString(nname);
+//        LOGGER.info("NNAME 3 " + nname);
+
+//        nname = EscapeUtils.escapeSpecialCharacters(nname);
+
+        //String nname = name;
+
+        LOGGER.info("FCTX " + fctx);
+        if (!fctx.equals("tolit")) {
+            //nname = EscapeUtils.unescapeSpecialCharacters(nname);
+        } else {
             this.ctx.getRecentCxt().pop();
-            nname = EscapeUtils.escapeSpecialCharacters(nname);
         }
 
-        //LOGGER.info("NAME  " + name);
-        //LOGGER.info("NNAME  " + nname);
+//        LOGGER.info("NAME  " + name);
+//        LOGGER.info("NNAME  " + nname);
         //Node string = this.cbuilder.getNodeByLabel(name);
+
+
+
 
         Node string = null;
        // if (string == null) {
@@ -285,14 +302,15 @@ public class SolListener extends DefaultListener implements ConstraintNetworkPro
             if (a.getSingleton() != null) {
                 string = cbuilder.addOperand(NodeKind.STRLIT,nname);
             } else {
-                string =  cbuilder.addOperand(NodeKind.STRREXP,nname);
+                string = cbuilder.addOperand(NodeKind.STRREXP,nname);
             }
 
-            NodeDomain nd = new NodeDomain(DomainKind.STRING, a, new NumRange(DomainUtils
-                    .getApproxLenRange(a)));
-
-            string.setDomain(nd);
+//            NodeDomain nd = new NodeDomain(DomainKind.STRING, a, new NumRange(DomainUtils.getApproxLenRange(a)));
+//
+//            string.setDomain(nd);
         //}
+
+        LOGGER.debug("push {} ---  {}", string.getDotLabel(),nname);
 
         this.ctx.push(string);
 
@@ -350,7 +368,7 @@ public class SolListener extends DefaultListener implements ConstraintNetworkPro
 
         StringPair op = this.ctx.pop(); //op
 
-        LOGGER.debug("OP " + op);
+        LOGGER.debug("OPERATION " + op);
 
         String type = op.key; // funccall
         String skind = op.value;
@@ -368,9 +386,10 @@ public class SolListener extends DefaultListener implements ConstraintNetworkPro
 
         //LOGGER.info("PARAMS " + params.size());
 
+        LOGGER.debug("skind {}", skind);
         NodeKind okind = NodeKind.KindFromString(skind);
 
-        //LOGGER.info("OKIND " + okind);
+        LOGGER.info("OKIND " + okind);
         Node newop = null;
 
         // infer the types for overloaded operators (==)
@@ -449,22 +468,21 @@ public class SolListener extends DefaultListener implements ConstraintNetworkPro
     }**/
 
     private Node handleConstraint() throws EUFInconsistencyException {
-        //LOGGER.info("HANDLE " + this.ctx.getRecentCxt().getName());
+        //LOGGER.debug("HANDLE ctx" + this.ctx.getRecentCxt().getName());
         List<Node> nods = this.ctx.getNodesForCtx();
         //LOGGER.info("SS " + nods.size());
         //assert(nods.size() == 2);
 
+        LOGGER.debug("opKind {}", constraint.opKind.getDesc());
         if (nods.size() == 2) {
             constraint.addNode(nods.get(0));
             constraint.addNode(nods.get(1));
 
             boolean negate = (constraint.opKind == NodeKind.NEQUALS);
-            //LOGGER.debug("+++" + constraint.term0.getKind() + " " + constraint
-            //        .term1.getKind());
 
-            //LOGGER.info("OPKIND " + constraint.opKind.getId());
+            LOGGER.info("OPKIND " + constraint.opKind.getDesc());
             // type inference
-            /**if (constraint.opKind == NodeKind.EQUALS || negate) {
+            if (constraint.opKind == NodeKind.EQUALS || negate) {
                 if (constraint.isNumeric()) {
                     constraint.setOpKind(NodeKind.NUM_EQUALS);
                 } else if (constraint.isString()) {
@@ -474,14 +492,16 @@ public class SolListener extends DefaultListener implements ConstraintNetworkPro
                 } else {
                     assert (false);
                 }
-            }**/
+            }
             assert constraint.opKind != null;
 
-            Node c = addConstraint(constraint);
+            LOGGER.debug("CONSTRAINT {}", constraint.toString());
 
-            if (negate) {
-                c.setDomain(NodeDomainFactory.DBFALSE.clone());
-            }
+            Node c = addConstraint(constraint);
+//
+//            if (negate) {
+//                c.setDomain(NodeDomainFactory.DBFALSE.clone());
+//            }
 
             return c;
 

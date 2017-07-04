@@ -18,10 +18,10 @@ fragment
 StringCharacters: StringCharacter+;
 
 fragment
-StringCharacter: ~["\\] | EscapeSequence;
+StringCharacter: ~["] | EscapeSequence;
 
 fragment
-EscapeSequence:	'\\' [btnfr"'\\];
+EscapeSequence:	'\\' ["];
 
 Stmtend: ';';
 

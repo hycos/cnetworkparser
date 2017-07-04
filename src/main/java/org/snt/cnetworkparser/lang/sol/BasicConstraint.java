@@ -3,13 +3,12 @@ package org.snt.cnetworkparser.lang.sol;
 import org.snt.cnetwork.core.graph.Node;
 import org.snt.cnetwork.core.graph.NodeKind;
 
-import java.util.LinkedHashSet;
-import java.util.Set;
+import java.util.List;
+import java.util.Vector;
 
 public class BasicConstraint {
-    protected Set<Node> nodes = new LinkedHashSet<Node>();
+    protected List<Node> nodes = new Vector<>();
     protected NodeKind opKind;
-    protected Node term1;
 
     public BasicConstraint(Node term0, NodeKind kind, Node term1) {
         opKind = kind;
@@ -31,7 +30,10 @@ public class BasicConstraint {
         StringBuilder sb = new StringBuilder();
         sb.append("KIND " + opKind.toString() + "\n");
         nodes.forEach(
-                v -> sb.append("n: " + v.getLabel())
+                v -> {
+                    sb.append("n:" + v.getLabel());
+                    sb.append("kind:" + v.getKind());
+                }
         );
         return sb.toString();
     }
@@ -47,7 +49,8 @@ public class BasicConstraint {
     }
 
     public boolean isString() {
-        return this.nodes.stream().filter( v -> v.isString()).count() ==
+        return this.nodes.stream().filter( v -> v.isString() || v.isRegex()
+                || v.getKind() == NodeKind.STRLIT).count() ==
                 nodes.size();
     }
 
