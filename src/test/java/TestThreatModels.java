@@ -3,8 +3,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import com.github.hycos.cnetwork.core.graph.ConstraintNetworkBuilder;
 import com.github.hycos.cnetwork.core.graph.NodeKind;
-import org.snt.cnetworkparser.exception.UnknownException;
-import org.snt.cnetworkparser.threatmodels.ThreatModelFactory;
+import com.github.hycos.cnetworkparser.exception.UnknownException;
+import com.github.hycos.cnetworkparser.threatmodels.ThreatModelFactory;
 
 
 public class TestThreatModels {

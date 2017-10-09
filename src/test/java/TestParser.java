@@ -7,8 +7,8 @@ import com.github.hycos.cnetwork.core.graph.ConstraintNetwork;
 import com.github.hycos.cnetwork.core.graph.ConstraintNetworkBuilder;
 import com.github.hycos.cnetwork.core.graph.Node;
 import com.github.hycos.cnetwork.exception.EUFInconsistencyException;
-import org.snt.cnetworkparser.core.ConstraintNetworkParser;
-import org.snt.cnetworkparser.core.InputFormat;
+import com.github.hycos.cnetworkparser.core.ConstraintNetworkParser;
+import com.github.hycos.cnetworkparser.core.InputFormat;
 import org.snt.inmemantlr.exceptions.CompilationException;
 
 import java.io.File;
