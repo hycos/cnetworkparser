@@ -1,8 +1,8 @@
 import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.snt.cnetwork.core.graph.ConstraintNetworkBuilder;
-import org.snt.cnetwork.core.graph.NodeKind;
+import com.github.hycos.cnetwork.core.graph.ConstraintNetworkBuilder;
+import com.github.hycos.cnetwork.core.graph.NodeKind;
 import org.snt.cnetworkparser.exception.UnknownException;
 import org.snt.cnetworkparser.threatmodels.ThreatModelFactory;
 

@@ -2,18 +2,18 @@ package org.snt.cnetworkparser.lang.logic;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.snt.cnetwork.core.graph.ConstraintNetworkBuilder;
-import org.snt.cnetwork.core.graph.Node;
-import org.snt.cnetwork.core.graph.NodeKind;
-import org.snt.cnetwork.exception.EUFInconsistencyException;
-import org.snt.inmemantlr.exceptions.AstProcessorException;
-import org.snt.inmemantlr.tree.Ast;
-import org.snt.inmemantlr.tree.AstNode;
-import org.snt.inmemantlr.tree.AstProcessor;
+import com.github.hycos.cnetwork.core.graph.ConstraintNetworkBuilder;
+import com.github.hycos.cnetwork.core.graph.Node;
+import com.github.hycos.cnetwork.core.graph.NodeKind;
+import com.github.hycos.cnetwork.exception.EUFInconsistencyException;
+import org.snt.inmemantlr.exceptions.ParseTreeProcessorException;
+import org.snt.inmemantlr.tree.ParseTree;
+import org.snt.inmemantlr.tree.ParseTreeNode;
+import org.snt.inmemantlr.tree.ParseTreeProcessor;
 
 
 public class LogicBuilder extends
-        AstProcessor<ConstraintNetworkBuilder, Node> {
+        ParseTreeProcessor<ConstraintNetworkBuilder, Node> {
 
 
     protected ConstraintNetworkBuilder cn = null;
@@ -25,7 +25,7 @@ public class LogicBuilder extends
      *
      * @param ast abstract syntax tree to process
      */
-    public LogicBuilder(Ast ast) {
+    public LogicBuilder(ParseTree ast) {
         super(ast);
 
         LOGGER.debug(ast.toDot());
@@ -44,7 +44,7 @@ public class LogicBuilder extends
     }
 
     @Override
-    protected void process(AstNode n) throws AstProcessorException {
+    protected void process(ParseTreeNode n) throws ParseTreeProcessorException {
         LOGGER.info("ID " + n.getId() + " " + n.getRule() + " " + n.getLabel());
 
         try {
@@ -109,7 +109,7 @@ public class LogicBuilder extends
 
             }
         } catch (EUFInconsistencyException e) {
-            throw new AstProcessorException(e.getMessage());
+            throw new ParseTreeProcessorException(e.getMessage());
         }
     }
 }

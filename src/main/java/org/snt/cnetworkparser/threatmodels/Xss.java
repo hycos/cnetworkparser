@@ -2,11 +2,11 @@ package org.snt.cnetworkparser.threatmodels;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.snt.cnetwork.core.graph.ConstraintNetworkBuilder;
-import org.snt.cnetwork.core.graph.Node;
-import org.snt.cnetwork.core.graph.NodeKind;
-import org.snt.cnetwork.core.graph.Operand;
-import org.snt.cnetwork.exception.EUFInconsistencyException;
+import com.github.hycos.cnetwork.core.graph.ConstraintNetworkBuilder;
+import com.github.hycos.cnetwork.core.graph.Node;
+import com.github.hycos.cnetwork.core.graph.NodeKind;
+import com.github.hycos.cnetwork.core.graph.Operand;
+import com.github.hycos.cnetwork.exception.EUFInconsistencyException;
 
 import java.util.Map;
 

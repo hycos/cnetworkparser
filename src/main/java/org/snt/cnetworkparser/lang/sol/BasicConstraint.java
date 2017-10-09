@@ -1,7 +1,7 @@
 package org.snt.cnetworkparser.lang.sol;
 
-import org.snt.cnetwork.core.graph.Node;
-import org.snt.cnetwork.core.graph.NodeKind;
+import com.github.hycos.cnetwork.core.graph.Node;
+import com.github.hycos.cnetwork.core.graph.NodeKind;
 
 import java.util.List;
 import java.util.Vector;

@@ -3,12 +3,13 @@ package org.snt.cnetworkparser.core;
 import org.antlr.v4.runtime.ParserRuleContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.snt.cnetwork.core.graph.ConstraintNetwork;
-import org.snt.cnetwork.core.graph.ConstraintNetworkBuilder;
-import org.snt.cnetwork.exception.EUFInconsistencyException;
+import com.github.hycos.cnetwork.core.graph.ConstraintNetwork;
+import com.github.hycos.cnetwork.core.graph.ConstraintNetworkBuilder;
+import com.github.hycos.cnetwork.exception.EUFInconsistencyException;
 import org.snt.inmemantlr.GenericParser;
 import org.snt.inmemantlr.exceptions.CompilationException;
 import org.snt.inmemantlr.exceptions.IllegalWorkflowException;
+import org.snt.inmemantlr.exceptions.ParsingException;
 import org.snt.inmemantlr.listener.DefaultListener;
 import org.snt.inmemantlr.utils.FileUtils;
 
@@ -59,6 +60,8 @@ public class ConstraintNetworkParser {
             this.gp.parse(s);
         } catch (IllegalWorkflowException e) {
             e.printStackTrace();
+        } catch (ParsingException e) {
+            e.printStackTrace();
         }
 
         ConstraintNetwork cn = this.provider.getConstraintNetwork();
@@ -80,6 +83,8 @@ public class ConstraintNetworkParser {
         try {
             this.gp.parse(s);
         } catch (IllegalWorkflowException e) {
+            e.printStackTrace();
+        } catch (ParsingException e) {
             e.printStackTrace();
         }
         return this.provider.getConstraintNetworkBuilder();

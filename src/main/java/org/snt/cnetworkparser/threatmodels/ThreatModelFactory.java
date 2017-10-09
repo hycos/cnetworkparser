@@ -1,6 +1,7 @@
 package org.snt.cnetworkparser.threatmodels;
-import org.snt.cnetwork.core.graph.ConstraintNetworkBuilder;
-import org.snt.cnetwork.core.graph.NodeKind;
+
+import com.github.hycos.cnetwork.core.graph.ConstraintNetworkBuilder;
+import com.github.hycos.cnetwork.core.graph.NodeKind;
 import org.snt.cnetworkparser.exception.UnknownException;
 
 import java.util.HashMap;

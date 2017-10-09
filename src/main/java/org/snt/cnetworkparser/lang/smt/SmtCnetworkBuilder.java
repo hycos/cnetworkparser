@@ -2,22 +2,22 @@ package org.snt.cnetworkparser.lang.smt;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.snt.cnetwork.core.domain.NodeDomainFactory;
-import org.snt.cnetwork.core.graph.*;
-import org.snt.cnetwork.exception.EUFInconsistencyException;
+import com.github.hycos.cnetwork.core.domain.NodeDomainFactory;
+import com.github.hycos.cnetwork.core.graph.*;
+import com.github.hycos.cnetwork.exception.EUFInconsistencyException;
 import org.snt.cnetworkparser.utils.QuadrupleMap;
 import org.snt.cnetworkparser.utils.StringUtils;
-import org.snt.inmemantlr.exceptions.AstProcessorException;
-import org.snt.inmemantlr.tree.Ast;
-import org.snt.inmemantlr.tree.AstNode;
-import org.snt.inmemantlr.tree.AstProcessor;
+import org.snt.inmemantlr.exceptions.ParseTreeProcessorException;
+import org.snt.inmemantlr.tree.ParseTree;
+import org.snt.inmemantlr.tree.ParseTreeNode;
+import org.snt.inmemantlr.tree.ParseTreeProcessor;
 
 import java.util.List;
 import java.util.Set;
 import java.util.Vector;
 
 public class SmtCnetworkBuilder extends
-        AstProcessor<ConstraintNetworkBuilder, Node> {
+        ParseTreeProcessor<ConstraintNetworkBuilder, Node> {
 
 
     final static Logger LOGGER = LoggerFactory.getLogger(SmtCnetworkBuilder.class);
@@ -46,8 +46,8 @@ public class SmtCnetworkBuilder extends
 
     protected ConstraintNetworkBuilder cn = null;
 
-    public SmtCnetworkBuilder(Ast ast, final TransMap tm) {
-        super(ast);
+    public SmtCnetworkBuilder(ParseTree parseTree, final TransMap tm) {
+        super(parseTree);
         cn = new ConstraintNetworkBuilder();
         TRANSMAP = tm;
     }
@@ -57,21 +57,21 @@ public class SmtCnetworkBuilder extends
      * Preprocesing of Regular expressions (if present)
      */
     private void preprocessRegex() {
-        for(Ast subtree : this.ast.getSubtrees(n -> n.getRule().equals("regexoperation"))) {
+        for(ParseTree subtree : this.parseTree.getSubtrees(n -> n.getRule().equals("regexoperation"))) {
             SmtRegexBuilder rbuilder = new SmtRegexBuilder(subtree,TRANSMAP);
         }
     }
 
     @Override
-    public ConstraintNetworkBuilder process() throws AstProcessorException {
+    public ConstraintNetworkBuilder process() throws ParseTreeProcessorException {
 
         /**
          * Get regular expression subtrees and translate them
          * into the standard form. Replace the subtree roots
          * with the tranlation.
          */
-        Set<Ast> regex = ast.getDominatingSubtrees(n -> n.getRule().equals("regexoperation"));
-        for(Ast r : regex) {
+        Set<ParseTree> regex = parseTree.getDominatingSubtrees(n -> n.getRule().equals("regexoperation"));
+        for(ParseTree r : regex) {
             //LOGGER.info(r.toDot());
             SmtRegexBuilder regexbuilder = new SmtRegexBuilder(r,TRANSMAP);
             String sregex = null;
@@ -79,19 +79,19 @@ public class SmtCnetworkBuilder extends
 
             //LOGGER.info("REGEX " + sregex);
             // print changed tree
-            Ast replacement = new Ast("rlit", sregex);
-            ast.replaceSubtree(r, replacement);
+            ParseTree replacement = new ParseTree("rlit", sregex);
+            parseTree.replaceSubtree(r, replacement);
         }
 
         /**
          * get variable declarations
          */
-        Set<Ast> vdef = ast.getDominatingSubtrees(n -> n.getRule().matches("(funcdecl|vardecl)"));
-        for(Ast r : vdef) {
+        Set<ParseTree> vdef = parseTree.getDominatingSubtrees(n -> n.getRule().matches("(funcdecl|vardecl)"));
+        for(ParseTree r : vdef) {
             assert(r.getRoot().getChildren().size() == 2);
 
-            AstNode varname = r.getRoot().getFirstChild();
-            AstNode vartype = r.getRoot().getLastChild();
+            ParseTreeNode varname = r.getRoot().getFirstChild();
+            ParseTreeNode vartype = r.getRoot().getLastChild();
             NodeKind kind = NodeKind.UNKNOWN;
 
             //LOGGER.info("KIND " + kind.toString());
@@ -111,10 +111,10 @@ public class SmtCnetworkBuilder extends
 
             //this.cn.addNode(op);
             cn.addOperand(kind, varname.getLabel());
-            ast.removeSubtree(r);
+            parseTree.removeSubtree(r);
         }
 
-        //LOGGER.info(this.ast.toDot());
+        //LOGGER.info(this.parseTree.toDot());
         // process the remaining tree and build constraint network
 
         ConstraintNetworkBuilder cn = super.process();
@@ -131,14 +131,14 @@ public class SmtCnetworkBuilder extends
     @Override
     protected void initialize() {
 
-        //LOGGER.info(ast.toDot());
-        for(AstNode n : this.ast.getNodes()) {
+        //LOGGER.info(parseTree.toDot());
+        for(ParseTreeNode n : this.parseTree.getNodes()) {
             this.smap.put(n, null);
         }
     }
 
     @Override
-    protected void process(AstNode n) throws AstProcessorException {
+    protected void process(ParseTreeNode n) throws ParseTreeProcessorException {
 
         LOGGER.info("ID " + n.getId() + " " + n.getRule() + " " + n.getLabel());
 
@@ -154,7 +154,7 @@ public class SmtCnetworkBuilder extends
                     assert (n.hasChildren());
                     StringBuilder out = new StringBuilder();
 
-                    AstNode fchild = n.getFirstChild();
+                    ParseTreeNode fchild = n.getFirstChild();
                     assert (fchild.getRule().matches("(boolop|strop|numop|binop)"));
 
                     List<Node> params = new Vector<Node>();
@@ -264,7 +264,7 @@ public class SmtCnetworkBuilder extends
                     try {
                         constraint = cn.addConstraint(NodeKind.BOOL_EQUALS, top, c);
                     } catch (EUFInconsistencyException e) {
-                        throw new AstProcessorException(e.getMessage());
+                        throw new ParseTreeProcessorException(e.getMessage());
                     }**/
                     this.smap.put(n, c);
                     //} else {
@@ -301,7 +301,7 @@ public class SmtCnetworkBuilder extends
                     }
             }
         } catch (EUFInconsistencyException e) {
-            throw new AstProcessorException(e.getMessage());
+            throw new ParseTreeProcessorException(e.getMessage());
         }
     }
 

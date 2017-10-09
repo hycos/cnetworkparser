@@ -2,34 +2,34 @@ package org.snt.cnetworkparser.lang.smt;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.snt.cnetworkparser.core.RegexAstProcessor;;
-import org.snt.inmemantlr.tree.Ast;
-import org.snt.inmemantlr.tree.AstNode;
+import org.snt.cnetworkparser.core.RegexParseTreeProcessor;;
+import org.snt.inmemantlr.tree.ParseTree;
+import org.snt.inmemantlr.tree.ParseTreeNode;
 import org.snt.inmemantlr.utils.EscapeUtils;
 
 
-public class SmtRegexBuilder extends RegexAstProcessor {
+public class SmtRegexBuilder extends RegexParseTreeProcessor {
 
     final static Logger LOGGER = LoggerFactory.getLogger(SmtRegexBuilder.class);
     static SmtCnetworkBuilder.TransMap TRANSMAP;
 
-    public SmtRegexBuilder(Ast ast, final SmtCnetworkBuilder.TransMap tm) {
+    public SmtRegexBuilder(ParseTree ast, final SmtCnetworkBuilder.TransMap tm) {
         super(ast);
         this.TRANSMAP = tm;
     }
 
-    private boolean is(AstNode n, LanguageElements e){
+    private boolean is(ParseTreeNode n, LanguageElements e){
         return n.getLabel().equals(TRANSMAP.getNameOfElement(e));
     }
 
 
     public String getResult() {
-        return this.smap.get(this.ast.getRoot());
+        return this.smap.get(this.parseTree.getRoot());
     }
 
 
     @Override
-    protected void process(AstNode n) {
+    protected void process(ParseTreeNode n) {
 
         //LOGGER.info(n.getRule() + " " + n.getLabel());
         switch(n.getRule()){
@@ -49,7 +49,7 @@ public class SmtRegexBuilder extends RegexAstProcessor {
                 StringBuilder out = new StringBuilder();
 
 
-                AstNode fchild = n.getFirstChild();
+                ParseTreeNode fchild = n.getFirstChild();
                 if (is(fchild, LanguageElements.UNION)) {
                     out.append("(");
                     n.getChildren().stream().filter(c -> !c.equals(fchild)).forEach(

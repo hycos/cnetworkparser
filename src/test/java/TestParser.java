@@ -2,11 +2,11 @@ import org.junit.Assert;
 import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.snt.cnetwork.analytics.CnetworkAnalyzer;
-import org.snt.cnetwork.core.graph.ConstraintNetwork;
-import org.snt.cnetwork.core.graph.ConstraintNetworkBuilder;
-import org.snt.cnetwork.core.graph.Node;
-import org.snt.cnetwork.exception.EUFInconsistencyException;
+import com.github.hycos.cnetwork.analytics.CnetworkAnalyzer;
+import com.github.hycos.cnetwork.core.graph.ConstraintNetwork;
+import com.github.hycos.cnetwork.core.graph.ConstraintNetworkBuilder;
+import com.github.hycos.cnetwork.core.graph.Node;
+import com.github.hycos.cnetwork.exception.EUFInconsistencyException;
 import org.snt.cnetworkparser.core.ConstraintNetworkParser;
 import org.snt.cnetworkparser.core.InputFormat;
 import org.snt.inmemantlr.exceptions.CompilationException;
@@ -68,19 +68,19 @@ public class TestParser {
         Assert.assertFalse(thrown);
     }
 
-    @Test
-    public void testMisc0() {
-        ConstraintNetworkBuilder cn = null;
-        boolean thrown = false;
-        try {
-            cn = new ConstraintNetworkParser(InputFormat.Z3STR2).
-                    getConstraintNetworkBuilderFromFile(getPath("misc/ite0.z3"));
-        } catch (EUFInconsistencyException | CompilationException e) {
-           thrown = true;
-        }
-
-        Assert.assertTrue(thrown);
-    }
+//    @Test
+//    public void testMisc0() {
+//        ConstraintNetworkBuilder cn = null;
+//        boolean thrown = false;
+//        try {
+//            cn = new ConstraintNetworkParser(InputFormat.Z3STR2).
+//                    getConstraintNetworkBuilderFromFile(getPath("misc/ite0.z3"));
+//        } catch (EUFInconsistencyException | CompilationException e) {
+//           thrown = true;
+//        }
+//
+//        Assert.assertTrue(thrown);
+//    }
 
     @Test
     public void testSol() {

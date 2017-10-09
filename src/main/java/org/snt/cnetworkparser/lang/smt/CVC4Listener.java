@@ -1,15 +1,16 @@
 package org.snt.cnetworkparser.lang.smt;
 
+import com.github.hycos.cnetwork.core.graph.ConstraintNetwork;
+import com.github.hycos.cnetwork.core.graph.ConstraintNetworkBuilder;
+import com.github.hycos.cnetwork.exception.EUFInconsistencyException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.snt.cnetwork.core.graph.ConstraintNetwork;
-import org.snt.cnetwork.core.graph.ConstraintNetworkBuilder;
-import org.snt.cnetwork.core.graph.NodeKind;
-import org.snt.cnetwork.exception.EUFInconsistencyException;
 import org.snt.cnetworkparser.core.ConstraintNetworkCreator;
-import org.snt.inmemantlr.exceptions.AstProcessorException;
+import org.snt.inmemantlr.exceptions.ParseTreeProcessorException;
 import org.snt.inmemantlr.listener.DefaultListener;
-import org.snt.inmemantlr.tree.Ast;
+import org.snt.inmemantlr.tree.ParseTree;
+
+import static com.github.hycos.cnetwork.core.graph.NodeKind.*;
 
 
 public class CVC4Listener extends ConstraintNetworkCreator {
@@ -18,39 +19,39 @@ public class CVC4Listener extends ConstraintNetworkCreator {
 
     public static final SmtCnetworkBuilder.TransMap tm = new SmtCnetworkBuilder.TransMap() {{
         // for regular expressions
-        put(LanguageElements.KSTAR, "re.*", "*", NodeKind.UNKNOWN);
-        put(LanguageElements.KPLUS, "re.+", "+", NodeKind.UNKNOWN);
-        put(LanguageElements.UNION, "re.union", "|", NodeKind.UNKNOWN);
-        put(LanguageElements.RCONCAT, "re.++", "", NodeKind.CONCAT);
-        put(LanguageElements.OPT, "re.opt", "?", NodeKind.UNKNOWN);
-        put(LanguageElements.RAN, "re.range", "", NodeKind.UNKNOWN);
-        put(LanguageElements.CONV, "str.to.re", "", NodeKind.UNKNOWN);
-        put(LanguageElements.MATCHES, "str.in.re", NodeKind.MATCHES.getValue(), NodeKind.MATCHES);
+        put(LanguageElements.KSTAR, "re.*", "*", UNKNOWN);
+        put(LanguageElements.KPLUS, "re.+", "+", UNKNOWN);
+        put(LanguageElements.UNION, "re.union", "|", UNKNOWN);
+        put(LanguageElements.RCONCAT, "re.++", "", CONCAT);
+        put(LanguageElements.OPT, "re.opt", "?", UNKNOWN);
+        put(LanguageElements.RAN, "re.range", "", UNKNOWN);
+        put(LanguageElements.CONV, "str.to.re", "", UNKNOWN);
+        put(LanguageElements.MATCHES, "str.in.re", MATCHES.getValue(), MATCHES);
         // for string operations
-        put(LanguageElements.LEN, "str.len", NodeKind.LEN.getValue(), NodeKind.LEN);
-        put(LanguageElements.CONTAINS, "str.contains", NodeKind.CONTAINS.getValue(), NodeKind.CONTAINS);
-        put(LanguageElements.INDEXOF, "str.indexof", NodeKind.INDEXOF.getValue(), NodeKind.INDEXOF);
-        put(LanguageElements.PREFIXOF, "str.prefixof", NodeKind.STARTSWITH.getValue(), NodeKind.STARTSWITH);
-        put(LanguageElements.SUFFIXOF, "str.suffixof", NodeKind.ENDSWITH.getValue(), NodeKind.ENDSWITH);
-        put(LanguageElements.SCONCAT, "str.++", NodeKind.CONCAT.getValue(), NodeKind.CONCAT);
-        put(LanguageElements.SUBSTRNG, "str.substr", NodeKind.SUBSTR.getValue(), NodeKind.SUBSTR);
+        put(LanguageElements.LEN, "str.len", LEN.getValue(), LEN);
+        put(LanguageElements.CONTAINS, "str.contains", CONTAINS.getValue(), CONTAINS);
+        put(LanguageElements.INDEXOF, "str.indexof", INDEXOF.getValue(), INDEXOF);
+        put(LanguageElements.PREFIXOF, "str.prefixof", STARTSWITH.getValue(), STARTSWITH);
+        put(LanguageElements.SUFFIXOF, "str.suffixof", ENDSWITH.getValue(), ENDSWITH);
+        put(LanguageElements.SCONCAT, "str.++", CONCAT.getValue(), CONCAT);
+        put(LanguageElements.SUBSTRNG, "str.substr", SUBSTR.getValue(), SUBSTR);
         // others
-        put(LanguageElements.NEQ, "!=", NodeKind.NEQUALS.toString(), NodeKind.NEQUALS);
-        put(LanguageElements.EQ, "=", NodeKind.EQUALS.toString(), NodeKind.EQUALS);
-        put(LanguageElements.SMALLEREQ, "<=", NodeKind.SMALLEREQ.toString(), NodeKind.SMALLEREQ);
-        put(LanguageElements.GREATEREQ, ">=", NodeKind.GREATEREQ.toString(), NodeKind.GREATEREQ);
-        put(LanguageElements.SMALLER, "<", NodeKind.SMALLER.toString(), NodeKind.SMALLER);
-        put(LanguageElements.GREATER, ">", NodeKind.GREATER.toString(), NodeKind.GREATER);
-        put(LanguageElements.PLUS, "+", NodeKind.ADD.toString(), NodeKind.ADD);
-        put(LanguageElements.MINUS, "-", NodeKind.SUB.toString(), NodeKind.SUB);
+        put(LanguageElements.NEQ, "!=", NEQUALS.toString(), NEQUALS);
+        put(LanguageElements.EQ, "=", EQUALS.toString(), EQUALS);
+        put(LanguageElements.SMALLEREQ, "<=", SMALLEREQ.toString(), SMALLEREQ);
+        put(LanguageElements.GREATEREQ, ">=", GREATEREQ.toString(), GREATEREQ);
+        put(LanguageElements.SMALLER, "<", SMALLER.toString(), SMALLER);
+        put(LanguageElements.GREATER, ">", GREATER.toString(), GREATER);
+        put(LanguageElements.PLUS, "+", ADD.toString(), ADD);
+        put(LanguageElements.MINUS, "-", SUB.toString(), SUB);
         //v ariables
-        put(LanguageElements.DTSTRING, "String", NodeKind.STRVAR.toString(), NodeKind.STRVAR);
-        put(LanguageElements.DTINT, "Int", NodeKind.NUMVAR.toString(), NodeKind.NUMVAR);
-        put(LanguageElements.DTBOOLEAN, "Bool", NodeKind.BOOLVAR.toString(), NodeKind.BOOLVAR);
+        put(LanguageElements.DTSTRING, "String", STRVAR.toString(), STRVAR);
+        put(LanguageElements.DTINT, "Int", NUMVAR.toString(), NUMVAR);
+        put(LanguageElements.DTBOOLEAN, "Bool", BOOLVAR.toString(), BOOLVAR);
         // boolean operations
-        put(LanguageElements.AND, "and", NodeKind.AND.toString(), NodeKind.AND);
-        put(LanguageElements.OR, "or", NodeKind.OR.toString(), NodeKind.OR);
-        put(LanguageElements.NOT, "not", NodeKind.NOT.toString(), NodeKind.NOT);
+        put(LanguageElements.AND, "and", AND.toString(), AND);
+        put(LanguageElements.OR, "or", OR.toString(), OR);
+        put(LanguageElements.NOT, "not", NOT.toString(), NOT);
     }};
 
 
@@ -66,22 +67,22 @@ public class CVC4Listener extends ConstraintNetworkCreator {
 
     @Override
     public ConstraintNetwork getConstraintNetwork() throws EUFInconsistencyException {
-        Ast ast = this.getAst();
+        ParseTree ast = this.getParseTree();
         SmtCnetworkBuilder builder = new SmtCnetworkBuilder(ast,tm);
         try {
             return builder.process().getConstraintNetwork();
-        } catch (AstProcessorException e) {
+        } catch (ParseTreeProcessorException e) {
             throw new EUFInconsistencyException(e.getMessage());
         }
     }
 
     @Override
     public ConstraintNetworkBuilder getConstraintNetworkBuilder() throws EUFInconsistencyException {
-        Ast ast = this.getAst();
+        ParseTree ast = this.getParseTree();
         SmtCnetworkBuilder builder = new SmtCnetworkBuilder(ast,tm);
         try {
             return builder.process();
-        } catch (AstProcessorException e) {
+        } catch (ParseTreeProcessorException e) {
             throw new EUFInconsistencyException(e.getMessage());
         }
     }

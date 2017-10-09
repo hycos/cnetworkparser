@@ -2,13 +2,13 @@ package org.snt.cnetworkparser.lang.logic;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.snt.cnetwork.core.graph.ConstraintNetwork;
-import org.snt.cnetwork.core.graph.ConstraintNetworkBuilder;
-import org.snt.cnetwork.exception.EUFInconsistencyException;
+import com.github.hycos.cnetwork.core.graph.ConstraintNetwork;
+import com.github.hycos.cnetwork.core.graph.ConstraintNetworkBuilder;
+import com.github.hycos.cnetwork.exception.EUFInconsistencyException;
 import org.snt.cnetworkparser.core.ConstraintNetworkCreator;
-import org.snt.inmemantlr.exceptions.AstProcessorException;
+import org.snt.inmemantlr.exceptions.ParseTreeProcessorException;
 import org.snt.inmemantlr.listener.DefaultListener;
-import org.snt.inmemantlr.tree.Ast;
+import org.snt.inmemantlr.tree.ParseTree;
 
 /**
  * Created by julian on 24/02/2017.
@@ -31,22 +31,22 @@ public class LogicListener extends ConstraintNetworkCreator {
 
     @Override
     public ConstraintNetwork getConstraintNetwork() throws EUFInconsistencyException {
-        Ast ast = this.getAst();
+        ParseTree ast = this.getParseTree();
         LogicBuilder builder = new LogicBuilder(ast);
         try {
             return builder.process().getConstraintNetwork();
-        } catch (AstProcessorException e) {
+        } catch (ParseTreeProcessorException e) {
             throw new EUFInconsistencyException(e.getMessage());
         }
     }
 
     @Override
     public ConstraintNetworkBuilder getConstraintNetworkBuilder() throws EUFInconsistencyException {
-        Ast ast = this.getAst();
+        ParseTree ast = this.getParseTree();
         LogicBuilder builder = new LogicBuilder(ast);
         try {
             return builder.process();
-        } catch (AstProcessorException e) {
+        } catch (ParseTreeProcessorException e) {
             throw new EUFInconsistencyException(e.getMessage());
         }
     }
