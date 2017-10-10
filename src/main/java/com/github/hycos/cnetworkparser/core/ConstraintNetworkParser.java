@@ -74,7 +74,7 @@ public class ConstraintNetworkParser {
         String s = new String(encoded);
 
         try {
-            this.gp.parse(s);
+            this.gp.parse(s, "s", GenericParser.CaseSensitiveType.NONE);
         } catch (IllegalWorkflowException e) {
             e.printStackTrace();
         } catch (ParsingException e) {
@@ -86,7 +86,8 @@ public class ConstraintNetworkParser {
         return cn;
     }
 
-    public ConstraintNetworkBuilder getConstraintNetworkBuilderFromFile(String path) throws EUFInconsistencyException {
+    public ConstraintNetworkBuilder getConstraintNetworkBuilderFromFile(String path)
+            throws EUFInconsistencyException {
 
         byte[] encoded = null;
         try {
@@ -98,7 +99,7 @@ public class ConstraintNetworkParser {
         String s = new String(encoded);
 
         try {
-            this.gp.parse(s);
+            this.gp.parse(s, "s", GenericParser.CaseSensitiveType.NONE);
         } catch (IllegalWorkflowException e) {
             e.printStackTrace();
         } catch (ParsingException e) {

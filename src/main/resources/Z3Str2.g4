@@ -1,10 +1,15 @@
 grammar Z3Str2;
 
 
+StringType: [Ss][Tt][Rr][Ii][Nn][Gg];
+IntType: [Ii][Nn][Tt];
+BoolType: [Bb][Oo][Oo][Ll];
+
 Number: '-'? ([0-9]|[1-9][0-9]+);
 Varname: [a-zA-Z][a-zA-Z_A0-9]*;
 ParenthesisOpen: '(';
 ParenthesisClose: ')';
+
 
 String : StringLiteral;
 
@@ -20,11 +25,6 @@ StringCharacter: ~["\\] | EscapeSequence;
 fragment
 EscapeSequence:	'\\' [btnfr"'\\];
 
-StringType: [Ss] [Tt] [Rr] [Ii] [Nn] [Gg];
-
-IntType: [Ii] [Nn] [Tt];
-
-BoolType: [Bb][Oo][Oo][Ll];
 
 // Parser rules
 s: decl (assertion)* (end)? EOF;
