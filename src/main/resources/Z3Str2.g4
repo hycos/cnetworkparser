@@ -6,7 +6,7 @@ IntType: [Ii][Nn][Tt];
 BoolType: [Bb][Oo][Oo][Ll];
 
 Number: '-'? ([0-9]|[1-9][0-9]+);
-Varname: [a-zA-Z][a-zA-Z_A0-9]*;
+Varname: [a-zA-Z][a-zA-Z_0-9]*;
 ParenthesisOpen: '(';
 ParenthesisClose: ')';
 

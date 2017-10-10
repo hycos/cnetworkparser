@@ -51,8 +51,8 @@ public class SolListener extends DefaultListener implements ConstraintNetworkPro
     public void addVariable(String type, String label) {
         Node op = null;
 
-        LOGGER.info("type " + type);
-        LOGGER.info("label " + label);
+        //LOGGER.info("type " + type);
+        //LOGGER.info("label " + label);
 
         if (type.equals("string")) {
             op = cbuilder.addOperand(NodeKind.STRVAR, label);
@@ -98,7 +98,7 @@ public class SolListener extends DefaultListener implements ConstraintNetworkPro
     @Override
     public void enterEveryRule(ParserRuleContext ctx) {
 
-        LOGGER.info(">>> " + this.getRuleByKey(ctx.getRuleIndex()) + " " +
+        LOGGER.debug(">>> " + this.getRuleByKey(ctx.getRuleIndex()) + " " +
                 ctx.getText());
         switch (this.getRuleByKey(ctx.getRuleIndex())) {
             case "s":

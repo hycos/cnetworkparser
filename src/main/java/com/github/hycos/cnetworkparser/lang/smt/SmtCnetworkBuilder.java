@@ -157,7 +157,8 @@ public class SmtCnetworkBuilder extends
     @Override
     protected void process(ParseTreeNode n) throws ParseTreeProcessorException {
 
-        LOGGER.info("ID " + n.getId() + " " + n.getRule() + " " + n.getLabel());
+        //LOGGER.info("ID " + n.getId() + " " + n.getRule() + " " + n.getLabel
+        //        ());
 
         try {
             switch (n.getRule()) {
@@ -167,7 +168,7 @@ public class SmtCnetworkBuilder extends
                 case "numoperation":
                 case "binoperation":
 
-                    LOGGER.info("OP " + n.getId());
+                    //LOGGER.info("OP " + n.getId());
                     assert (n.hasChildren());
                     StringBuilder out = new StringBuilder();
 
@@ -176,14 +177,14 @@ public class SmtCnetworkBuilder extends
 
                     List<Node> params = new Vector<Node>();
 
-                    LOGGER.info("LBL " + fchild.getLabel());
+                    //LOGGER.info("LBL " + fchild.getLabel());
 
                     NodeKind kind = TRANSMAP.getNodeKindByLabel(fchild.getLabel());
 
                     assert (kind != null);
                     assert ((kind instanceof NodeKind));
 
-                    LOGGER.info("FHILD " + fchild.getLabel());
+                    //LOGGER.info("FHILD " + fchild.getLabel());
 
                     n.getChildren().stream().filter(c -> !c.equals(fchild)).forEach(
                             e -> {
@@ -207,7 +208,7 @@ public class SmtCnetworkBuilder extends
                         // .NUMLIT));
 
                         op = cn.addOperand(NodeKind.NUMLIT, no);
-                        LOGGER.info("add transformed node " + op.getLabel());
+                        //LOGGER.info("add transformed node " + op.getLabel());
                     } else {
                         // sometimes the indexof operator assumes a startin index
                         // of 0 implicitly
@@ -216,7 +217,7 @@ public class SmtCnetworkBuilder extends
                         //}
 
                         op = this.cn.addOperation(kind, params);
-                        LOGGER.info("add Operation " + op.getLabel());
+                        //LOGGER.info("add Operation " + op.getLabel());
                     }
 
                     this.smap.put(n, op);
@@ -251,7 +252,7 @@ public class SmtCnetworkBuilder extends
                     this.smap.put(n, nn);
                     break;
                 case "number":
-                    LOGGER.info("nunber " + n.getLabel());
+                    //LOGGER.info("nunber " + n.getLabel());
                     //Node nlit = this.cn.addNode(new Operand(n.getLabel(),
                     //    NodeKind.NUMLIT));
 

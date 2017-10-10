@@ -164,7 +164,7 @@ public class TestParser {
         } catch (EUFInconsistencyException | CompilationException e) {
             Assert.assertFalse(true);
         }
-        LOGGER.info(cn.toDot());
+        LOGGER.debug(cn.toDot());
         Assert.assertTrue(cn != null);
 
     }
@@ -179,8 +179,8 @@ public class TestParser {
         } catch (EUFInconsistencyException | CompilationException e) {
             Assert.assertFalse(true);
         }
-        LOGGER.info("euf");
-        LOGGER.info(cn.getEufLattice().toDot());
+        LOGGER.debug("euf");
+        LOGGER.debug(cn.getEufLattice().toDot());
     }
 
     @Test
@@ -193,9 +193,9 @@ public class TestParser {
         } catch (EUFInconsistencyException | CompilationException e) {
             Assert.assertFalse(true);
         }
-        LOGGER.info("euf");
+        LOGGER.debug("euf");
         LOGGER.debug(cn.getConstraintNetwork().toDot());
-        LOGGER.info(cn.getEufLattice().toDot());
+        LOGGER.debug(cn.getEufLattice().toDot());
     }
 
     @Test
