@@ -18,6 +18,7 @@
 package com.github.hycos.cnetworkparser.lang.sol;
 
 import com.github.hycos.cnetworkparser.core.ConstraintNetworkProvider;
+import com.github.hycos.cnetworkparser.exception.ParserRuntimeException;
 import org.antlr.v4.runtime.ParserRuleContext;
 import org.antlr.v4.runtime.tree.ErrorNode;
 import org.antlr.v4.runtime.tree.TerminalNode;
@@ -66,8 +67,11 @@ public class SolListener extends DefaultListener implements ConstraintNetworkPro
 
     public Node addConstraint(BasicConstraint con) throws
             EUFInconsistencyException {
-        return this.cbuilder.addConstraint(con.opKind, con.nodes.toArray(new
+        Node c = this.cbuilder.addConstraint(con.opKind, con.nodes.toArray(new
                 Node [con.nodes.size()]));
+
+        LOGGER.debug(this.cbuilder.getConstraintNetwork().toDot());
+        return c;
     }
 
 
@@ -207,9 +211,10 @@ public class SolListener extends DefaultListener implements ConstraintNetworkPro
                 try {
                     handleConstraint();
                 } catch (EUFInconsistencyException e) {
-
-                    e.printStackTrace();
-                    // @TODO: change this lateron
+                    throw new ParserRuntimeException(e.getMessage());
+                    //e.printStackTrace();
+                    // @TODO: change this lateron -- proper parser
+                    // reimplementation for sol format required
                 }
                 this.ctx.leaveOldCtx();
                 break;
@@ -494,23 +499,23 @@ public class SolListener extends DefaultListener implements ConstraintNetworkPro
         if (nods.size() == 2) {
             constraint.addNode(nods.get(0));
             constraint.addNode(nods.get(1));
-
-            boolean negate = (constraint.opKind == NodeKind.NEQUALS);
-
-            LOGGER.info("OPKIND " + constraint.opKind.getDesc());
-            // type inference
-            if (constraint.opKind == NodeKind.EQUALS || negate) {
-                if (constraint.isNumeric()) {
-                    constraint.setOpKind(NodeKind.NUM_EQUALS);
-                } else if (constraint.isString()) {
-                    constraint.setOpKind(NodeKind.STR_EQUALS);
-                } else if (constraint.isBoolean()) {
-                    constraint.setOpKind(NodeKind.BOOL_EQUALS);
-                } else {
-                    assert (false);
-                }
-            }
-            assert constraint.opKind != null;
+//
+//            boolean negate = (constraint.opKind == NodeKind.NEQUALS);
+//
+//            LOGGER.info("OPKIND " + constraint.opKind.getDesc());
+//            // type inference
+//            if (constraint.opKind == NodeKind.EQUALS || negate) {
+//                if (constraint.isNumeric()) {
+//                    constraint.setOpKind(NodeKind.NUM_EQUALS);
+//                } else if (constraint.isString()) {
+//                    constraint.setOpKind(NodeKind.STR_EQUALS);
+//                } else if (constraint.isBoolean()) {
+//                    constraint.setOpKind(NodeKind.BOOL_EQUALS);
+//                } else {
+//                    assert (false);
+//                }
+//            }
+//            assert constraint.opKind != null;
 
             LOGGER.debug("CONSTRAINT {}", constraint.toString());
 

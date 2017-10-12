@@ -17,6 +17,7 @@
 
 package com.github.hycos.cnetworkparser.core;
 
+import com.github.hycos.cnetworkparser.exception.ParserRuntimeException;
 import org.antlr.v4.runtime.ParserRuleContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -75,12 +76,9 @@ public class ConstraintNetworkParser {
 
         try {
             this.gp.parse(s, "s", GenericParser.CaseSensitiveType.NONE);
-        } catch (IllegalWorkflowException e) {
-            e.printStackTrace();
-        } catch (ParsingException e) {
-            e.printStackTrace();
+        } catch (IllegalWorkflowException | ParsingException | ParserRuntimeException e) {
+            throw new EUFInconsistencyException(e.getMessage());
         }
-
         ConstraintNetwork cn = this.provider.getConstraintNetwork();
         //cn.buildNodeIdx();
         return cn;
@@ -100,10 +98,8 @@ public class ConstraintNetworkParser {
 
         try {
             this.gp.parse(s, "s", GenericParser.CaseSensitiveType.NONE);
-        } catch (IllegalWorkflowException e) {
-            e.printStackTrace();
-        } catch (ParsingException e) {
-            e.printStackTrace();
+        } catch (IllegalWorkflowException | ParsingException | ParserRuntimeException e) {
+            throw new EUFInconsistencyException(e.getMessage());
         }
         return this.provider.getConstraintNetworkBuilder();
     }

@@ -15,6 +15,7 @@
  * specific language governing permissions and limitations under the Licence.
  */
 
+import com.github.hycos.cnetworkparser.exception.ParserRuntimeException;
 import org.junit.Assert;
 import org.junit.Test;
 import org.slf4j.Logger;
@@ -177,6 +178,7 @@ public class TestParser {
                     .Z3STR2).
                     getConstraintNetworkBuilderFromFile(getPath("z3num.z3"));
         } catch (EUFInconsistencyException | CompilationException e) {
+            //LOGGER.error(e.getMessage());
             Assert.assertFalse(true);
         }
         LOGGER.debug("euf");
@@ -238,6 +240,43 @@ public class TestParser {
         }
         //CnetworkAnalyzer.INSTANCE.checkForCycles(cn);
         LOGGER.debug(cn.getConstraintNetwork().toDot());
+    }
+
+    @Test
+    public void testValueOf() {
+        ConstraintNetworkBuilder cn = null;
+        try {
+            cn = new ConstraintNetworkParser(InputFormat.SOL).
+                    getConstraintNetworkBuilderFromFile(getPath
+                            ("valueof.sol"));
+        } catch (EUFInconsistencyException | CompilationException e) {
+            Assert.assertFalse(true);
+        }
+        Node n = cn.getNodeById(1);
+
+        LOGGER.info("OP " + n.getDomain().getDomainKind().toString());
+    }
+
+
+    @Test
+    public void testInconsistent() {
+
+        boolean inc = false;
+        ConstraintNetworkBuilder cn = null;
+        try {
+            cn = new ConstraintNetworkParser(InputFormat.SOL).
+                    getConstraintNetworkBuilderFromFile(getPath
+                            ("inconsistent.sol"));
+        } catch (EUFInconsistencyException | ParserRuntimeException |
+                CompilationException e) {
+            inc = true;
+        }
+
+        Assert.assertTrue(inc);
+//        Node n = cn.getNodeById(1);
+
+//        LOGGER.info("OP " + n.getDomain().getDomainKind().toString());
+//        LOGGER.info(cn.getEufLattice().toDot());
     }
 
 
