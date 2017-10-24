@@ -17,13 +17,13 @@
 
 package com.github.hycos.cnetworkparser.threatmodels;
 
+import com.github.hycos.cnetwork.api.labelmgr.exception.InconsistencyException;
+import com.github.hycos.cnetwork.core.graph.ConstraintNetworkBuilder;
+import com.github.hycos.cnetwork.core.graph.DefaultNodeKind;
+import com.github.hycos.cnetwork.core.graph.Node;
+import com.github.hycos.cnetwork.core.graph.Operand;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import com.github.hycos.cnetwork.core.graph.ConstraintNetworkBuilder;
-import com.github.hycos.cnetwork.core.graph.Node;
-import com.github.hycos.cnetwork.core.graph.NodeKind;
-import com.github.hycos.cnetwork.core.graph.Operand;
-import com.github.hycos.cnetwork.exception.EUFInconsistencyException;
 
 import java.util.Map;
 
@@ -42,17 +42,17 @@ public class Xss extends ThreatModel {
 
     public Xss() {
         super();
-        tmodel.put(NodeKind.XSS, this);
+        tmodel.put(DefaultNodeKind.XSS, this);
     }
 
 
     @Override
-    public ConstraintNetworkBuilder delegate(NodeKind type) {
+    public ConstraintNetworkBuilder delegate(DefaultNodeKind type) {
         switch(type) {
             case XSS:
                 try {
                     return getXMLIThreatModel();
-                } catch (EUFInconsistencyException e) {
+                } catch (InconsistencyException e) {
                     assert false;
                 }
         }
@@ -60,16 +60,16 @@ public class Xss extends ThreatModel {
     }
 
     @Override
-    public Map<NodeKind, ThreatModel> getThreatModels() {
+    public Map<DefaultNodeKind, ThreatModel> getThreatModels() {
         return this.tmodel;
     }
 
 
-    private ConstraintNetworkBuilder getXMLIThreatModel() throws EUFInconsistencyException {
+    private ConstraintNetworkBuilder getXMLIThreatModel() throws InconsistencyException {
 
         ConstraintNetworkBuilder cn = new ConstraintNetworkBuilder();
-        Node op = new Operand(xss, NodeKind.STRREXP);
-        cn.addOperand(NodeKind.STRREXP, xss);
+        Node op = new Operand(xss, DefaultNodeKind.STRREXP);
+        cn.addOperand(DefaultNodeKind.STRREXP, xss);
         cn.setStartNode(op);
         return cn;
     }

@@ -17,13 +17,13 @@
 
 package com.github.hycos.cnetworkparser.threatmodels;
 
+import com.github.hycos.cnetwork.api.labelmgr.exception.InconsistencyException;
+import com.github.hycos.cnetwork.core.graph.ConstraintNetworkBuilder;
+import com.github.hycos.cnetwork.core.graph.DefaultNodeKind;
+import com.github.hycos.cnetwork.core.graph.Node;
+import com.github.hycos.cnetwork.core.graph.Operand;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import com.github.hycos.cnetwork.core.graph.ConstraintNetworkBuilder;
-import com.github.hycos.cnetwork.core.graph.Node;
-import com.github.hycos.cnetwork.core.graph.NodeKind;
-import com.github.hycos.cnetwork.core.graph.Operand;
-import com.github.hycos.cnetwork.exception.EUFInconsistencyException;
 
 import java.util.Map;
 
@@ -35,16 +35,16 @@ public class Ldapi extends ThreatModel {
 
     public Ldapi() {
         super();
-        tmodel.put(NodeKind.LDAPI, this);
+        tmodel.put(DefaultNodeKind.LDAPI, this);
     }
 
     @Override
-    public ConstraintNetworkBuilder delegate(NodeKind type) {
+    public ConstraintNetworkBuilder delegate(DefaultNodeKind type) {
         switch(type) {
             case LDAPI:
                 try {
                     return getLDAPIThreatModel();
-                } catch (EUFInconsistencyException e) {
+                } catch (InconsistencyException e) {
                     assert false;
                 }
         }
@@ -52,14 +52,14 @@ public class Ldapi extends ThreatModel {
     }
 
     @Override
-    public Map<NodeKind, ThreatModel> getThreatModels() {
+    public Map<DefaultNodeKind, ThreatModel> getThreatModels() {
         return this.tmodel;
     }
 
-    private ConstraintNetworkBuilder getLDAPIThreatModel() throws EUFInconsistencyException {
+    private ConstraintNetworkBuilder getLDAPIThreatModel() throws InconsistencyException {
         ConstraintNetworkBuilder cn = new ConstraintNetworkBuilder();
-        Node op = new Operand(ldapBlacklist, NodeKind.STRREXP);
-        cn.addOperand(NodeKind.STRREXP, ldapBlacklist);
+        Node op = new Operand(ldapBlacklist, DefaultNodeKind.STRREXP);
+        cn.addOperand(DefaultNodeKind.STRREXP, ldapBlacklist);
         cn.setStartNode(op);
         return cn;
     }

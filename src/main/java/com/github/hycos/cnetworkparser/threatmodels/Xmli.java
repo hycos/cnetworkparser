@@ -17,13 +17,13 @@
 
 package com.github.hycos.cnetworkparser.threatmodels;
 
+import com.github.hycos.cnetwork.api.labelmgr.exception.InconsistencyException;
+import com.github.hycos.cnetwork.core.graph.ConstraintNetworkBuilder;
+import com.github.hycos.cnetwork.core.graph.DefaultNodeKind;
+import com.github.hycos.cnetwork.core.graph.Node;
+import com.github.hycos.cnetwork.core.graph.Operand;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import com.github.hycos.cnetwork.core.graph.ConstraintNetworkBuilder;
-import com.github.hycos.cnetwork.core.graph.Node;
-import com.github.hycos.cnetwork.core.graph.NodeKind;
-import com.github.hycos.cnetwork.core.graph.Operand;
-import com.github.hycos.cnetwork.exception.EUFInconsistencyException;
 
 import java.util.Map;
 
@@ -37,17 +37,17 @@ public class Xmli extends ThreatModel {
 
     public Xmli() {
         super();
-        tmodel.put(NodeKind.XMLI, this);
+        tmodel.put(DefaultNodeKind.XMLI, this);
     }
 
 
     @Override
-    public ConstraintNetworkBuilder delegate(NodeKind type) {
+    public ConstraintNetworkBuilder delegate(DefaultNodeKind type) {
         switch (type) {
             case XMLI:
                 try {
                     return getXMLIThreatModel();
-                } catch (EUFInconsistencyException e) {
+                } catch (InconsistencyException e) {
                     assert false;
                 }
         }
@@ -55,51 +55,51 @@ public class Xmli extends ThreatModel {
     }
 
     @Override
-    public Map<NodeKind, ThreatModel> getThreatModels() {
+    public Map<DefaultNodeKind, ThreatModel> getThreatModels() {
         return this.tmodel;
     }
 
 
     private ConstraintNetworkBuilder getXMLIThreatModel()
-            throws EUFInconsistencyException {
+            throws InconsistencyException {
 
         ConstraintNetworkBuilder cn = new ConstraintNetworkBuilder();
 
 
-        Node strvar = new Operand("sv1", NodeKind.STRVAR);
+        Node strvar = new Operand("sv1", DefaultNodeKind.STRVAR);
         //Node op = new Operand(xmlInjection, NodeKind.STRREXP);
 
         //Node matches1 = cn.addOperation(NodeKind.MATCHES, strvar, op);
 
-        Node content = new Operand("content", NodeKind.STRVAR);
+        Node content = new Operand("content", DefaultNodeKind.STRVAR);
 
 
-        Node startag = new Operand("stag", NodeKind.STRVAR);
-        Node open1 = new Operand("\\<", NodeKind.STRLIT);
-        Node close1 = new Operand("\\>", NodeKind.STRLIT);
+        Node startag = new Operand("stag", DefaultNodeKind.STRVAR);
+        Node open1 = new Operand("\\<", DefaultNodeKind.STRLIT);
+        Node close1 = new Operand("\\>", DefaultNodeKind.STRLIT);
 
-        Node s1 = cn.addOperation(NodeKind.CONCAT, open1, startag);
-        Node s2 = cn.addOperation(NodeKind.CONCAT, s1, close1);
+        Node s1 = cn.addOperation(DefaultNodeKind.CONCAT, open1, startag);
+        Node s2 = cn.addOperation(DefaultNodeKind.CONCAT, s1, close1);
 
-        Node endtag = new Operand("etag", NodeKind.STRVAR);
-        Node open2 = new Operand("\\<\\/", NodeKind.STRLIT);
-        Node close2 = new Operand("\\>", NodeKind.STRLIT);
+        Node endtag = new Operand("etag", DefaultNodeKind.STRVAR);
+        Node open2 = new Operand("\\<\\/", DefaultNodeKind.STRLIT);
+        Node close2 = new Operand("\\>", DefaultNodeKind.STRLIT);
 
-        Node e1 = cn.addOperation(NodeKind.CONCAT, open2, endtag);
-        Node e2 = cn.addOperation(NodeKind.CONCAT, e1, close2);
+        Node e1 = cn.addOperation(DefaultNodeKind.CONCAT, open2, endtag);
+        Node e2 = cn.addOperation(DefaultNodeKind.CONCAT, e1, close2);
 
-        Node regex = new Operand("[a-zA-Z0-9]+", NodeKind.STRREXP);
+        Node regex = new Operand("[a-zA-Z0-9]+", DefaultNodeKind.STRREXP);
 
-        cn.addConstraint(NodeKind.STR_EQUALS, startag, endtag);
-        cn.addConstraint(NodeKind.MATCHES, startag, regex);
-        cn.addConstraint(NodeKind.MATCHES, endtag, regex);
+        cn.addConstraint(DefaultNodeKind.STR_EQUALS, startag, endtag);
+        cn.addConstraint(DefaultNodeKind.MATCHES, startag, regex);
+        cn.addConstraint(DefaultNodeKind.MATCHES, endtag, regex);
 
-        Node r1 = cn.addOperation(NodeKind.CONCAT, s2, content);
-        Node r2 = cn.addOperation(NodeKind.CONCAT, r1, e2);
+        Node r1 = cn.addOperation(DefaultNodeKind.CONCAT, s2, content);
+        Node r2 = cn.addOperation(DefaultNodeKind.CONCAT, r1, e2);
 
         //Node matches2 = cn.addConstraint(NodeKind.MATCHES, strvar, con);
 
-        Node matches2 = cn.addConstraint(NodeKind.MATCHES, strvar, r2);
+        Node matches2 = cn.addConstraint(DefaultNodeKind.MATCHES, strvar, r2);
 
         //cn.addConstraint(NodeKind.OR, matches1, matches2);
 

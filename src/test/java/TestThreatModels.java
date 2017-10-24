@@ -15,13 +15,13 @@
  * specific language governing permissions and limitations under the Licence.
  */
 
-import org.junit.Test;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import com.github.hycos.cnetwork.core.graph.ConstraintNetworkBuilder;
-import com.github.hycos.cnetwork.core.graph.NodeKind;
+import com.github.hycos.cnetwork.core.graph.DefaultNodeKind;
 import com.github.hycos.cnetworkparser.exception.UnknownException;
 import com.github.hycos.cnetworkparser.threatmodels.ThreatModelFactory;
+import org.junit.jupiter.api.Test;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 
 public class TestThreatModels {
@@ -32,7 +32,7 @@ public class TestThreatModels {
     private static String xmlInjection = ".*(\\<((! *- *-)?|( *- *-)?\\>)|\\< *CDATA\\[\\[.*\\]\\] *\\>).*";
 
 
-    public ConstraintNetworkBuilder getCNFor(NodeKind kind) {
+    public ConstraintNetworkBuilder getCNFor(DefaultNodeKind kind) {
         ThreatModelFactory tf = ThreatModelFactory.getInstance();
         ConstraintNetworkBuilder cn = null;
 
@@ -50,22 +50,22 @@ public class TestThreatModels {
 
     @Test
     public void testThreatModels() {
-        assert(getCNFor(NodeKind.SQLINUM) != null);
+        assert(getCNFor(DefaultNodeKind.SQLINUM) != null);
 
-        ConstraintNetworkBuilder cn = getCNFor(NodeKind.SQLISTR);
+        ConstraintNetworkBuilder cn = getCNFor(DefaultNodeKind.SQLISTR);
 
         //ConstraintNetworkBuilderLOGGER.info(cn.toDot());
-        assert(getCNFor(NodeKind.SQLISTR) != null);
-        assert(getCNFor(NodeKind.XPATHNUM) != null);
-        assert(getCNFor(NodeKind.XPATHSTR) != null);
-        assert(getCNFor(NodeKind.LDAPI) != null);
-        assert(getCNFor(NodeKind.XSS) != null);
-        assert(getCNFor(NodeKind.XMLI) != null);
+        assert(getCNFor(DefaultNodeKind.SQLISTR) != null);
+        assert(getCNFor(DefaultNodeKind.XPATHNUM) != null);
+        assert(getCNFor(DefaultNodeKind.XPATHSTR) != null);
+        assert(getCNFor(DefaultNodeKind.LDAPI) != null);
+        assert(getCNFor(DefaultNodeKind.XSS) != null);
+        assert(getCNFor(DefaultNodeKind.XMLI) != null);
     }
 
     @Test
     public void test() {
-        ConstraintNetworkBuilder cn = getCNFor(NodeKind.XMLI);
+        ConstraintNetworkBuilder cn = getCNFor(DefaultNodeKind.XMLI);
 
         LOGGER.debug(cn.getConstraintNetwork().toDot());
     }

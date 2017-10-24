@@ -17,13 +17,13 @@
 
 package com.github.hycos.cnetworkparser.core;
 
+import com.github.hycos.cnetwork.api.labelmgr.exception.InconsistencyException;
+import com.github.hycos.cnetwork.core.graph.ConstraintNetwork;
+import com.github.hycos.cnetwork.core.graph.ConstraintNetworkBuilder;
 import com.github.hycos.cnetworkparser.exception.ParserRuntimeException;
 import org.antlr.v4.runtime.ParserRuleContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import com.github.hycos.cnetwork.core.graph.ConstraintNetwork;
-import com.github.hycos.cnetwork.core.graph.ConstraintNetworkBuilder;
-import com.github.hycos.cnetwork.exception.EUFInconsistencyException;
 import org.snt.inmemantlr.GenericParser;
 import org.snt.inmemantlr.exceptions.CompilationException;
 import org.snt.inmemantlr.exceptions.IllegalWorkflowException;
@@ -63,7 +63,7 @@ public class ConstraintNetworkParser {
     }
 
 
-    public ConstraintNetwork getConstraintNetworkFromFile(String path) throws EUFInconsistencyException {
+    public ConstraintNetwork getConstraintNetworkFromFile(String path) throws InconsistencyException {
 
         byte[] encoded = null;
         try {
@@ -77,7 +77,7 @@ public class ConstraintNetworkParser {
         try {
             this.gp.parse(s, "s", GenericParser.CaseSensitiveType.NONE);
         } catch (IllegalWorkflowException | ParsingException | ParserRuntimeException e) {
-            throw new EUFInconsistencyException(e.getMessage());
+            throw new InconsistencyException(e.getMessage());
         }
         ConstraintNetwork cn = this.provider.getConstraintNetwork();
         //cn.buildNodeIdx();
@@ -85,7 +85,7 @@ public class ConstraintNetworkParser {
     }
 
     public ConstraintNetworkBuilder getConstraintNetworkBuilderFromFile(String path)
-            throws EUFInconsistencyException {
+            throws InconsistencyException {
 
         byte[] encoded = null;
         try {
@@ -99,7 +99,7 @@ public class ConstraintNetworkParser {
         try {
             this.gp.parse(s, "s", GenericParser.CaseSensitiveType.NONE);
         } catch (IllegalWorkflowException | ParsingException | ParserRuntimeException e) {
-            throw new EUFInconsistencyException(e.getMessage());
+            throw new InconsistencyException(e.getMessage());
         }
         return this.provider.getConstraintNetworkBuilder();
     }

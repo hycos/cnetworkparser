@@ -21,7 +21,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import com.github.hycos.cnetwork.core.graph.ConstraintNetworkBuilder;
 import com.github.hycos.cnetwork.core.graph.Node;
-import com.github.hycos.cnetwork.core.graph.NodeKind;
+import com.github.hycos.cnetwork.core.graph.DefaultNodeKind;
 import com.github.hycos.cnetwork.core.graph.Operand;
 
 import java.util.Map;
@@ -34,11 +34,11 @@ public class Urli extends ThreatModel {
 
     public Urli() {
         super();
-        tmodel.put(NodeKind.URLI, this);
+        tmodel.put(DefaultNodeKind.URLI, this);
     }
 
     @Override
-    public ConstraintNetworkBuilder delegate(NodeKind type) {
+    public ConstraintNetworkBuilder delegate(DefaultNodeKind type) {
         switch(type) {
             case URLI:
                 return getURLiThreatModel();
@@ -47,15 +47,15 @@ public class Urli extends ThreatModel {
     }
 
     @Override
-    public Map<NodeKind, ThreatModel> getThreatModels() {
+    public Map<DefaultNodeKind, ThreatModel> getThreatModels() {
         return this.tmodel;
     }
 
     private ConstraintNetworkBuilder getURLiThreatModel() {
         ConstraintNetworkBuilder cn = new ConstraintNetworkBuilder();
 
-        cn.addOperand(NodeKind.STRREXP, urlBlacklist);
-        Node op = new Operand(urlBlacklist, NodeKind.STRREXP);
+        cn.addOperand(DefaultNodeKind.STRREXP, urlBlacklist);
+        Node op = new Operand(urlBlacklist, DefaultNodeKind.STRREXP);
         cn.setStartNode(op);
         return cn;
     }

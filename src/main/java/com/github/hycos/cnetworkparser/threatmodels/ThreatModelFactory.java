@@ -18,7 +18,7 @@
 package com.github.hycos.cnetworkparser.threatmodels;
 
 import com.github.hycos.cnetwork.core.graph.ConstraintNetworkBuilder;
-import com.github.hycos.cnetwork.core.graph.NodeKind;
+import com.github.hycos.cnetwork.core.graph.DefaultNodeKind;
 import com.github.hycos.cnetworkparser.exception.UnknownException;
 
 import java.util.HashMap;
@@ -27,7 +27,7 @@ public class ThreatModelFactory {
 
     private static ThreatModelFactory instance = null;
 
-    private HashMap<NodeKind, ThreatModel> tmodel = null;
+    private HashMap<DefaultNodeKind, ThreatModel> tmodel = null;
 
 
     public static ThreatModelFactory getInstance() {
@@ -46,7 +46,7 @@ public class ThreatModelFactory {
         this.tmodel.putAll(new Urli().getThreatModels());
     }
 
-    public ConstraintNetworkBuilder getCNforVulnerability(NodeKind kind) throws
+    public ConstraintNetworkBuilder getCNforVulnerability(DefaultNodeKind kind) throws
             UnknownException {
 
         if(!tmodel.containsKey(kind))

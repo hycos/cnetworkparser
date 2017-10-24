@@ -17,9 +17,9 @@
 
 package com.github.hycos.cnetworkparser.lang.smt;
 
+import com.github.hycos.cnetwork.api.labelmgr.exception.InconsistencyException;
 import com.github.hycos.cnetwork.core.graph.ConstraintNetwork;
 import com.github.hycos.cnetwork.core.graph.ConstraintNetworkBuilder;
-import com.github.hycos.cnetwork.exception.EUFInconsistencyException;
 import com.github.hycos.cnetworkparser.core.ConstraintNetworkCreator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -27,7 +27,7 @@ import org.snt.inmemantlr.exceptions.ParseTreeProcessorException;
 import org.snt.inmemantlr.listener.DefaultListener;
 import org.snt.inmemantlr.tree.ParseTree;
 
-import static com.github.hycos.cnetwork.core.graph.NodeKind.*;
+import static com.github.hycos.cnetwork.core.graph.DefaultNodeKind.*;
 
 
 public class CVC4Listener extends ConstraintNetworkCreator {
@@ -83,24 +83,24 @@ public class CVC4Listener extends ConstraintNetworkCreator {
 
 
     @Override
-    public ConstraintNetwork getConstraintNetwork() throws EUFInconsistencyException {
+    public ConstraintNetwork getConstraintNetwork() throws InconsistencyException {
         ParseTree ast = this.getParseTree();
         SmtCnetworkBuilder builder = new SmtCnetworkBuilder(ast,tm);
         try {
             return builder.process().getConstraintNetwork();
         } catch (ParseTreeProcessorException e) {
-            throw new EUFInconsistencyException(e.getMessage());
+            throw new InconsistencyException(e.getMessage());
         }
     }
 
     @Override
-    public ConstraintNetworkBuilder getConstraintNetworkBuilder() throws EUFInconsistencyException {
+    public ConstraintNetworkBuilder getConstraintNetworkBuilder() throws InconsistencyException {
         ParseTree ast = this.getParseTree();
         SmtCnetworkBuilder builder = new SmtCnetworkBuilder(ast,tm);
         try {
             return builder.process();
         } catch (ParseTreeProcessorException e) {
-            throw new EUFInconsistencyException(e.getMessage());
+            throw new InconsistencyException(e.getMessage());
         }
     }
 }

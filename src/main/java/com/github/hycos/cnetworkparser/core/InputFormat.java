@@ -19,7 +19,6 @@ package com.github.hycos.cnetworkparser.core;
 
 
 import com.github.hycos.cnetworkparser.lang.smt.Z3Str2Listener;
-import com.github.hycos.cnetworkparser.lang.logic.LogicListener;
 import com.github.hycos.cnetworkparser.lang.smt.CVC4Listener;
 import com.github.hycos.cnetworkparser.lang.smt.S3Listener;
 import com.github.hycos.cnetworkparser.lang.sol.SolListener;
@@ -69,7 +68,6 @@ public enum InputFormat {
             case CVC4: return new CVC4Listener();
             case Z3STR2: return new Z3Str2Listener();
             case S3: return new S3Listener();
-            case LOGIC: return new LogicListener();
         }
         return null;
     }

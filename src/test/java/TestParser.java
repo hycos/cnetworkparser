@@ -15,18 +15,17 @@
  * specific language governing permissions and limitations under the Licence.
  */
 
-import com.github.hycos.cnetworkparser.exception.ParserRuntimeException;
-import org.junit.Assert;
-import org.junit.Test;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import com.github.hycos.cnetwork.analytics.CnetworkAnalyzer;
+import com.github.hycos.cnetwork.api.labelmgr.exception.InconsistencyException;
 import com.github.hycos.cnetwork.core.graph.ConstraintNetwork;
 import com.github.hycos.cnetwork.core.graph.ConstraintNetworkBuilder;
 import com.github.hycos.cnetwork.core.graph.Node;
-import com.github.hycos.cnetwork.exception.EUFInconsistencyException;
 import com.github.hycos.cnetworkparser.core.ConstraintNetworkParser;
 import com.github.hycos.cnetworkparser.core.InputFormat;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.snt.inmemantlr.exceptions.CompilationException;
 
 import java.io.File;
@@ -50,14 +49,14 @@ public class TestParser {
             cn = new ConstraintNetworkParser(InputFormat.Z3STR2).
                     getConstraintNetworkBuilderFromFile(getPath("simplenum" +
                             "0.z3"));
-        } catch (EUFInconsistencyException | CompilationException e) {
+        } catch (InconsistencyException | CompilationException e) {
             thrown = true;
         }
 
         //LOGGER.debug(cn.getConstraintNetwork().toDot());
         //LOGGER.debug(cn.getEufLattice().toDot());
 
-        Assert.assertFalse(thrown);
+        Assertions.assertFalse(thrown);
 
 
         CnetworkAnalyzer.INSTANCE.detectLoopPoints(cn.getConstraintNetwork());
@@ -72,18 +71,18 @@ public class TestParser {
             cn = new ConstraintNetworkParser(InputFormat.Z3STR2).
                     getConstraintNetworkBuilderFromFile(getPath("simplenum" +
                             "1.z3"));
-        } catch (EUFInconsistencyException | CompilationException e) {
+        } catch (InconsistencyException | CompilationException e) {
             thrown = true;
         }
 
-        LOGGER.debug(cn.getConstraintNetwork().toDot());
-        LOGGER.debug(cn.getEufLattice().toDot());
+        //LOGGER.debug(cn.getConstraintNetwork().toDot());
+        //LOGGER.debug(cn.getEufLattice().toDot());
 
         Set<Node> ret = CnetworkAnalyzer.INSTANCE.detectLoopPoints(cn);
 
         LOGGER.debug("-- {}", ret);
 
-        Assert.assertFalse(thrown);
+        Assertions.assertFalse(thrown);
     }
 
 //    @Test
@@ -97,7 +96,7 @@ public class TestParser {
 //           thrown = true;
 //        }
 //
-//        Assert.assertTrue(thrown);
+//        Assertions.assertTrue(thrown);
 //    }
 
     @Test
@@ -107,8 +106,9 @@ public class TestParser {
             cn = new ConstraintNetworkParser(InputFormat
                     .SOL).
                     getConstraintNetworkFromFile(getPath("2.sol"));
-        } catch (EUFInconsistencyException | CompilationException e) {
-            Assert.assertFalse(true);
+        } catch (InconsistencyException | CompilationException e) {
+            LOGGER.debug(e.getMessage());
+            Assertions.assertFalse(true);
         }
     }
 
@@ -118,10 +118,10 @@ public class TestParser {
         try {
             cn = new ConstraintNetworkParser(InputFormat.CVC4).
                     getConstraintNetworkFromFile(getPath("1.cvc"));
-        }  catch (EUFInconsistencyException | CompilationException e) {
-            Assert.assertFalse(true);
+        }  catch (InconsistencyException | CompilationException e) {
+            Assertions.assertFalse(true);
         }
-        Assert.assertTrue(cn != null);
+        Assertions.assertTrue(cn != null);
 
         //LOGGER.info(cn.toConfig());
     }
@@ -132,10 +132,10 @@ public class TestParser {
         try {
             cn = new ConstraintNetworkParser(InputFormat.S3).
                     getConstraintNetworkFromFile(getPath("1.s3"));
-        } catch (EUFInconsistencyException | CompilationException e) {
-            Assert.assertFalse(true);
+        } catch (InconsistencyException | CompilationException e) {
+            Assertions.assertFalse(true);
         }
-        Assert.assertTrue(cn != null);
+        Assertions.assertTrue(cn != null);
     }
 
     @Test
@@ -148,11 +148,11 @@ public class TestParser {
         try {
             cn = new ConstraintNetworkParser(InputFormat.Z3STR2).
                     getConstraintNetworkBuilderFromFile(s);
-        } catch (EUFInconsistencyException | CompilationException e) {
-            Assert.assertFalse(true);
+        } catch (InconsistencyException | CompilationException e) {
+            Assertions.assertFalse(true);
         }
         LOGGER.debug(cn.getConstraintNetwork().toDot());
-        LOGGER.debug(cn.getEufLattice().toDot());
+        //LOGGER.debug(cn.getEufLattice().toDot());
     }
 
     @Test
@@ -162,11 +162,11 @@ public class TestParser {
             cn = new ConstraintNetworkParser(InputFormat
                     .SOL).
                     getConstraintNetworkFromFile(getPath("simple01.sol"));
-        } catch (EUFInconsistencyException | CompilationException e) {
-            Assert.assertFalse(true);
+        } catch (InconsistencyException | CompilationException e) {
+            Assertions.assertFalse(true);
         }
         LOGGER.debug(cn.toDot());
-        Assert.assertTrue(cn != null);
+        Assertions.assertTrue(cn != null);
 
     }
 
@@ -177,12 +177,12 @@ public class TestParser {
             cn = new ConstraintNetworkParser(InputFormat
                     .Z3STR2).
                     getConstraintNetworkBuilderFromFile(getPath("z3num.z3"));
-        } catch (EUFInconsistencyException | CompilationException e) {
+        } catch (InconsistencyException | CompilationException e) {
             //LOGGER.error(e.getMessage());
-            Assert.assertFalse(true);
+            Assertions.assertFalse(true);
         }
         LOGGER.debug("euf");
-        LOGGER.debug(cn.getEufLattice().toDot());
+        //LOGGER.debug(cn.getEufLattice().toDot());
     }
 
     @Test
@@ -192,12 +192,12 @@ public class TestParser {
             cn = new ConstraintNetworkParser(InputFormat
                     .Z3STR2).
                     getConstraintNetworkBuilderFromFile(getPath("lencheck.z3"));
-        } catch (EUFInconsistencyException | CompilationException e) {
-            Assert.assertFalse(true);
+        } catch (InconsistencyException | CompilationException e) {
+            Assertions.assertFalse(true);
         }
         LOGGER.debug("euf");
         LOGGER.debug(cn.getConstraintNetwork().toDot());
-        LOGGER.debug(cn.getEufLattice().toDot());
+        //LOGGER.debug(cn.getEufLattice().toDot());
     }
 
     @Test
@@ -206,11 +206,12 @@ public class TestParser {
         try {
             cn = new ConstraintNetworkParser(InputFormat.Z3STR2).
                     getConstraintNetworkBuilderFromFile(getPath("kaluza4.z3"));
-        } catch (EUFInconsistencyException | CompilationException e) {
-            Assert.assertFalse(true);
+        } catch (InconsistencyException | CompilationException e) {
+            LOGGER.error(e.getMessage());
+            Assertions.assertFalse(true);
         }
 
-        LOGGER.debug(cn.getEufLattice().toDot());
+        //LOGGER.debug(cn.getEufLattice().toDot());
     }
 
     @Test
@@ -220,11 +221,11 @@ public class TestParser {
             cn = new ConstraintNetworkParser(InputFormat.Z3STR2).
                     getConstraintNetworkBuilderFromFile(getPath
                             ("pisa-004t.z3"));
-        } catch (EUFInconsistencyException | CompilationException e) {
-            Assert.assertFalse(true);
+        } catch (InconsistencyException | CompilationException e) {
+            Assertions.assertFalse(true);
         }
         CnetworkAnalyzer.INSTANCE.checkForCycles(cn);
-        LOGGER.debug(cn.getEufLattice().toDot());
+        //LOGGER.debug(cn.getEufLattice().toDot());
     }
 
 
@@ -235,49 +236,11 @@ public class TestParser {
             cn = new ConstraintNetworkParser(InputFormat.SOL).
                     getConstraintNetworkBuilderFromFile(getPath
                             ("AuthorizationServlet0.sol"));
-        } catch (EUFInconsistencyException | CompilationException e) {
-            Assert.assertFalse(true);
+        } catch (InconsistencyException | CompilationException e) {
+            LOGGER.debug(e.getMessage());
+            Assertions.assertFalse(true);
         }
         //CnetworkAnalyzer.INSTANCE.checkForCycles(cn);
         LOGGER.debug(cn.getConstraintNetwork().toDot());
     }
-
-    @Test
-    public void testValueOf() {
-        ConstraintNetworkBuilder cn = null;
-        try {
-            cn = new ConstraintNetworkParser(InputFormat.SOL).
-                    getConstraintNetworkBuilderFromFile(getPath
-                            ("valueof.sol"));
-        } catch (EUFInconsistencyException | CompilationException e) {
-            Assert.assertFalse(true);
-        }
-        Node n = cn.getNodeById(1);
-
-        LOGGER.info("OP " + n.getDomain().getDomainKind().toString());
-    }
-
-
-    @Test
-    public void testInconsistent() {
-
-        boolean inc = false;
-        ConstraintNetworkBuilder cn = null;
-        try {
-            cn = new ConstraintNetworkParser(InputFormat.SOL).
-                    getConstraintNetworkBuilderFromFile(getPath
-                            ("inconsistent.sol"));
-        } catch (EUFInconsistencyException | ParserRuntimeException |
-                CompilationException e) {
-            inc = true;
-        }
-
-        Assert.assertTrue(inc);
-//        Node n = cn.getNodeById(1);
-
-//        LOGGER.info("OP " + n.getDomain().getDomainKind().toString());
-//        LOGGER.info(cn.getEufLattice().toDot());
-    }
-
-
 }
