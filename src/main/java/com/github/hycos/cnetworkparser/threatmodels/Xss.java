@@ -17,6 +17,7 @@
 
 package com.github.hycos.cnetworkparser.threatmodels;
 
+import com.github.hycos.cnetwork.api.NodeKindInterface;
 import com.github.hycos.cnetwork.api.labelmgr.exception.InconsistencyException;
 import com.github.hycos.cnetwork.core.graph.ConstraintNetworkBuilder;
 import com.github.hycos.cnetwork.core.graph.DefaultNodeKind;
@@ -42,14 +43,14 @@ public class Xss extends ThreatModel {
 
     public Xss() {
         super();
-        tmodel.put(DefaultNodeKind.XSS, this);
+        tmodel.put("xss", this);
     }
 
 
     @Override
-    public ConstraintNetworkBuilder delegate(DefaultNodeKind type) {
-        switch(type) {
-            case XSS:
+    public ConstraintNetworkBuilder delegate(NodeKindInterface type) {
+        switch(type.getValue().toUpperCase()) {
+            case "XSS":
                 try {
                     return getXMLIThreatModel();
                 } catch (InconsistencyException e) {
@@ -60,7 +61,7 @@ public class Xss extends ThreatModel {
     }
 
     @Override
-    public Map<DefaultNodeKind, ThreatModel> getThreatModels() {
+    public Map<String, ThreatModel> getThreatModels() {
         return this.tmodel;
     }
 

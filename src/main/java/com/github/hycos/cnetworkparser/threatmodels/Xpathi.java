@@ -17,6 +17,7 @@
 
 package com.github.hycos.cnetworkparser.threatmodels;
 
+import com.github.hycos.cnetwork.api.NodeKindInterface;
 import com.github.hycos.cnetwork.api.labelmgr.exception.InconsistencyException;
 import com.github.hycos.cnetwork.core.graph.ConstraintNetworkBuilder;
 import com.github.hycos.cnetwork.core.graph.DefaultNodeKind;
@@ -34,20 +35,20 @@ public class Xpathi extends ThreatModel {
 
     public Xpathi() {
         super();
-        tmodel.put(DefaultNodeKind.XPATHNUM, this);
-        tmodel.put(DefaultNodeKind.XPATHSTR, this);
+        tmodel.put("xpathnum", this);
+        tmodel.put("xpathstr", this);
     }
 
     @Override
-    public ConstraintNetworkBuilder delegate(DefaultNodeKind type) {
-        switch (type) {
-            case XPATHNUM:
+    public ConstraintNetworkBuilder delegate(NodeKindInterface type) {
+        switch (type.getValue().toUpperCase()) {
+            case "XPATHNUM":
                 try {
                     return getNumTautology();
                 } catch (InconsistencyException e) {
                     assert false;
                 }
-            case XPATHSTR:
+            case "XPATHSTR":
                 try {
                     return getStrTautology();
                 } catch (InconsistencyException e) {
@@ -58,7 +59,7 @@ public class Xpathi extends ThreatModel {
     }
 
     @Override
-    public Map<DefaultNodeKind, ThreatModel> getThreatModels() {
+    public Map<String, ThreatModel> getThreatModels() {
         return this.tmodel;
     }
 

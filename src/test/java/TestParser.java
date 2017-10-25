@@ -133,6 +133,7 @@ public class TestParser {
             cn = new ConstraintNetworkParser(InputFormat.S3).
                     getConstraintNetworkFromFile(getPath("1.s3"));
         } catch (InconsistencyException | CompilationException e) {
+            LOGGER.debug(e.getMessage());
             Assertions.assertFalse(true);
         }
         Assertions.assertTrue(cn != null);

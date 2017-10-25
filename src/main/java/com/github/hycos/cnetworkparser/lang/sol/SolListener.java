@@ -17,12 +17,15 @@
 
 package com.github.hycos.cnetworkparser.lang.sol;
 
+import com.github.hycos.cnetwork.api.NodeKindFactoryInterface;
 import com.github.hycos.cnetwork.api.labelmgr.exception.InconsistencyException;
+import com.github.hycos.cnetworkparser.core.ConstraintNetworkBuilderFactoryInterface;
 import com.github.hycos.cnetwork.core.graph.*;
-import com.github.hycos.cnetworkparser.core.ConstraintNetworkProvider;
+import com.github.hycos.cnetworkparser.core.ConstraintNetworkGenerator;
 import com.github.hycos.cnetworkparser.exception.ParserRuntimeException;
 import com.github.hycos.cnetworkparser.exception.UnknownException;
 import com.github.hycos.cnetworkparser.threatmodels.ThreatModelFactory;
+import com.github.hycos.cnetworkparser.utils.StringPair;
 import com.github.hycos.cnetworkparser.utils.StringUtils;
 import dk.brics.automaton.Automaton;
 import org.antlr.v4.runtime.ParserRuleContext;
@@ -36,17 +39,24 @@ import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
 
-public class SolListener extends DefaultListener implements ConstraintNetworkProvider {
+// TODO: refactor parser: proper post-order traversal
+public class SolListener extends DefaultListener implements ConstraintNetworkGenerator {
 
     final static Logger LOGGER = LoggerFactory.getLogger(SolListener.class);
 
     private BasicConstraint constraint = new BasicConstraint();
     private ScopeMgr ctx = new ScopeMgr();
-    private ConstraintNetworkBuilder cbuilder = null;
 
+    private ConstraintNetworkBuilder cbuilder = null;
+    private NodeKindFactoryInterface ni = null;
 
     public SolListener() {
         this.cbuilder = new ConstraintNetworkBuilder();
+    }
+
+    public SolListener(ConstraintNetworkBuilderFactoryInterface bld) {
+        this.cbuilder = bld.getConstraintNetworkBuilder();
+        this.ni = bld.getNodeKindFactory();
     }
 
     public void addVariable(String type, String label) {
@@ -260,7 +270,9 @@ public class SolListener extends DefaultListener implements ConstraintNetworkPro
             e.printStackTrace();
         }
 
-        cbuilder.join(DefaultNodeKind.MATCHES, n, subnet);
+        assert subnet != null;
+
+        cbuilder.join(ni.getNodeKindFromString("matches"), n, subnet);
         //cn.addConstraint(NodeKind.MATCHES, n, subnet.getStartNode());
 
         // join threat model subnetwork with reference point
@@ -416,14 +428,14 @@ public class SolListener extends DefaultListener implements ConstraintNetworkPro
 
         // infer the types for overloaded operators (==)
 
-        if (okind == DefaultNodeKind.EQUALS) {
+        if (okind == ni.getNodeKindFromString("equals")) {
             if (areString(params))
                 okind = DefaultNodeKind.STR_EQUALS;
             else if (areNum(params))
                 okind = DefaultNodeKind.NUM_EQUALS;
             else if (areBool(params))
                 okind = DefaultNodeKind.BOOL_EQUALS;
-        } else if (okind == DefaultNodeKind.NEQUALS) {
+        } else if (okind == ni.getNodeKindFromString("nequals")) {
             if (areString(params))
                 okind = DefaultNodeKind.STR_NEQUALS;
             else if (areNum(params))
@@ -432,7 +444,7 @@ public class SolListener extends DefaultListener implements ConstraintNetworkPro
                 okind = DefaultNodeKind.BOOL_NEQUALS;
         }
 
-        if (okind == DefaultNodeKind.UNKNOWN) {
+        if (okind == ni.getNodeKindFromString("unknown")) {
             newop = this.cbuilder.addExtOperation(skind, params);
         } else {
             newop = this.cbuilder.addOperation(okind, params);

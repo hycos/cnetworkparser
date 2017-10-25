@@ -15,22 +15,15 @@
  * specific language governing permissions and limitations under the Licence.
  */
 
-package com.github.hycos.cnetworkparser.lang.sol;
+package com.github.hycos.cnetworkparser.core;
 
+import com.github.hycos.cnetwork.api.labelmgr.exception.InconsistencyException;
+import com.github.hycos.cnetwork.core.graph.ConstraintNetwork;
+import com.github.hycos.cnetwork.core.graph.ConstraintNetworkBuilder;
+import org.snt.inmemantlr.listener.DefaultListener;
 
-public class StringPair {
-
-    public StringPair(String key ,String value) {
-        this.key = key;
-        this.value = value;
-    }
-
-    public StringPair() {}
-
-    public String key;
-    public String value;
-
-    public String toString() {
-        return "key: " + key + " value: "+ value;
-    }
+public interface ConstraintNetworkGenerator {
+    DefaultListener getListener();
+    ConstraintNetwork getConstraintNetwork() throws InconsistencyException;
+    ConstraintNetworkBuilder getConstraintNetworkBuilder() throws InconsistencyException;
 }

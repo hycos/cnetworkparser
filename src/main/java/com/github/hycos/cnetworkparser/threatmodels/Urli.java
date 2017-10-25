@@ -17,6 +17,7 @@
 
 package com.github.hycos.cnetworkparser.threatmodels;
 
+import com.github.hycos.cnetwork.api.NodeKindInterface;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import com.github.hycos.cnetwork.core.graph.ConstraintNetworkBuilder;
@@ -34,20 +35,20 @@ public class Urli extends ThreatModel {
 
     public Urli() {
         super();
-        tmodel.put(DefaultNodeKind.URLI, this);
+        tmodel.put("urli", this);
     }
 
     @Override
-    public ConstraintNetworkBuilder delegate(DefaultNodeKind type) {
-        switch(type) {
-            case URLI:
+    public ConstraintNetworkBuilder delegate(NodeKindInterface type) {
+        switch(type.getValue().toUpperCase()) {
+            case "URLI":
                 return getURLiThreatModel();
         }
         return null;
     }
 
     @Override
-    public Map<DefaultNodeKind, ThreatModel> getThreatModels() {
+    public Map<String, ThreatModel> getThreatModels() {
         return this.tmodel;
     }
 

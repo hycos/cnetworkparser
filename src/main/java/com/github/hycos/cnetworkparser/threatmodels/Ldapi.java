@@ -17,6 +17,7 @@
 
 package com.github.hycos.cnetworkparser.threatmodels;
 
+import com.github.hycos.cnetwork.api.NodeKindInterface;
 import com.github.hycos.cnetwork.api.labelmgr.exception.InconsistencyException;
 import com.github.hycos.cnetwork.core.graph.ConstraintNetworkBuilder;
 import com.github.hycos.cnetwork.core.graph.DefaultNodeKind;
@@ -35,13 +36,13 @@ public class Ldapi extends ThreatModel {
 
     public Ldapi() {
         super();
-        tmodel.put(DefaultNodeKind.LDAPI, this);
+        tmodel.put("ldapi", this);
     }
 
     @Override
-    public ConstraintNetworkBuilder delegate(DefaultNodeKind type) {
-        switch(type) {
-            case LDAPI:
+    public ConstraintNetworkBuilder delegate(NodeKindInterface type) {
+        switch(type.getValue().toUpperCase()) {
+            case "LDAPI":
                 try {
                     return getLDAPIThreatModel();
                 } catch (InconsistencyException e) {
@@ -52,7 +53,7 @@ public class Ldapi extends ThreatModel {
     }
 
     @Override
-    public Map<DefaultNodeKind, ThreatModel> getThreatModels() {
+    public Map<String, ThreatModel> getThreatModels() {
         return this.tmodel;
     }
 

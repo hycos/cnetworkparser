@@ -18,6 +18,7 @@
 package com.github.hycos.cnetworkparser.lang.sol;
 
 import com.github.hycos.cnetwork.core.graph.Node;
+import com.github.hycos.cnetworkparser.utils.StringPair;
 
 import java.util.LinkedList;
 import java.util.Stack;

@@ -17,76 +17,96 @@
 
 package com.github.hycos.cnetworkparser.lang.smt;
 
-import com.github.hycos.cnetwork.api.labelmgr.exception.InconsistencyException;
-import com.github.hycos.cnetwork.core.graph.ConstraintNetwork;
-import com.github.hycos.cnetwork.core.graph.ConstraintNetworkBuilder;
+import com.github.hycos.cnetworkparser.core.ConstraintNetworkBuilderFactoryInterface;
 import com.github.hycos.cnetwork.core.graph.DefaultNodeKind;
 import com.github.hycos.cnetworkparser.core.ConstraintNetworkCreator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.snt.inmemantlr.exceptions.ParseTreeProcessorException;
 import org.snt.inmemantlr.listener.DefaultListener;
-import org.snt.inmemantlr.tree.ParseTree;
 
 
 public class Z3Str2Listener extends ConstraintNetworkCreator {
 
 
-    public static final SmtCnetworkBuilder.TransMap tm = new SmtCnetworkBuilder.TransMap() {{
+    final static Logger LOGGER = LoggerFactory.getLogger(Z3Str2Listener.class);
+
+
+    public final SmtCnetworkBuilder.TransMap tm = new SmtCnetworkBuilder
+            .TransMap() {{
         // for regular expressions
-        put(LanguageElements.KSTAR, "RegexStar", "*", DefaultNodeKind.UNKNOWN);
-        put(LanguageElements.KPLUS, "RegexPlus", "+", DefaultNodeKind.UNKNOWN);
-        put(LanguageElements.UNION, "RegexUnion", "|", DefaultNodeKind.UNKNOWN);
-        put(LanguageElements.RCONCAT, "RegexConcat", "", DefaultNodeKind.CONCAT);
-        put(LanguageElements.OPT, "", "", DefaultNodeKind.UNKNOWN); // not available
-        put(LanguageElements.RAN, "RegexCharRange", "", DefaultNodeKind.UNKNOWN);
-        put(LanguageElements.CONV, "Str2Reg", "", DefaultNodeKind.UNKNOWN); // not available
-        put(LanguageElements.MATCHES, "RegexIn", DefaultNodeKind.MATCHES.getValue(), DefaultNodeKind.MATCHES);
+        put(LanguageElements.KSTAR, "RegexStar", "*",ni.getNodeKindFromString("unknown"));
+        put(LanguageElements.KPLUS, "RegexPlus", "+", ni.getNodeKindFromString("unknown"));
+        put(LanguageElements.UNION, "RegexUnion", "|", ni.getNodeKindFromString("unknown"));
+        put(LanguageElements.RCONCAT, "RegexConcat", "", ni.getNodeKindFromString("concat"));
+        put(LanguageElements.OPT, "", "", ni.getNodeKindFromString("unknown")); // not available
+        put(LanguageElements.RAN, "RegexCharRange", "", ni.getNodeKindFromString("unknown"));
+        put(LanguageElements.CONV, "Str2Reg", "", ni.getNodeKindFromString("unknown")); // not available
+        put(LanguageElements.MATCHES, "RegexIn", ni.getNodeKindFromString("matches").getValue(), ni.getNodeKindFromString("matches"));
         // for string operations
-        put(LanguageElements.LEN, "Length", DefaultNodeKind.LEN.getValue(), DefaultNodeKind.LEN);
-        put(LanguageElements.CONTAINS, "Contains", DefaultNodeKind.CONTAINS.getValue(), DefaultNodeKind.CONTAINS);
-        put(LanguageElements.INDEXOF, "Indexof", DefaultNodeKind.INDEXOF
-                .getValue(), DefaultNodeKind.INDEXOF);
-        put(LanguageElements.INDEXOF, "Indexof2", DefaultNodeKind.INDEXOF
-                .getValue(), DefaultNodeKind.INDEXOF);
+        put(LanguageElements.LEN, "Length", ni.getNodeKindFromString("len").getValue(), ni.getNodeKindFromString("len"));
+        put(LanguageElements.CONTAINS, "Contains", ni.getNodeKindFromString("contains").getValue(), ni.getNodeKindFromString("contains"));
+        put(LanguageElements.INDEXOF, "Indexof", ni.getNodeKindFromString("indexof")
+                .getValue(), ni.getNodeKindFromString("indexof"));
+        put(LanguageElements.INDEXOF, "Indexof2", ni.getNodeKindFromString("indexof")
+                .getValue(), ni.getNodeKindFromString("indexof"));
         put(LanguageElements.LASTINDEXOF, "LastIndexof", DefaultNodeKind.LASTINDEXOF.getValue
                         (), DefaultNodeKind.LASTINDEXOF);
         put(LanguageElements.LASTINDEXOF, "LastIndexOf", DefaultNodeKind.LASTINDEXOF.getValue(), DefaultNodeKind.LASTINDEXOF);
-        put(LanguageElements.PREFIXOF, "StartsWith", DefaultNodeKind.STARTSWITH.getValue(), DefaultNodeKind.STARTSWITH);
-        put(LanguageElements.SUFFIXOF, "EndsWith", DefaultNodeKind.ENDSWITH.getValue(), DefaultNodeKind.ENDSWITH);
-        put(LanguageElements.SCONCAT, "Concat", DefaultNodeKind.CONCAT.getValue(), DefaultNodeKind.CONCAT);
-        put(LanguageElements.SUBSTRNG, "Substring", DefaultNodeKind.SUBSTR.getValue(), DefaultNodeKind.SUBSTR);
-        put(LanguageElements.REPLACE, "Replace", DefaultNodeKind.REPLACE.getValue(),
-                DefaultNodeKind.REPLACE);
+        put(LanguageElements.PREFIXOF, "StartsWith", ni.getNodeKindFromString("startswith").getValue(), ni.getNodeKindFromString("startswith"));
+        put(LanguageElements.SUFFIXOF, "EndsWith", ni.getNodeKindFromString("endswith").getValue(), ni.getNodeKindFromString("endswith"));
+        put(LanguageElements.SCONCAT, "Concat", ni.getNodeKindFromString("concat").getValue(), ni.getNodeKindFromString("concat"));
+        put(LanguageElements.SUBSTRNG, "Substring", ni.getNodeKindFromString
+                ("substr").getValue(), ni.getNodeKindFromString("substr"));
+        put(LanguageElements.REPLACE, "Replace", ni.getNodeKindFromString
+                        ("replace").getValue(),
+                ni.getNodeKindFromString("replace"));
         // others
-        put(LanguageElements.NEQ, "!=", DefaultNodeKind.NEQUALS.toString(), DefaultNodeKind.NEQUALS);
-        put(LanguageElements.EQ, "=", DefaultNodeKind.EQUALS.toString(), DefaultNodeKind.EQUALS);
-        put(LanguageElements.SMALLEREQ, "<=", DefaultNodeKind.SMALLEREQ.toString(), DefaultNodeKind.SMALLEREQ);
-        put(LanguageElements.GREATEREQ, ">=", DefaultNodeKind.GREATEREQ.toString(), DefaultNodeKind.GREATEREQ);
-        put(LanguageElements.SMALLER, "<", DefaultNodeKind.SMALLER.toString(), DefaultNodeKind.SMALLER);
-        put(LanguageElements.GREATER, ">", DefaultNodeKind.GREATER.toString(), DefaultNodeKind.GREATER);
-        put(LanguageElements.PLUS, "+", DefaultNodeKind.ADD.toString(), DefaultNodeKind.ADD);
-        put(LanguageElements.MINUS, "-", DefaultNodeKind.SUB.toString(), DefaultNodeKind.SUB);
+        put(LanguageElements.NEQ, "!=", ni.getNodeKindFromString("!=")
+                .toString(), ni.getNodeKindFromString("!="));
+        put(LanguageElements.EQ, "=", ni.getNodeKindFromString("==")
+                .toString(), ni.getNodeKindFromString("=="));
+        put(LanguageElements.SMALLEREQ, "<=", ni.getNodeKindFromString("<=")
+                .toString(), ni.getNodeKindFromString("<="));
+        put(LanguageElements.GREATEREQ, ">=", ni.getNodeKindFromString(">=").toString(), ni.getNodeKindFromString(">="));
+        put(LanguageElements.SMALLER, "<", ni.getNodeKindFromString("<").toString(), ni.getNodeKindFromString("<"));
+        put(LanguageElements.GREATER, ">", ni.getNodeKindFromString(">").toString(), ni.getNodeKindFromString(">"));
+        put(LanguageElements.PLUS, "+", ni.getNodeKindFromString("add")
+                .toString(), ni.getNodeKindFromString("add"));
+        put(LanguageElements.MINUS, "-", ni.getNodeKindFromString("sub")
+                .toString(), ni.getNodeKindFromString("sub"));
         //variables
-        put(LanguageElements.DTSTRING, "String", DefaultNodeKind.STRVAR.toString(), DefaultNodeKind.STRVAR);
-        put(LanguageElements.DTINT, "Int", DefaultNodeKind.NUMVAR.toString(), DefaultNodeKind.NUMVAR);
-        put(LanguageElements.DTBOOLEAN, "Bool", DefaultNodeKind.BOOLVAR.toString(), DefaultNodeKind.BOOLVAR);
+        put(LanguageElements.DTSTRING, "String", ni.getNodeKindFromString("strvar").toString(), ni.getNodeKindFromString("strvar"));
+        put(LanguageElements.DTINT, "Int", ni.getNodeKindFromString("numar").toString(), ni.getNodeKindFromString("numar"));
+        put(LanguageElements.DTBOOLEAN, "Bool", ni.getNodeKindFromString("boolvar").toString(), ni.getNodeKindFromString("boolvar"));
         // boolean operations
-        put(LanguageElements.AND, "and", DefaultNodeKind.AND.toString(), DefaultNodeKind.AND);
-        put(LanguageElements.OR, "or", DefaultNodeKind.OR.toString(), DefaultNodeKind.OR);
-        put(LanguageElements.NOT, "not", DefaultNodeKind.NOT.toString(), DefaultNodeKind.NOT);
-        put(LanguageElements.IMPLIES, "implies", DefaultNodeKind.IMPLIES.toString(),
-                DefaultNodeKind.IMPLIES);
+        put(LanguageElements.AND, "and", ni.getNodeKindFromString("and").toString(), ni.getNodeKindFromString("and"));
+        put(LanguageElements.OR, "or", ni.getNodeKindFromString("or").toString(), ni.getNodeKindFromString("or"));
+        put(LanguageElements.NOT, "not", ni.getNodeKindFromString("not").toString(), ni.getNodeKindFromString("not"));
+        put(LanguageElements.IMPLIES, "implies",ni.getNodeKindFromString
+                ("implies").toString(), ni.getNodeKindFromString
+                ("implies"));
         // if-then-else
-        put(LanguageElements.ITE, "ite", DefaultNodeKind.ITE.toString(), DefaultNodeKind.ITE);
+        put(LanguageElements.ITE, "ite", ni.getNodeKindFromString
+                ("ite").toString(),ni.getNodeKindFromString
+                ("ite"));
         // division
-        put(LanguageElements.DIV, "div", DefaultNodeKind.DIV.toString(), DefaultNodeKind.DIV);
+        put(LanguageElements.DIV, "div", ni.getNodeKindFromString
+                ("div").toString(), ni.getNodeKindFromString
+                ("div"));
     }};
 
-    final static Logger LOGGER = LoggerFactory.getLogger(Z3Str2Listener.class);
 
     public Z3Str2Listener() {
+        super();
+    }
 
+    public Z3Str2Listener(ConstraintNetworkBuilderFactoryInterface bld) {
+        super(bld);
+    }
+
+    @Override
+    public SmtCnetworkBuilder.TransMap getTransMap() {
+        return tm;
     }
 
     @Override
@@ -94,25 +114,4 @@ public class Z3Str2Listener extends ConstraintNetworkCreator {
         return this;
     }
 
-    @Override
-    public ConstraintNetwork getConstraintNetwork() throws InconsistencyException {
-        ParseTree ast = this.getParseTree();
-        SmtCnetworkBuilder builder = new SmtCnetworkBuilder(ast,tm);
-        try {
-            return builder.process().getConstraintNetwork();
-        } catch (ParseTreeProcessorException e) {
-            throw new InconsistencyException(e.getMessage());
-        }
-    }
-
-    @Override
-    public ConstraintNetworkBuilder getConstraintNetworkBuilder() throws InconsistencyException {
-        ParseTree ast = this.getParseTree();
-        SmtCnetworkBuilder builder = new SmtCnetworkBuilder(ast,tm);
-        try {
-            return builder.process();
-        } catch (ParseTreeProcessorException e) {
-            throw new InconsistencyException(e.getMessage());
-        }
-    }
 }

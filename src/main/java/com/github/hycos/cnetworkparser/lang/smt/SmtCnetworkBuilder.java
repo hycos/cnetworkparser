@@ -17,7 +17,10 @@
 
 package com.github.hycos.cnetworkparser.lang.smt;
 
+import com.github.hycos.cnetwork.api.NodeKindFactoryInterface;
+import com.github.hycos.cnetwork.api.NodeKindInterface;
 import com.github.hycos.cnetwork.api.labelmgr.exception.InconsistencyException;
+import com.github.hycos.cnetworkparser.core.ConstraintNetworkBuilderFactoryInterface;
 import com.github.hycos.cnetwork.core.graph.*;
 import com.github.hycos.cnetworkparser.utils.QuadrupleMap;
 import com.github.hycos.cnetworkparser.utils.StringUtils;
@@ -29,19 +32,19 @@ import org.snt.inmemantlr.tree.ParseTreeNode;
 import org.snt.inmemantlr.tree.ParseTreeProcessor;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.Set;
 import java.util.Vector;
 
 public class SmtCnetworkBuilder extends
         ParseTreeProcessor<ConstraintNetworkBuilder, Node> {
 
-
     final static Logger LOGGER = LoggerFactory.getLogger(SmtCnetworkBuilder.class);
 
     // data struture that contains the mapping between language elements of
     // source language to Constraint network constructs
     public static class TransMap extends QuadrupleMap<LanguageElements,
-            String,String,DefaultNodeKind>{
+            String,String,NodeKindInterface>{
 
         public String getNameOfElement(LanguageElements e) {
             return this.getSecondByFirst(e);
@@ -51,20 +54,27 @@ public class SmtCnetworkBuilder extends
             return this.getThirdByFirst(e);
         }
 
-        public DefaultNodeKind getNodeKindByLabel(String label) {
+        public NodeKindInterface getNodeKindByLabel(String label) {
             return this.getFourthBySecond(label);
         }
 
-    };
+    }
 
 
     protected static TransMap TRANSMAP;
 
     protected ConstraintNetworkBuilder cn = null;
+    protected NodeKindFactoryInterface ni = null;
 
-    public SmtCnetworkBuilder(ParseTree parseTree, final TransMap tm) {
+    public SmtCnetworkBuilder(ParseTree parseTree, final TransMap tm,
+                              ConstraintNetworkBuilderFactoryInterface bld) {
         super(parseTree);
-        cn = new ConstraintNetworkBuilder();
+        cn = bld.getConstraintNetworkBuilder();
+        ni = bld.getNodeKindFactory();
+
+        Objects.nonNull(cn);
+        Objects.nonNull(ni);
+
         TRANSMAP = tm;
     }
 
@@ -108,18 +118,18 @@ public class SmtCnetworkBuilder extends
 
             ParseTreeNode varname = r.getRoot().getFirstChild();
             ParseTreeNode vartype = r.getRoot().getLastChild();
-            DefaultNodeKind kind = DefaultNodeKind.UNKNOWN;
+            NodeKindInterface kind = ni.getNodeKindFromString("unknown");
 
             //LOGGER.info("KIND " + kind.toString());
             switch (vartype.getLabel().toLowerCase()) {
                 case "string":
-                    kind = DefaultNodeKind.STRVAR;
+                    kind = ni.getNodeKindFromString("strvar");
                     break;
                 case "bool":
-                    kind = DefaultNodeKind.BOOLVAR;
+                    kind = ni.getNodeKindFromString("boolvar");
                     break;
                 case "int":
-                    kind = DefaultNodeKind.NUMVAR;
+                    kind = ni.getNodeKindFromString("numvar");
                     break;
             }
 
@@ -174,11 +184,13 @@ public class SmtCnetworkBuilder extends
                     ParseTreeNode fchild = n.getFirstChild();
                     assert (fchild.getRule().matches("(boolop|strop|numop|binop)"));
 
-                    List<Node> params = new Vector<Node>();
+                    List<Node> params = new Vector<>();
 
-                    //LOGGER.info("LBL " + fchild.getLabel());
+                    LOGGER.info("LBL " + fchild.getLabel());
 
-                    DefaultNodeKind kind = TRANSMAP.getNodeKindByLabel(fchild.getLabel());
+                    NodeKindInterface kind = TRANSMAP.getNodeKindByLabel(fchild
+                            .getLabel
+                            ());
 
                     assert (kind != null);
                     assert ((kind instanceof DefaultNodeKind));
@@ -206,7 +218,8 @@ public class SmtCnetworkBuilder extends
                         //op = this.cn.addNode(new Operand(no, NodeKind
                         // .NUMLIT));
 
-                        op = cn.addOperand(DefaultNodeKind.NUMLIT, no);
+                        op = cn.addOperand(ni.getNodeKindFromString("numlit"),
+                                no);
                         //LOGGER.info("add transformed node " + op.getLabel());
                     } else {
                         // sometimes the indexof operator assumes a startin index
@@ -228,7 +241,8 @@ public class SmtCnetworkBuilder extends
                     this.smap.put(n, blit);
                     break;
                 case "varname":
-                    //LOGGER.debug(cn.getConstraintNetwork().toDot());
+
+                    LOGGER.debug(cn.getConstraintNetwork().toDot());
                     //LOGGER.debug(cn.getEufLattice().toDot());
                     Node v = cn.getNodeByLabel(n.getLabel());
                     assert (v != null);
@@ -239,7 +253,7 @@ public class SmtCnetworkBuilder extends
                     //Node r = this.cn.addNode(new Operand(n.getLabel(),
                     //    NodeKind.STRREXP));
 
-                    Node r = cn.addOperand(DefaultNodeKind.STRREXP, n.getLabel());
+                    Node r = cn.addOperand(ni.getNodeKindFromString("strexp"), n.getLabel());
                     this.smap.put(n, r);
                     break;
                 case "strlit":
@@ -247,7 +261,7 @@ public class SmtCnetworkBuilder extends
                     String lbl = n.getLabel().substring(1, n.getLabel().length() - 1);
                     lbl = StringUtils.unescapeSpecialCharacters(lbl);
                     LOGGER.debug("add strlit {}", lbl);
-                    Node nn = cn.addOperand(DefaultNodeKind.STRLIT, lbl);
+                    Node nn = cn.addOperand(ni.getNodeKindFromString("strlit"), lbl);
                     this.smap.put(n, nn);
                     break;
                 case "number":
@@ -255,7 +269,9 @@ public class SmtCnetworkBuilder extends
                     //Node nlit = this.cn.addNode(new Operand(n.getLabel(),
                     //    NodeKind.NUMLIT));
 
-                    Node nl = cn.addOperand(DefaultNodeKind.NUMLIT, n.getLabel());
+                    Node nl = cn.addOperand(ni.getNodeKindFromString
+                            ("numlit"), n
+                            .getLabel());
                     this.smap.put(n, nl);
                     break;
                 case "operation":
@@ -290,7 +306,7 @@ public class SmtCnetworkBuilder extends
                     //}
                     break;
                 case "copoperation":
-                    DefaultNodeKind copkind = TRANSMAP
+                    NodeKindInterface copkind = TRANSMAP
                             .getNodeKindByLabel(n.getFirstChild().getLabel());
 
                     if (copkind == DefaultNodeKind.ITE) {
@@ -312,7 +328,8 @@ public class SmtCnetworkBuilder extends
                         //par3.setDomain(NodeDomainFactory.DBTRUE);
 
 
-                        Node ite = cn.addOperation(DefaultNodeKind.ITE,
+                        Node ite = cn.addOperation(ni.getNodeKindFromString
+                                        ("ite"),
                                 par1, par2, par3);
 
                         this.smap.put(n, ite);

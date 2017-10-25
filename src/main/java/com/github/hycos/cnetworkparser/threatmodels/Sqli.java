@@ -17,6 +17,7 @@
 
 package com.github.hycos.cnetworkparser.threatmodels;
 
+import com.github.hycos.cnetwork.api.NodeKindInterface;
 import com.github.hycos.cnetwork.api.labelmgr.exception.InconsistencyException;
 import com.github.hycos.cnetwork.core.graph.ConstraintNetworkBuilder;
 import com.github.hycos.cnetwork.core.graph.DefaultNodeKind;
@@ -37,20 +38,20 @@ public class Sqli extends ThreatModel {
 
     public Sqli() {
         super();
-        tmodel.put(DefaultNodeKind.SQLINUM, this);
-        tmodel.put(DefaultNodeKind.SQLISTR, this);
+        tmodel.put("sqlinum", this);
+        tmodel.put("sqlistr", this);
     }
 
     @Override
-    public ConstraintNetworkBuilder delegate(DefaultNodeKind type) {
-        switch (type) {
-            case SQLINUM:
+    public ConstraintNetworkBuilder delegate(NodeKindInterface type) {
+        switch (type.getValue().toUpperCase()) {
+            case "SQLINUM":
                 try {
                     return getNumTautology();
                 } catch (InconsistencyException e) {
                     assert false;
                 }
-            case SQLISTR:
+            case "SQLISTR":
                 try {
                     return getStrTautology();
                 } catch (InconsistencyException e) {
@@ -61,7 +62,7 @@ public class Sqli extends ThreatModel {
     }
 
     @Override
-    public Map<DefaultNodeKind, ThreatModel> getThreatModels() {
+    public Map<String, ThreatModel> getThreatModels() {
         return this.tmodel;
     }
 

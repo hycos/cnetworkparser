@@ -17,13 +17,63 @@
 
 package com.github.hycos.cnetworkparser.core;
 
+import com.github.hycos.cnetwork.api.NodeKindFactoryInterface;
+import com.github.hycos.cnetwork.api.labelmgr.exception.InconsistencyException;
+import com.github.hycos.cnetwork.core.graph.ConstraintNetwork;
+import com.github.hycos.cnetwork.core.graph.ConstraintNetworkBuilder;
+import com.github.hycos.cnetworkparser.lang.smt.SmtCnetworkBuilder;
+import org.snt.inmemantlr.exceptions.ParseTreeProcessorException;
 import org.snt.inmemantlr.listener.DefaultTreeListener;
+import org.snt.inmemantlr.tree.ParseTree;
+
+import java.util.Objects;
 
 
 public abstract class ConstraintNetworkCreator extends DefaultTreeListener implements
-        ConstraintNetworkProvider {
+        ConstraintNetworkGenerator {
 
+    private ConstraintNetworkBuilderFactoryInterface bld = null;
+    protected static NodeKindFactoryInterface ni = null;
+
+    public abstract SmtCnetworkBuilder.TransMap getTransMap();
+
+    public ConstraintNetworkCreator(ConstraintNetworkBuilderFactoryInterface bld) {
+        this.bld = bld;
+        this.ni = this.bld.getNodeKindFactory();
+    }
 
     public ConstraintNetworkCreator() {
+        this.bld = new DefaultConstraintNetworkBuilderFactory();
+        this.ni = this.bld.getNodeKindFactory();
     }
+
+    @Override
+    public ConstraintNetwork getConstraintNetwork() throws InconsistencyException {
+        ParseTree ast = this.getParseTree();
+
+        Objects.nonNull(bld);
+
+        SmtCnetworkBuilder builder = new SmtCnetworkBuilder(ast,getTransMap(),bld);
+        try {
+            return builder.process().getConstraintNetwork();
+        } catch (ParseTreeProcessorException e) {
+            throw new InconsistencyException(e.getMessage());
+        }
+    }
+
+    @Override
+    public ConstraintNetworkBuilder getConstraintNetworkBuilder() throws InconsistencyException {
+        ParseTree ast = this.getParseTree();
+
+        Objects.nonNull(bld);
+
+        SmtCnetworkBuilder builder = new SmtCnetworkBuilder(ast,getTransMap(),bld);
+        try {
+            return builder.process();
+        } catch (ParseTreeProcessorException e) {
+            throw new InconsistencyException(e.getMessage());
+        }
+    }
+
+
 }

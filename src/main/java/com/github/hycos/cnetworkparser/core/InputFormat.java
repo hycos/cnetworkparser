@@ -28,7 +28,6 @@ public enum InputFormat {
     SOL(0, "Sol","Sol.g4"),
     CVC4 (1, "CVC4", "CVC4.g4"),
     Z3STR2(2, "Z3Str2", "Z3Str2.g4"),
-    LOGIC(3, "Logic", "Logic.g4"),
     S3(3, "S3", "S3.g4");
 
 
@@ -56,18 +55,27 @@ public enum InputFormat {
             case "cvc4" : return CVC4;
             case "z3str2": return Z3STR2;
             case "s3" : return S3;
-            case "logic": return LOGIC;
         }
         return null;
     }
 
 
-    public ConstraintNetworkProvider getProvider() {
+    public ConstraintNetworkGenerator getProvider() {
         switch (this) {
             case SOL: return new SolListener();
             case CVC4: return new CVC4Listener();
             case Z3STR2: return new Z3Str2Listener();
             case S3: return new S3Listener();
+        }
+        return null;
+    }
+
+    public ConstraintNetworkGenerator getProvider(ConstraintNetworkBuilderFactoryInterface bld) {
+        switch (this) {
+            case SOL: return new SolListener(bld);
+            case CVC4: return new CVC4Listener(bld);
+            case Z3STR2: return new Z3Str2Listener(bld);
+            case S3: return new S3Listener(bld);
         }
         return null;
     }

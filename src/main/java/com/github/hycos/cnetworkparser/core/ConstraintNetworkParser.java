@@ -44,10 +44,13 @@ public class ConstraintNetworkParser {
     private ParserRuleContext ctx = null;
     private DefaultListener rl = null;
     private InputFormat inputFormat;
-    private ConstraintNetworkProvider provider = null;
+    private ConstraintNetworkGenerator provider = null;
 
 
-    public ConstraintNetworkParser(InputFormat inputFormat) throws CompilationException {
+    public ConstraintNetworkParser(InputFormat inputFormat,
+                                   ConstraintNetworkBuilderFactoryInterface f)
+            throws
+            CompilationException {
 
         this.inputFormat = inputFormat;
 
@@ -56,11 +59,30 @@ public class ConstraintNetworkParser {
         String s = FileUtils.getStringFromStream(is);
 
         this.gp = new GenericParser(s);
-        this.provider = inputFormat.getProvider();
+        this.provider = inputFormat.getProvider(f);
         this.ctx = null;
         this.gp.setListener(provider.getListener());
         this.gp.compile();
     }
+
+    public ConstraintNetworkParser(InputFormat inputFormat)
+            throws
+            CompilationException {
+
+        this.inputFormat = inputFormat;
+
+        ClassLoader classLoader = getClass().getClassLoader();
+        InputStream is = classLoader.getResourceAsStream(inputFormat.getGrammar());
+        String s = FileUtils.getStringFromStream(is);
+
+        this.gp = new GenericParser(s);
+        this.provider = inputFormat.getProvider(new DefaultConstraintNetworkBuilderFactory());
+        this.ctx = null;
+        this.gp.setListener(provider.getListener());
+        this.gp.compile();
+    }
+
+
 
 
     public ConstraintNetwork getConstraintNetworkFromFile(String path) throws InconsistencyException {
