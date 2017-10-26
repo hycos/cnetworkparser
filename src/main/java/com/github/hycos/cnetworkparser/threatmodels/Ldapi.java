@@ -17,10 +17,10 @@
 
 package com.github.hycos.cnetworkparser.threatmodels;
 
+import com.github.hycos.cnetwork.api.NodeKindFactoryInterface;
 import com.github.hycos.cnetwork.api.NodeKindInterface;
 import com.github.hycos.cnetwork.api.labelmgr.exception.InconsistencyException;
 import com.github.hycos.cnetwork.core.graph.ConstraintNetworkBuilder;
-import com.github.hycos.cnetwork.core.graph.DefaultNodeKind;
 import com.github.hycos.cnetwork.core.graph.Node;
 import com.github.hycos.cnetwork.core.graph.Operand;
 import org.slf4j.Logger;
@@ -34,8 +34,8 @@ public class Ldapi extends ThreatModel {
 
     private static String ldapBlacklist = "['\" /\\#\\<\\>,;\\+\\*\\)\\(\0\\|\\&]";
 
-    public Ldapi() {
-        super();
+    public Ldapi(NodeKindFactoryInterface ni) {
+        super(ni);
         tmodel.put("ldapi", this);
     }
 
@@ -59,8 +59,8 @@ public class Ldapi extends ThreatModel {
 
     private ConstraintNetworkBuilder getLDAPIThreatModel() throws InconsistencyException {
         ConstraintNetworkBuilder cn = new ConstraintNetworkBuilder();
-        Node op = new Operand(ldapBlacklist, DefaultNodeKind.STRREXP);
-        cn.addOperand(DefaultNodeKind.STRREXP, ldapBlacklist);
+        Node op = new Operand(ldapBlacklist, ni.getNodeKindFromString("strexp"));
+        cn.addOperand(ni.getNodeKindFromString("strexp"), ldapBlacklist);
         cn.setStartNode(op);
         return cn;
     }

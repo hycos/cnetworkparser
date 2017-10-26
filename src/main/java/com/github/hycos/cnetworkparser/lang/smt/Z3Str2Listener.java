@@ -18,7 +18,6 @@
 package com.github.hycos.cnetworkparser.lang.smt;
 
 import com.github.hycos.cnetworkparser.core.ConstraintNetworkBuilderFactoryInterface;
-import com.github.hycos.cnetwork.core.graph.DefaultNodeKind;
 import com.github.hycos.cnetworkparser.core.ConstraintNetworkCreator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -49,9 +48,9 @@ public class Z3Str2Listener extends ConstraintNetworkCreator {
                 .getValue(), ni.getNodeKindFromString("indexof"));
         put(LanguageElements.INDEXOF, "Indexof2", ni.getNodeKindFromString("indexof")
                 .getValue(), ni.getNodeKindFromString("indexof"));
-        put(LanguageElements.LASTINDEXOF, "LastIndexof", DefaultNodeKind.LASTINDEXOF.getValue
-                        (), DefaultNodeKind.LASTINDEXOF);
-        put(LanguageElements.LASTINDEXOF, "LastIndexOf", DefaultNodeKind.LASTINDEXOF.getValue(), DefaultNodeKind.LASTINDEXOF);
+        put(LanguageElements.LASTINDEXOF, "LastIndexof",  ni
+                .getNodeKindFromString("lastindexof").getValue
+                        (),  ni.getNodeKindFromString("lastindexof"));
         put(LanguageElements.PREFIXOF, "StartsWith", ni.getNodeKindFromString("startswith").getValue(), ni.getNodeKindFromString("startswith"));
         put(LanguageElements.SUFFIXOF, "EndsWith", ni.getNodeKindFromString("endswith").getValue(), ni.getNodeKindFromString("endswith"));
         put(LanguageElements.SCONCAT, "Concat", ni.getNodeKindFromString("concat").getValue(), ni.getNodeKindFromString("concat"));

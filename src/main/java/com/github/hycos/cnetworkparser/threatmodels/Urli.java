@@ -17,13 +17,13 @@
 
 package com.github.hycos.cnetworkparser.threatmodels;
 
+import com.github.hycos.cnetwork.api.NodeKindFactoryInterface;
 import com.github.hycos.cnetwork.api.NodeKindInterface;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import com.github.hycos.cnetwork.core.graph.ConstraintNetworkBuilder;
 import com.github.hycos.cnetwork.core.graph.Node;
-import com.github.hycos.cnetwork.core.graph.DefaultNodeKind;
 import com.github.hycos.cnetwork.core.graph.Operand;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.Map;
 
@@ -33,8 +33,8 @@ public class Urli extends ThreatModel {
 
     private static String urlBlacklist = "[a-zA-Z0-9]+=[a-zA-Z0-9]+(&[a-zA-Z0-9]+=[a-zA-Z0-9])*";
 
-    public Urli() {
-        super();
+    public Urli(NodeKindFactoryInterface ni) {
+        super(ni);
         tmodel.put("urli", this);
     }
 
@@ -55,8 +55,8 @@ public class Urli extends ThreatModel {
     private ConstraintNetworkBuilder getURLiThreatModel() {
         ConstraintNetworkBuilder cn = new ConstraintNetworkBuilder();
 
-        cn.addOperand(DefaultNodeKind.STRREXP, urlBlacklist);
-        Node op = new Operand(urlBlacklist, DefaultNodeKind.STRREXP);
+        cn.addOperand(ni.getNodeKindFromString("strexp"), urlBlacklist);
+        Node op = new Operand(urlBlacklist, ni.getNodeKindFromString("strexp"));
         cn.setStartNode(op);
         return cn;
     }

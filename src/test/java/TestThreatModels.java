@@ -17,11 +17,14 @@
 
 import com.github.hycos.cnetwork.core.graph.ConstraintNetworkBuilder;
 import com.github.hycos.cnetwork.core.graph.DefaultNodeKind;
-import com.github.hycos.cnetworkparser.exception.UnknownException;
+import com.github.hycos.cnetwork.core.graph.DefaultNodeKindFactory;
+import com.github.hycos.cnetworkparser.threatmodels.ThreatModel;
 import com.github.hycos.cnetworkparser.threatmodels.ThreatModelFactory;
 import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.util.Map;
 
 
 public class TestThreatModels {
@@ -33,17 +36,21 @@ public class TestThreatModels {
 
 
     public ConstraintNetworkBuilder getCNFor(DefaultNodeKind kind) {
-        ThreatModelFactory tf = ThreatModelFactory.getInstance();
+        ThreatModelFactory tf = ThreatModelFactory.INSTANCE;
+
+        Map<String,ThreatModel> tm = tf.getAllThreatModels
+                (DefaultNodeKindFactory.INSTANCE);
+
         ConstraintNetworkBuilder cn = null;
 
-        try {
-            cn = tf.getCNforVulnerability(kind);
+        //try {
+            cn = tm.get(kind.toString()).delegate(kind);
             assert(cn != null);
             //LOGGER.info(cn.toDot());
 
-        } catch (UnknownException e) {
-            e.printStackTrace();
-        }
+//        } catch (UnknownException e) {
+//            e.printStackTrace();
+//        }
 
         return cn;
     }

@@ -17,10 +17,10 @@
 
 package com.github.hycos.cnetworkparser.threatmodels;
 
+import com.github.hycos.cnetwork.api.NodeKindFactoryInterface;
 import com.github.hycos.cnetwork.api.NodeKindInterface;
 import com.github.hycos.cnetwork.api.labelmgr.exception.InconsistencyException;
 import com.github.hycos.cnetwork.core.graph.ConstraintNetworkBuilder;
-import com.github.hycos.cnetwork.core.graph.DefaultNodeKind;
 import com.github.hycos.cnetwork.core.graph.Node;
 import com.github.hycos.cnetwork.core.graph.Operand;
 import org.slf4j.Logger;
@@ -36,8 +36,8 @@ public class Sqli extends ThreatModel {
     final static String cdomain = "[\\x00-\\x1F\\x80-\\x9F]";
     //final static String cdomain = "[a-z]";
 
-    public Sqli() {
-        super();
+    public Sqli(NodeKindFactoryInterface ni) {
+        super(ni);
         tmodel.put("sqlinum", this);
         tmodel.put("sqlistr", this);
     }
@@ -70,17 +70,21 @@ public class Sqli extends ThreatModel {
     private ConstraintNetworkBuilder getStrTautology() throws InconsistencyException {
         ConstraintNetworkBuilder cn = new ConstraintNetworkBuilder();
 
-        Node or = new Operand(".*' +[Oo][Rr] +'", DefaultNodeKind.STRREXP);
-        Node v1 = new Operand("sv1", DefaultNodeKind.STRVAR);
-        Node orv1 = cn.addOperation(DefaultNodeKind.CONCAT, or, v1);
-        Node eq = new Operand("'.*=.*'", DefaultNodeKind.STRREXP);
-        Node v2 = new Operand("sv2", DefaultNodeKind.STRVAR);
-        Node orv1comp = cn.addOperation(DefaultNodeKind.CONCAT, eq, v2);
-        Node orv1compv2 = cn.addOperation(DefaultNodeKind.CONCAT, orv1, orv1comp);
-        cn.addConstraint(DefaultNodeKind.STR_EQUALS, v1, v2);
+        Node or = new Operand(".*' +[Oo][Rr] +'", ni.getNodeKindFromString("strexp"));
+        Node v1 = new Operand("sv1", ni.getNodeKindFromString("strvar"));
+        Node orv1 = cn.addOperation(ni.getNodeKindFromString("concat"), or,
+                v1);
+        Node eq = new Operand("'.*=.*'", ni.getNodeKindFromString("strexp"));
+        Node v2 = new Operand("sv2",ni.getNodeKindFromString("strvar"));
+        Node orv1comp = cn.addOperation(ni.getNodeKindFromString("concat"),
+                eq, v2);
+        Node orv1compv2 = cn.addOperation(ni.getNodeKindFromString("concat"),
+                orv1, orv1comp);
+        cn.addConstraint(ni.getNodeKindFromString("=="), v1, v2);
         String scomment = "' *(\\-\\-|#)";
-        Node comment = new Operand(scomment, DefaultNodeKind.STRREXP);
-        Node start = cn.addOperation(DefaultNodeKind.CONCAT, orv1compv2, comment);
+        Node comment = new Operand(scomment, ni.getNodeKindFromString("strexp"));
+        Node start = cn.addOperation(ni.getNodeKindFromString("concat"),
+                orv1compv2, comment);
         cn.setStartNode(start);
         return cn;
     }
@@ -89,16 +93,18 @@ public class Sqli extends ThreatModel {
         ConstraintNetworkBuilder cn = new ConstraintNetworkBuilder();
 
         String sor = "[0-9]+ +[Oo][Rr] +";
-        Node or = new Operand(sor, DefaultNodeKind.STRREXP);
-        Node v1 = new Operand("sv7", DefaultNodeKind.NUMVAR);
-        Node toStrV1 = cn.addOperation(DefaultNodeKind.TOSTR, v1);
-        Node orv1 = cn.addOperation(DefaultNodeKind.CONCAT, or, toStrV1);
-        Node eq = new Operand(" +\\>= +", DefaultNodeKind.STRREXP);
-        Node orv1comp = cn.addOperation(DefaultNodeKind.CONCAT, orv1, eq);
-        Node v2 = new Operand("sv8", DefaultNodeKind.NUMVAR);
-        Node toStrV2 = cn.addOperation(DefaultNodeKind.TOSTR, v2);
-        Node orv1compv2 = cn.addOperation(DefaultNodeKind.CONCAT, orv1comp, toStrV2);
-        cn.addConstraint(DefaultNodeKind.GREATEREQ, v1, v2);
+
+        LOGGER.debug("BOO " + ni.getNodeKindFromString("strexp"));
+        Node or = new Operand(sor, ni.getNodeKindFromString("strexp"));
+        Node v1 = new Operand("sv7", ni.getNodeKindFromString("numvar"));
+        Node toStrV1 = cn.addOperation(ni.getNodeKindFromString("tostr"), v1);
+        Node orv1 = cn.addOperation(ni.getNodeKindFromString("concat"), or, toStrV1);
+        Node eq = new Operand(" +\\>= +", ni.getNodeKindFromString("strexp"));
+        Node orv1comp = cn.addOperation(ni.getNodeKindFromString("concat"), orv1, eq);
+        Node v2 = new Operand("sv8", ni.getNodeKindFromString("numvar"));
+        Node toStrV2 = cn.addOperation(ni.getNodeKindFromString("tostr"), v2);
+        Node orv1compv2 = cn.addOperation(ni.getNodeKindFromString("concat"), orv1comp, toStrV2);
+        cn.addConstraint(ni.getNodeKindFromString(">="), v1, v2);
         cn.setStartNode(orv1compv2);
         return cn;
 

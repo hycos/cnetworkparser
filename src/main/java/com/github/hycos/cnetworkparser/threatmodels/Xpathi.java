@@ -17,10 +17,10 @@
 
 package com.github.hycos.cnetworkparser.threatmodels;
 
+import com.github.hycos.cnetwork.api.NodeKindFactoryInterface;
 import com.github.hycos.cnetwork.api.NodeKindInterface;
 import com.github.hycos.cnetwork.api.labelmgr.exception.InconsistencyException;
 import com.github.hycos.cnetwork.core.graph.ConstraintNetworkBuilder;
-import com.github.hycos.cnetwork.core.graph.DefaultNodeKind;
 import com.github.hycos.cnetwork.core.graph.Node;
 import com.github.hycos.cnetwork.core.graph.Operand;
 import org.slf4j.Logger;
@@ -33,8 +33,8 @@ public class Xpathi extends ThreatModel {
 
     final static Logger LOGGER = LoggerFactory.getLogger(Xpathi.class);
 
-    public Xpathi() {
-        super();
+    public Xpathi(NodeKindFactoryInterface ni) {
+        super(ni);
         tmodel.put("xpathnum", this);
         tmodel.put("xpathstr", this);
     }
@@ -69,28 +69,28 @@ public class Xpathi extends ThreatModel {
         ConstraintNetworkBuilder cn = new ConstraintNetworkBuilder();
 
         String sor = ".*' +[Oo][Rr] +'";
-        Node or = new Operand(sor, DefaultNodeKind.STRREXP);
+        Node or = new Operand(sor, ni.getNodeKindFromString("strexp"));
 
         String item = "sv1";
-        Node v1 = new Operand(item, DefaultNodeKind.STRVAR);
+        Node v1 = new Operand(item, ni.getNodeKindFromString("strvar"));
 
-        Node orv1 = cn.addOperation(DefaultNodeKind.CONCAT, or, v1);
+        Node orv1 = cn.addOperation(ni.getNodeKindFromString("concat"), or, v1);
 
         String seq = "'.*=.*'";
-        Node eq = new Operand(seq, DefaultNodeKind.STRREXP);
+        Node eq = new Operand(seq, ni.getNodeKindFromString("strexp"));
 
-        Node v2 = new Operand("sv2", DefaultNodeKind.STRVAR);
+        Node v2 = new Operand("sv2", ni.getNodeKindFromString("strvar"));
 
-        Node orv1comp = cn.addOperation(DefaultNodeKind.CONCAT, eq, v2);
+        Node orv1comp = cn.addOperation(ni.getNodeKindFromString("concat"), eq, v2);
 
-        Node orv1compv2 = cn.addOperation(DefaultNodeKind.CONCAT, orv1, orv1comp);
+        Node orv1compv2 = cn.addOperation(ni.getNodeKindFromString("concat"), orv1, orv1comp);
 
-        cn.addConstraint(DefaultNodeKind.STR_EQUALS, v1, v2);
+        cn.addConstraint(ni.getNodeKindFromString("=="), v1, v2);
 
         String scomment = "(\\<!\\-\\-|#)";
-        Node comment = new Operand(scomment, DefaultNodeKind.STRREXP);
+        Node comment = new Operand(scomment, ni.getNodeKindFromString("strexp"));
 
-        cn.addOperation(DefaultNodeKind.CONCAT, orv1compv2, comment);
+        cn.addOperation(ni.getNodeKindFromString("concat"), orv1compv2, comment);
 
         cn.setStartNode(orv1compv2);
 
@@ -132,30 +132,30 @@ public class Xpathi extends ThreatModel {
     private Node getEqNumTautology(ConstraintNetworkBuilder cn) throws InconsistencyException {
 
         String sor = ".*' +[Oo][Rr] +'";
-        Node or = new Operand(sor, DefaultNodeKind.STRREXP);
+        Node or = new Operand(sor, ni.getNodeKindFromString("strexp"));
 
-        Node v1 = new Operand("sv1", DefaultNodeKind.NUMVAR);
+        Node v1 = new Operand("sv1", ni.getNodeKindFromString("numvar"));
 
-        Node toStrV1 = cn.addOperation(DefaultNodeKind.TOSTR, v1);
+        Node toStrV1 = cn.addOperation(ni.getNodeKindFromString("tostr"), v1);
 
-        Node orv1 = cn.addOperation(DefaultNodeKind.CONCAT, or, toStrV1);
+        Node orv1 = cn.addOperation(ni.getNodeKindFromString("concat"), or, toStrV1);
 
-        Node eq = new Operand(" *= *", DefaultNodeKind.STRREXP);
+        Node eq = new Operand(" *= *", ni.getNodeKindFromString("strexp"));
 
-        Node orv1comp = cn.addOperation(DefaultNodeKind.CONCAT, orv1, eq);
+        Node orv1comp = cn.addOperation(ni.getNodeKindFromString("concat"), orv1, eq);
 
-        Node v2 = new Operand("sv2", DefaultNodeKind.NUMVAR);
+        Node v2 = new Operand("sv2", ni.getNodeKindFromString("numvar"));
 
-        Node toStrV2 = cn.addOperation(DefaultNodeKind.TOSTR, v2);
+        Node toStrV2 = cn.addOperation(ni.getNodeKindFromString("tostr"), v2);
 
-        Node orv1compv2 = cn.addOperation(DefaultNodeKind.CONCAT, orv1comp, toStrV2);
+        Node orv1compv2 = cn.addOperation(ni.getNodeKindFromString("concat"), orv1comp, toStrV2);
 
-        cn.addOperation(DefaultNodeKind.EQUALS, v1, v2);
+        cn.addOperation(ni.getNodeKindFromString("=="), v1, v2);
 
         String scomment = "(\\<!\\-\\-|#)";
-        Node comment = new Operand(scomment, DefaultNodeKind.STRREXP);
+        Node comment = new Operand(scomment, ni.getNodeKindFromString("strexp"));
 
-        cn.addOperation(DefaultNodeKind.CONCAT, orv1compv2, comment);
+        cn.addOperation(ni.getNodeKindFromString("concat"), orv1compv2, comment);
 
         return orv1compv2;
     }
@@ -163,30 +163,30 @@ public class Xpathi extends ThreatModel {
     private Node getGtNumTautology(ConstraintNetworkBuilder cn) throws InconsistencyException {
 
         String sor = ".*' +[Oo][Rr] +'";
-        Node or = new Operand(sor, DefaultNodeKind.STRREXP);
+        Node or = new Operand(sor, ni.getNodeKindFromString("strexp"));
 
-        Node v1 = new Operand("sv3", DefaultNodeKind.NUMVAR);
+        Node v1 = new Operand("sv3", ni.getNodeKindFromString("numvar"));
 
-        Node toStrV1 = cn.addOperation(DefaultNodeKind.TOSTR, v1);
+        Node toStrV1 = cn.addOperation(ni.getNodeKindFromString("tostr"), v1);
 
-        Node orv1 = cn.addOperation(DefaultNodeKind.CONCAT, or, toStrV1);
+        Node orv1 = cn.addOperation(ni.getNodeKindFromString("concat"), or, toStrV1);
 
-        Node eq = new Operand(" *\\> *", DefaultNodeKind.STRREXP);
+        Node eq = new Operand(" *\\> *", ni.getNodeKindFromString("strexp"));
 
-        Node orv1comp = cn.addOperation(DefaultNodeKind.CONCAT, orv1, eq);
+        Node orv1comp = cn.addOperation(ni.getNodeKindFromString("concat"), orv1, eq);
 
-        Node v2 = new Operand("sv4", DefaultNodeKind.NUMVAR);
+        Node v2 = new Operand("sv4", ni.getNodeKindFromString("numvar"));
 
-        Node toStrV2 = cn.addOperation(DefaultNodeKind.TOSTR, v2);
+        Node toStrV2 = cn.addOperation(ni.getNodeKindFromString("tostr"), v2);
 
-        Node orv1compv2 = cn.addOperation(DefaultNodeKind.CONCAT, orv1comp, toStrV2);
+        Node orv1compv2 = cn.addOperation(ni.getNodeKindFromString("concat"), orv1comp, toStrV2);
 
-        cn.addOperation(DefaultNodeKind.GREATER, v1, v2);
+        cn.addOperation(ni.getNodeKindFromString(">"), v1, v2);
 
         String scomment = "(\\<!\\-\\-|#)";
-        Node comment = new Operand(scomment, DefaultNodeKind.STRREXP);
+        Node comment = new Operand(scomment, ni.getNodeKindFromString("strexp"));
 
-        cn.addOperation(DefaultNodeKind.CONCAT, orv1compv2, comment);
+        cn.addOperation(ni.getNodeKindFromString("concat"), orv1compv2, comment);
 
         return orv1compv2;
     }
@@ -194,25 +194,25 @@ public class Xpathi extends ThreatModel {
     private Node getStNumTautology(ConstraintNetworkBuilder cn) throws InconsistencyException {
 
         String sor = ".*' +[Oo][Rr] +' +";
-        Node or = new Operand(sor, DefaultNodeKind.STRREXP);
+        Node or = new Operand(sor, ni.getNodeKindFromString("strexp"));
 
-        Node v1 = new Operand("sv5", DefaultNodeKind.NUMVAR);
+        Node v1 = new Operand("sv5", ni.getNodeKindFromString("numvar"));
 
-        Node toStrV1 = cn.addOperation(DefaultNodeKind.TOSTR, v1);
+        Node toStrV1 = cn.addOperation(ni.getNodeKindFromString("tostr"), v1);
 
-        Node orv1 = cn.addOperation(DefaultNodeKind.CONCAT, or, toStrV1);
+        Node orv1 = cn.addOperation(ni.getNodeKindFromString("concat"), or, toStrV1);
 
-        Node eq = new Operand(" *\\> *", DefaultNodeKind.STRREXP);
+        Node eq = new Operand(" *\\> *", ni.getNodeKindFromString("strexp"));
 
-        Node orv1comp = cn.addOperation(DefaultNodeKind.CONCAT, orv1, eq);
+        Node orv1comp = cn.addOperation(ni.getNodeKindFromString("concat"), orv1, eq);
 
-        Node v2 = new Operand("sv6", DefaultNodeKind.NUMVAR);
+        Node v2 = new Operand("sv6", ni.getNodeKindFromString("numvar"));
 
-        Node toStrV2 = cn.addOperation(DefaultNodeKind.TOSTR, v2);
+        Node toStrV2 = cn.addOperation(ni.getNodeKindFromString("tostr"), v2);
 
-        Node orv1compv2 = cn.addOperation(DefaultNodeKind.CONCAT, orv1comp, toStrV2);
+        Node orv1compv2 = cn.addOperation(ni.getNodeKindFromString("concat"), orv1comp, toStrV2);
 
-        cn.addOperation(DefaultNodeKind.SMALLER, v1, v2);
+        cn.addOperation(ni.getNodeKindFromString("<"), v1, v2);
 
         return orv1compv2;
     }
@@ -220,25 +220,25 @@ public class Xpathi extends ThreatModel {
     private Node getGeqNumTautology(ConstraintNetworkBuilder cn) throws InconsistencyException {
 
         String sor = ".*' +[Oo][Rr] +'";
-        Node or = new Operand(sor, DefaultNodeKind.STRREXP);
+        Node or = new Operand(sor, ni.getNodeKindFromString("strexp"));
 
-        Node v1 = new Operand("sv7", DefaultNodeKind.NUMVAR);
+        Node v1 = new Operand("sv7", ni.getNodeKindFromString("numvar"));
 
-        Node toStrV1 = cn.addOperation(DefaultNodeKind.TOSTR, v1);
+        Node toStrV1 = cn.addOperation(ni.getNodeKindFromString("tostr"), v1);
 
-        Node orv1 = cn.addOperation(DefaultNodeKind.CONCAT, or, toStrV1);
+        Node orv1 = cn.addOperation(ni.getNodeKindFromString("concat"), or, toStrV1);
 
-        Node eq = new Operand(" +\\>= +", DefaultNodeKind.STRREXP);
+        Node eq = new Operand(" +\\>= +", ni.getNodeKindFromString("strexp"));
 
-        Node orv1comp = cn.addOperation(DefaultNodeKind.CONCAT, orv1, eq);
+        Node orv1comp = cn.addOperation(ni.getNodeKindFromString("concat"), orv1, eq);
 
-        Node v2 = new Operand("sv8", DefaultNodeKind.NUMVAR);
+        Node v2 = new Operand("sv8", ni.getNodeKindFromString("numvar"));
 
-        Node toStrV2 = cn.addOperation(DefaultNodeKind.TOSTR, v2);
+        Node toStrV2 = cn.addOperation(ni.getNodeKindFromString("tostr"), v2);
 
-        Node orv1compv2 = cn.addOperation(DefaultNodeKind.CONCAT, orv1comp, toStrV2);
+        Node orv1compv2 = cn.addOperation(ni.getNodeKindFromString("concat"), orv1comp, toStrV2);
 
-        cn.addConstraint(DefaultNodeKind.GREATEREQ, v1, v2);
+        cn.addConstraint(ni.getNodeKindFromString(">="), v1, v2);
 
         return orv1compv2;
     }

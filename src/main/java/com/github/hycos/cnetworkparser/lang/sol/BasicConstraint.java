@@ -17,6 +17,7 @@
 
 package com.github.hycos.cnetworkparser.lang.sol;
 
+import com.github.hycos.cnetwork.api.NodeKindInterface;
 import com.github.hycos.cnetwork.core.graph.Node;
 import com.github.hycos.cnetwork.core.graph.DefaultNodeKind;
 
@@ -25,7 +26,7 @@ import java.util.Vector;
 
 public class BasicConstraint {
     protected List<Node> nodes = new Vector<>();
-    protected DefaultNodeKind opKind;
+    protected NodeKindInterface opKind;
 
     public BasicConstraint(Node term0, DefaultNodeKind kind, Node term1) {
         opKind = kind;
@@ -38,7 +39,7 @@ public class BasicConstraint {
         nodes.add(term);
     }
 
-    public void setOpKind(DefaultNodeKind kind) {
+    public void setOpKind(NodeKindInterface kind) {
         this.opKind = kind;
     }
 

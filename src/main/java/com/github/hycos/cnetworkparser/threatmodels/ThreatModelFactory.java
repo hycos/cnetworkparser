@@ -17,43 +17,30 @@
 
 package com.github.hycos.cnetworkparser.threatmodels;
 
-import com.github.hycos.cnetwork.api.NodeKindInterface;
-import com.github.hycos.cnetwork.core.graph.ConstraintNetworkBuilder;
-import com.github.hycos.cnetworkparser.exception.UnknownException;
+import com.github.hycos.cnetwork.api.NodeKindFactoryInterface;
 
 import java.util.HashMap;
+import java.util.Map;
 
-public class ThreatModelFactory {
+public enum ThreatModelFactory {
 
-    private static ThreatModelFactory instance = null;
-
-    private HashMap<String, ThreatModel> tmodel = null;
+    INSTANCE;
 
 
-    public static ThreatModelFactory getInstance() {
-        if(instance == null)
-            instance = new ThreatModelFactory();
-        return instance;
+    public Map<String, ThreatModel> getAllThreatModels
+            (NodeKindFactoryInterface ni) {
+        HashMap<String, ThreatModel> tmodel = new HashMap<>();
+
+        tmodel.putAll(new Ldapi(ni).getThreatModels());
+        tmodel.putAll(new Sqli(ni).getThreatModels());
+        tmodel.putAll(new Xmli(ni).getThreatModels());
+        tmodel.putAll(new Xpathi(ni).getThreatModels());
+        tmodel.putAll(new Xss(ni).getThreatModels());
+        tmodel.putAll(new Urli(ni).getThreatModels());
+
+        return tmodel;
     }
 
-    private ThreatModelFactory() {
-        this.tmodel = new HashMap<>();
-        this.tmodel.putAll(new Ldapi().getThreatModels());
-        this.tmodel.putAll(new Sqli().getThreatModels());
-        this.tmodel.putAll(new Xmli().getThreatModels());
-        this.tmodel.putAll(new Xpathi().getThreatModels());
-        this.tmodel.putAll(new Xss().getThreatModels());
-        this.tmodel.putAll(new Urli().getThreatModels());
-    }
 
-    public ConstraintNetworkBuilder getCNforVulnerability(NodeKindInterface kind) throws
-            UnknownException {
-
-        if(!tmodel.containsKey(kind.getValue()))
-            throw new UnknownException("Threat model " + kind + " is not known");
-
-
-        return tmodel.get(kind.getValue()).delegate(kind);
-    }
 
 }

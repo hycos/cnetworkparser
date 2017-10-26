@@ -17,10 +17,10 @@
 
 package com.github.hycos.cnetworkparser.threatmodels;
 
+import com.github.hycos.cnetwork.api.NodeKindFactoryInterface;
 import com.github.hycos.cnetwork.api.NodeKindInterface;
 import com.github.hycos.cnetwork.api.labelmgr.exception.InconsistencyException;
 import com.github.hycos.cnetwork.core.graph.ConstraintNetworkBuilder;
-import com.github.hycos.cnetwork.core.graph.DefaultNodeKind;
 import com.github.hycos.cnetwork.core.graph.Node;
 import com.github.hycos.cnetwork.core.graph.Operand;
 import org.slf4j.Logger;
@@ -41,8 +41,8 @@ public class Xss extends ThreatModel {
 
     final static Logger LOGGER = LoggerFactory.getLogger(Xss.class);
 
-    public Xss() {
-        super();
+    public Xss(NodeKindFactoryInterface ni) {
+        super(ni);
         tmodel.put("xss", this);
     }
 
@@ -69,8 +69,8 @@ public class Xss extends ThreatModel {
     private ConstraintNetworkBuilder getXMLIThreatModel() throws InconsistencyException {
 
         ConstraintNetworkBuilder cn = new ConstraintNetworkBuilder();
-        Node op = new Operand(xss, DefaultNodeKind.STRREXP);
-        cn.addOperand(DefaultNodeKind.STRREXP, xss);
+        Node op = new Operand(xss, ni.getNodeKindFromString("strexp"));
+        cn.addOperand(ni.getNodeKindFromString("strexp"), xss);
         cn.setStartNode(op);
         return cn;
     }

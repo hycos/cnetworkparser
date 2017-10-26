@@ -17,6 +17,7 @@
 
 package com.github.hycos.cnetworkparser.threatmodels;
 
+import com.github.hycos.cnetwork.api.NodeKindFactoryInterface;
 import com.github.hycos.cnetwork.api.NodeKindInterface;
 import com.github.hycos.cnetwork.core.graph.ConstraintNetworkBuilder;
 
@@ -26,8 +27,11 @@ import java.util.Map;
 
 public abstract class ThreatModel {
 
-    public HashMap<String, ThreatModel> tmodel = null;
-    public ThreatModel() {
+    protected HashMap<String, ThreatModel> tmodel = null;
+    protected NodeKindFactoryInterface ni = null;
+
+    public ThreatModel(NodeKindFactoryInterface ni) {
+        this.ni = ni;
         this.tmodel = new HashMap<> ();
     }
     public abstract Map<String,ThreatModel> getThreatModels();
