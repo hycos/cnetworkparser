@@ -100,6 +100,21 @@ public class TestParser {
 //    }
 
     @Test
+    public void testPisa3() {
+        ConstraintNetworkBuilder cn = null;
+        try {
+            cn = new ConstraintNetworkParser(InputFormat
+                    .Z3STR2).
+                    getConstraintNetworkBuilderFromFile(getPath("pisa/pisa-003.z3"));
+        } catch (InconsistencyException | CompilationException e) {
+            LOGGER.debug(e.getMessage());
+            Assertions.assertFalse(true);
+        }
+
+        LOGGER.debug(cn.getConstraintNetwork().toDot());
+    }
+
+    @Test
     public void testSol() {
         ConstraintNetwork cn = null;
         try {

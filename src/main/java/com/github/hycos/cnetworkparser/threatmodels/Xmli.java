@@ -68,7 +68,7 @@ public class Xmli extends ThreatModel {
 
 
         Node strvar = new Operand("sv1", ni.getNodeKindFromString("strvar"));
-        //Node op = new Operand(xmlInjection, NodeKind.STRREXP);
+        //Node op = new Operand(xmlInjection, NodeKind.STREXP);
 
         //Node matches1 = cn.addOperation(NodeKind.MATCHES, strvar, op);
 
@@ -102,9 +102,11 @@ public class Xmli extends ThreatModel {
 
         Node matches2 = cn.addConstraint(ni.getNodeKindFromString("matches"), strvar, r2);
 
-        //cn.addConstraint(NodeKind.OR, matches1, matches2);
+        assert matches2.isConstraint();
+
 
         cn.setStartNode(strvar);
+
         return cn;
     }
 

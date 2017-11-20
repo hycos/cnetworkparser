@@ -142,7 +142,7 @@ public class SmtCnetworkBuilder extends
         //LOGGER.info(this.parseTree.toDot());
         // process the remaining tree and build constraint network
 
-        ConstraintNetworkBuilder cn = super.process();
+        super.process();
 
         //LOGGER.info(debug());
         return cn;
@@ -251,7 +251,7 @@ public class SmtCnetworkBuilder extends
                 case "rlit":
                     //LOGGER.info("rlit " + n.getLabel());
                     //Node r = this.cn.addNode(new Operand(n.getLabel(),
-                    //    NodeKind.STRREXP));
+                    //    NodeKind.STREXP));
 
                     Node r = cn.addOperand(ni.getNodeKindFromString("strexp"), n.getLabel());
                     this.smap.put(n, r);

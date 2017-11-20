@@ -19,7 +19,6 @@ package com.github.hycos.cnetworkparser.lang.sol;
 
 import com.github.hycos.cnetwork.api.NodeKindInterface;
 import com.github.hycos.cnetwork.core.graph.Node;
-import com.github.hycos.cnetwork.core.graph.DefaultNodeKind;
 
 import java.util.List;
 import java.util.Vector;
@@ -28,7 +27,7 @@ public class BasicConstraint {
     protected List<Node> nodes = new Vector<>();
     protected NodeKindInterface opKind;
 
-    public BasicConstraint(Node term0, DefaultNodeKind kind, Node term1) {
+    public BasicConstraint(Node term0, NodeKindInterface kind, Node term1) {
         opKind = kind;
         nodes.add(term0);
         nodes.add(term1);
@@ -46,10 +45,10 @@ public class BasicConstraint {
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder();
-        sb.append("KIND " + opKind.toString() + "\n");
+        sb.append("\nCKIND " + opKind.toString() + "\n");
         nodes.forEach(
                 v -> {
-                    sb.append("n:" + v.getLabel());
+                    sb.append("n:" + v.getShortLabel());
                     sb.append("kind:" + v.getKind());
                 }
         );
@@ -67,8 +66,7 @@ public class BasicConstraint {
     }
 
     public boolean isString() {
-        return this.nodes.stream().filter( v -> v.isString() || v.isRegex()
-                || v.getKind() == DefaultNodeKind.STRLIT).count() ==
+        return this.nodes.stream().filter( v -> v.isString() || v.isRegex()).count() ==
                 nodes.size();
     }
 

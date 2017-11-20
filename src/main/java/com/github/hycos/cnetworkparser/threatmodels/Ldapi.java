@@ -32,7 +32,7 @@ public class Ldapi extends ThreatModel {
 
     final static Logger LOGGER = LoggerFactory.getLogger(Ldapi.class);
 
-    private static String ldapBlacklist = "['\" /\\#\\<\\>,;\\+\\*\\)\\(\0\\|\\&]";
+    private static String ldapBlacklist = "['\" /\\#\\<\\>,;\\+\\*\\)\\(\\|\\&]";
 
     public Ldapi(NodeKindFactoryInterface ni) {
         super(ni);

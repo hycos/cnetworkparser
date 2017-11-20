@@ -84,12 +84,11 @@ public class SolListener extends DefaultListener implements ConstraintNetworkGen
     public Node addConstraint(BasicConstraint con) throws
             InconsistencyException {
         Node c = this.cbuilder.addConstraint(con.opKind, con.nodes.toArray(new
-                Node [con.nodes.size()]));
+                Node[con.nodes.size()]));
 
         LOGGER.debug(this.cbuilder.getConstraintNetwork().toDot());
         return c;
     }
-
 
 
     @Override
@@ -207,6 +206,7 @@ public class SolListener extends DefaultListener implements ConstraintNetworkGen
                 try {
                     handleOp();
                 } catch (InconsistencyException e) {
+                    e.printStackTrace();
                     LOGGER.error(e.getMessage());
                     System.exit(-1);
                 }
@@ -249,7 +249,7 @@ public class SolListener extends DefaultListener implements ConstraintNetworkGen
     }
 
 
-    private void handleLink()  {
+    private void handleLink() {
         RuleScope cctx = this.ctx.getRecentCxt();
         StringPair rpoint = cctx.pop(); // videntifier
         StringPair label = cctx.pop(); // vatype
@@ -277,11 +277,11 @@ public class SolListener extends DefaultListener implements ConstraintNetworkGen
 
         LOGGER.debug("keys {}", tmodel.keySet());
 //        try {
-            //subnet = ThreatModelFactory.getInstance().getCNforVulnerability
-            //        (tmodeltype);
+        //subnet = ThreatModelFactory.getInstance().getCNforVulnerability
+        //        (tmodeltype);
         assert tmodel.containsKey(tmodeltype.getValue());
 
-            subnet = tmodel.get(tmodeltype.getValue()).delegate(tmodeltype);
+        subnet = tmodel.get(tmodeltype.getValue()).delegate(tmodeltype);
 //        } catch (UnknownException e) {
 //            e.printStackTrace();
 //        }
@@ -303,7 +303,9 @@ public class SolListener extends DefaultListener implements ConstraintNetworkGen
         RuleScope cctx = this.ctx.getRecentCxt();
         StringPair id = cctx.pop(); // fidentifier
         StringPair bsig = cctx.pop(); // bsig
-        this.cbuilder.registerExtOperation(StringUtils.trimQuotesFromString(bsig.value),
+        this.cbuilder.registerExtOperation(
+                StringUtils.trimQuotesFromString(bsig.value),
+                ni.getNodeKindFromString("external"),
                 StringUtils.trimQuotesFromString(id.value));
 
     }
@@ -347,24 +349,22 @@ public class SolListener extends DefaultListener implements ConstraintNetworkGen
         //Node string = this.cbuilder.getNodeByLabel(name);
 
 
-
-
         Node string = null;
-       // if (string == null) {
-            Automaton a = new dk.brics.automaton.RegExp(nname).toAutomaton();
+        // if (string == null) {
+        Automaton a = new dk.brics.automaton.RegExp(nname).toAutomaton();
 
-            if (a.getSingleton() != null) {
-                string = cbuilder.addOperand(ni.getNodeKindFromString("strlit"),nname);
-            } else {
-                string = cbuilder.addOperand(ni.getNodeKindFromString("strexp"),nname);
-            }
+        if (a.getSingleton() != null) {
+            string = cbuilder.addOperand(ni.getNodeKindFromString("strlit"), nname);
+        } else {
+            string = cbuilder.addOperand(ni.getNodeKindFromString("strexp"), nname);
+        }
 
 //            NodeDomain nd = new NodeDomain(DomainKind.STRING, a, new NumRange(DomainUtils.getApproxLenRange(a)));
 //
 //            string.setDomain(nd);
         //}
 
-        LOGGER.debug("push {} ---  {}", string.getDotLabel(),nname);
+        LOGGER.debug("push {} ---  {}", string.getDotLabel(), nname);
 
         this.ctx.push(string);
 
@@ -448,15 +448,15 @@ public class SolListener extends DefaultListener implements ConstraintNetworkGen
 
         // infer the types for overloaded operators (==)
 
-        if (okind == ni.getNodeKindFromString("==")) {
+        if (okind.equals(ni.getNodeKindFromString("=="))) {
             /**if (areString(params))
-                okind = DefaultNodeKind.STR_EQUALS;
-            else if (areNum(params))
-                okind = DefaultNodeKind.NUM_EQUALS;
-            else if (areBool(params))
-                okind = DefaultNodeKind.BOOL_EQUALS;**/
+             okind = DefaultNodeKind.STR_EQUALS;
+             else if (areNum(params))
+             okind = DefaultNodeKind.NUM_EQUALS;
+             else if (areBool(params))
+             okind = DefaultNodeKind.BOOL_EQUALS;**/
             okind = ni.getNodeKindFromString("==");
-        } else if (okind == ni.getNodeKindFromString("!=")) {
+        } else if (okind.equals(ni.getNodeKindFromString("!="))) {
 //            if (areString(params))
 //                okind = DefaultNodeKind.STR_NEQUALS;
 //            else if (areNum(params))
@@ -466,15 +466,15 @@ public class SolListener extends DefaultListener implements ConstraintNetworkGen
             okind = ni.getNodeKindFromString("==");
         }
 
-        if (okind == ni.getNodeKindFromString("unknown")) {
+        if (okind.equals(ni.getNodeKindFromString("unknown"))) {
             newop = this.cbuilder.addExtOperation(skind, params);
         } else {
             newop = this.cbuilder.addOperation(okind, params);
         }
 
-        LOGGER.info("NEWOP KIND " + newop.getKind().toString());
+       // LOGGER.info("NEWOP KIND " + newop.getKind().toString());
 
-        if (newop.getKind() == ni.getNodeKindFromString("ite")) {
+        if (newop.getKind().equals(ni.getNodeKindFromString("ite"))) {
 
             assert params.size() == 3;
 
@@ -494,15 +494,15 @@ public class SolListener extends DefaultListener implements ConstraintNetworkGen
 
             // @Julian: change lateron
             /**if (parop != null) {
-                alterDomain(newop, params.get(1).getKind
-                        ().getDomainKind());
-            } else {
-                if (params.get(1).isBoolean()) {
-                    alterDomain(newop, DomainKind.BOOLEAN);
-                } else if (params.get(1).isString()) {
-                    alterDomain(newop, DomainKind.STRING);
-                }
-            }**/
+             alterDomain(newop, params.get(1).getKind
+             ().getDomainKind());
+             } else {
+             if (params.get(1).isBoolean()) {
+             alterDomain(newop, DomainKind.BOOLEAN);
+             } else if (params.get(1).isString()) {
+             alterDomain(newop, DomainKind.STRING);
+             }
+             }**/
         }
 
 
@@ -510,18 +510,20 @@ public class SolListener extends DefaultListener implements ConstraintNetworkGen
         this.ctx.getRecentCxt().getBackref().addNode(newop);
     }
 
-    /**private void alterDomain(Node n, DomainKind newKind) {
-        NodeKind kind = n.getKind();
-        try {
-            kind.setDomainKind(newKind);
-        } catch (IllegalDomainException e) {
-            LOGGER.error(e.getMessage());
-            System.exit(-1);
-        }
-        NodeDomain dkind = NodeDomainFactory.INSTANCE.getDomainForKind
-                (kind);
-        dkind.setDomain(dkind);
-    }**/
+    /**
+     * private void alterDomain(Node n, DomainKind newKind) {
+     * NodeKind kind = n.getKind();
+     * try {
+     * kind.setDomainKind(newKind);
+     * } catch (IllegalDomainException e) {
+     * LOGGER.error(e.getMessage());
+     * System.exit(-1);
+     * }
+     * NodeDomain dkind = NodeDomainFactory.INSTANCE.getDomainForKind
+     * (kind);
+     * dkind.setDomain(dkind);
+     * }
+     **/
 
     private Node handleConstraint() throws InconsistencyException {
         //LOGGER.debug("HANDLE ctx" + this.ctx.getRecentCxt().getName());

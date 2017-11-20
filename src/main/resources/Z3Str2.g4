@@ -82,7 +82,8 @@ strop: 'Substring' | 'Concat' | 'Indexof' | 'LastIndexof' | 'Replace';
 
 cop: 'ite';
 
-regexop: 'RegexStar' | 'RegexUnion' | 'RegexCharRange' | 'Str2Reg' | 'RegexConcat';
+regexop: 'RegexStar' | 'RegexUnion' | 'RegexCharRange' | 'Str2Reg' |
+'RegexConcat' | 'RegexPlus';
 
 binop: 'Length';
 

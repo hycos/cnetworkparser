@@ -58,7 +58,17 @@ public class ConstraintNetworkParser {
         InputStream is = classLoader.getResourceAsStream(inputFormat.getGrammar());
         String s = FileUtils.getStringFromStream(is);
 
-        this.gp = new GenericParser(s);
+//        if(inputFormat == InputFormat.Z3STR2) {
+//            try {
+//                this.gp = GenericParser.load("/tmp/z3parser");
+//            } catch (DeserializationException e) {
+//                e.printStackTrace();
+//                System.exit(-1);
+//            }
+//        } else {
+            this.gp = new GenericParser(s);
+//        }
+
         this.provider = inputFormat.getProvider(f);
         this.ctx = null;
         this.gp.setListener(provider.getListener());
