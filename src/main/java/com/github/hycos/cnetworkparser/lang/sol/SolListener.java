@@ -258,6 +258,7 @@ public class SolListener extends DefaultListener implements ConstraintNetworkGen
 
         LOGGER.info("Tmodel " + rpoint);
         LOGGER.info("Label " + label);
+        LOGGER.info("Label " + label.value);
 
         if ((n = cbuilder.getNodeByLabel(label.value)) == null) {
             LOGGER.error("Parser Error: cannot link " + label.value + " to a threat model");
