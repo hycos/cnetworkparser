@@ -1,0 +1,37 @@
+# from source 151 to sink 158
+var string var1183;
+var string var1185;
+var string var1183;
+var string var1185;
+var string var1186;
+var string var1185;
+var string var1186;
+var string var1188;
+var string var1186;
+var string var1188;
+var string var1189;
+var string var1190;
+var string var1188;
+var string var1190;
+var string var1192;
+var string var1190;
+var string var1192;
+var string var1193;
+var string var1194;
+var string var1192;
+var string var1194;
+var bool var1197;
+var string var1199;
+var bool var1197;
+var string var1199;
+
+&(var1189,sqlistr);
+==(var1183,var1185);
+==(var1185,concat(var1186,"'\)"));
+==(var1186,concat(var1188,var1189));
+==(var1188,concat(var1190,"' AND password = '"));
+==(var1190,concat(var1192,var1193));
+==(var1192,concat(var1194,"SELECT \* FROM Users WHERE \(name = '"));
+!=(var1193,"");
+!=(var1197,false);
+==(var1197,==(var1199,"POST"));

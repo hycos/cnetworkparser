@@ -1,0 +1,35 @@
+# from source 166 to sink 179
+var string var2554;
+var string var2556;
+var string var2554;
+var string var2556;
+var string var2557;
+var string var2556;
+var string var2557;
+var string var2558;
+var string var2559;
+var string var2557;
+var string var2559;
+var string var2558;
+var string var2562;
+var string var2558;
+var string var2562;
+var int var2563;
+var int var2563;
+var int var2564;
+var int var2563;
+var int var2564;
+var bool var2567;
+var string var2568;
+var bool var2567;
+var string var2568;
+
+&(var2568,sqlistr);
+==(var2554,var2556);
+==(var2556,concat(var2557,var2558));
+==(var2557,concat(var2559,"SELECT \* FROM Baskets WHERE basketid ="));
+!=(var2558,"");
+or(==(var2558,""),==(var2558,var2562));
+==(var2564,add(var2563,1));
+==(var2567,false);
+==(var2567,==(var2568,"b_id"));

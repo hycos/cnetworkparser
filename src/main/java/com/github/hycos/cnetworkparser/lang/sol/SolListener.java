@@ -473,7 +473,7 @@ public class SolListener extends DefaultListener implements ConstraintNetworkGen
             newop = this.cbuilder.addOperation(okind, params);
         }
 
-       // LOGGER.info("NEWOP KIND " + newop.getKind().toString());
+        LOGGER.info("NEWOP KIND " + newop.getKind().toString());
 
         if (newop.getKind().equals(ni.getNodeKindFromString("ite"))) {
 

@@ -1,0 +1,33 @@
+# from source 154 to sink 199
+var string var15;
+var string var16;
+var string var17;
+var string var20;
+var string var17;
+var string var20;
+var string var19;
+var string var17;
+var string var19;
+var string var18;
+var string var17;
+var string var18;
+var string var17;
+var string var16;
+var string var21;
+var string var15;
+var string var21;
+var string var15;
+var string var16;
+var string var22;
+var string var15;
+var string var22;
+var string var23;
+
+&(var23,xss);
+==(var15,var16);
+==(var17,var16);
+or(==(var17,var16),==(var17,var20));
+or(==(var17,var19),==(var17,var18));
+==(var15,var22);
+or(==(var15,var21),==(var15,var16));
+==(var23,var16);

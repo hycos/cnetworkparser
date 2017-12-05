@@ -259,4 +259,5 @@ public class TestParser {
         //CnetworkAnalyzer.INSTANCE.checkForCycles(cn);
         LOGGER.debug(cn.getConstraintNetwork().toDot());
     }
+
 }
