@@ -22,7 +22,6 @@ import com.github.hycos.cnetwork.api.NodeKindInterface;
 import com.github.hycos.cnetwork.api.labelmgr.exception.InconsistencyException;
 import com.github.hycos.cnetwork.core.graph.ConstraintNetworkBuilder;
 import com.github.hycos.cnetwork.core.graph.Node;
-import com.github.hycos.cnetwork.core.graph.Operand;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -67,29 +66,30 @@ public class Xmli extends ThreatModel {
         ConstraintNetworkBuilder cn = new ConstraintNetworkBuilder();
 
 
-        Node strvar = new Operand("sv1", ni.getNodeKindFromString("strvar"));
+        Node strvar = cn.addOperand(ni.getNodeKindFromString("strvar"),"sv1");
         //Node op = new Operand(xmlInjection, NodeKind.STREXP);
 
         //Node matches1 = cn.addOperation(NodeKind.MATCHES, strvar, op);
 
-        Node content = new Operand("content", ni.getNodeKindFromString("strvar"));
+        Node content = cn.addOperand(ni.getNodeKindFromString("strvar"),"content");
 
 
-        Node startag = new Operand("stag", ni.getNodeKindFromString("strvar"));
-        Node open1 = new Operand("\\<", ni.getNodeKindFromString("strlit"));
-        Node close1 = new Operand("\\>", ni.getNodeKindFromString("strlit"));
+        Node startag = cn.addOperand(ni.getNodeKindFromString("strvar"),"stag");
+        Node open1 = cn.addOperand(ni.getNodeKindFromString("strlit"),"\\<");
+        Node close1 = cn.addOperand( ni.getNodeKindFromString("strlit"),"\\>");
 
         Node s1 = cn.addOperation(ni.getNodeKindFromString("concat"), open1, startag);
         Node s2 = cn.addOperation(ni.getNodeKindFromString("concat"), s1, close1);
 
-        Node endtag = new Operand("etag", ni.getNodeKindFromString("strvar"));
-        Node open2 = new Operand("\\<\\/", ni.getNodeKindFromString("strlit"));
-        Node close2 = new Operand("\\>", ni.getNodeKindFromString("strlit"));
+        Node endtag = cn.addOperand(ni.getNodeKindFromString("strvar"),"etag");
+        Node open2 = cn.addOperand(ni.getNodeKindFromString("strlit"),"\\<\\/");
+        Node close2 = cn.addOperand( ni.getNodeKindFromString("strlit"),"\\>");
 
         Node e1 = cn.addOperation(ni.getNodeKindFromString("concat"), open2, endtag);
         Node e2 = cn.addOperation(ni.getNodeKindFromString("concat"), e1, close2);
 
-        Node regex = new Operand("[a-zA-Z0-9]+", ni.getNodeKindFromString("strexp"));
+        Node regex = cn.addOperand( ni.getNodeKindFromString("strexp"),"[a-zA" +
+                "-Z0-9]+");
 
         cn.addConstraint(ni.getNodeKindFromString("=="), startag, endtag);
         cn.addConstraint(ni.getNodeKindFromString("matches"), startag, regex);

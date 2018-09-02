@@ -22,7 +22,6 @@ import com.github.hycos.cnetwork.api.NodeKindInterface;
 import com.github.hycos.cnetwork.api.labelmgr.exception.InconsistencyException;
 import com.github.hycos.cnetwork.core.graph.ConstraintNetworkBuilder;
 import com.github.hycos.cnetwork.core.graph.Node;
-import com.github.hycos.cnetwork.core.graph.Operand;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -69,7 +68,7 @@ public class Xss extends ThreatModel {
     private ConstraintNetworkBuilder getXMLIThreatModel() throws InconsistencyException {
 
         ConstraintNetworkBuilder cn = new ConstraintNetworkBuilder();
-        Node op = new Operand(xss, ni.getNodeKindFromString("strexp"));
+        Node op = cn.addOperand(ni.getNodeKindFromString("strexp"),xss);
         cn.addOperand(ni.getNodeKindFromString("strexp"), xss);
         cn.setStartNode(op);
         return cn;

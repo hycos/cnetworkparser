@@ -42,6 +42,6 @@ var string var129;
 !=(var129,"");
 !=(var134,false);
 ==(var134,==(var129,var136));
->(var137,false);
+>(var137,0);
 ==(var137,len(var129));
 !=(var129,"");

@@ -22,7 +22,6 @@ import com.github.hycos.cnetwork.api.NodeKindInterface;
 import com.github.hycos.cnetwork.api.labelmgr.exception.InconsistencyException;
 import com.github.hycos.cnetwork.core.graph.ConstraintNetworkBuilder;
 import com.github.hycos.cnetwork.core.graph.Node;
-import com.github.hycos.cnetwork.core.graph.Operand;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -59,7 +58,7 @@ public class Ldapi extends ThreatModel {
 
     private ConstraintNetworkBuilder getLDAPIThreatModel() throws InconsistencyException {
         ConstraintNetworkBuilder cn = new ConstraintNetworkBuilder();
-        Node op = new Operand(ldapBlacklist, ni.getNodeKindFromString("strexp"));
+        Node op = cn.addOperand(ni.getNodeKindFromString("strexp"),ldapBlacklist);
         cn.addOperand(ni.getNodeKindFromString("strexp"), ldapBlacklist);
         cn.setStartNode(op);
         return cn;

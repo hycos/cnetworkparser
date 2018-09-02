@@ -59,7 +59,7 @@ public class TestParser {
         Assertions.assertFalse(thrown);
 
 
-        CnetworkAnalyzer.INSTANCE.detectLoopPoints(cn.getConstraintNetwork());
+        CnetworkAnalyzer.INSTANCE.detectLoopPoints(cn);
 
     }
 
@@ -179,6 +179,7 @@ public class TestParser {
                     .SOL).
                     getConstraintNetworkFromFile(getPath("simple01.sol"));
         } catch (InconsistencyException | CompilationException e) {
+            LOGGER.error(e.getMessage());
             Assertions.assertFalse(true);
         }
         LOGGER.debug(cn.toDot());

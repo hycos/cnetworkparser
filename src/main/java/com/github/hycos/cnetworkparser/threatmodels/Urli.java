@@ -21,7 +21,6 @@ import com.github.hycos.cnetwork.api.NodeKindFactoryInterface;
 import com.github.hycos.cnetwork.api.NodeKindInterface;
 import com.github.hycos.cnetwork.core.graph.ConstraintNetworkBuilder;
 import com.github.hycos.cnetwork.core.graph.Node;
-import com.github.hycos.cnetwork.core.graph.Operand;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -56,7 +55,7 @@ public class Urli extends ThreatModel {
         ConstraintNetworkBuilder cn = new ConstraintNetworkBuilder();
 
         cn.addOperand(ni.getNodeKindFromString("strexp"), urlBlacklist);
-        Node op = new Operand(urlBlacklist, ni.getNodeKindFromString("strexp"));
+        Node op = cn.addOperand(ni.getNodeKindFromString("strexp"),urlBlacklist);
         cn.setStartNode(op);
         return cn;
     }

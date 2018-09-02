@@ -292,6 +292,7 @@ public class SolListener extends DefaultListener implements ConstraintNetworkGen
         try {
             cbuilder.join(ni.getNodeKindFromString("matches"), n, subnet);
         } catch (InconsistencyException e) {
+            LOGGER.debug(e.getMessage());
             assert false;
         }
         //cn.addConstraint(NodeKind.MATCHES, n, subnet.getStartNode());
@@ -468,7 +469,7 @@ public class SolListener extends DefaultListener implements ConstraintNetworkGen
         }
 
         if (okind.equals(ni.getNodeKindFromString("unknown"))) {
-            newop = this.cbuilder.addExtOperation(skind, params);
+            newop = this.cbuilder.addOperation(DefaultNodeKind.UNKNOWN, params);
         } else {
             newop = this.cbuilder.addOperation(okind, params);
         }
